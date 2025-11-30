@@ -1,5 +1,5 @@
 // Simple primary call-to-action button
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css } from "https://esm.run/lit";
 
 export class CtaButton extends LitElement {
   static properties = {

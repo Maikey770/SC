@@ -1,5 +1,5 @@
 // Simple static image-style gallery band
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css } from "https://esm.run/lit";
 
 export class ImageGallery extends LitElement {
   static styles = css`

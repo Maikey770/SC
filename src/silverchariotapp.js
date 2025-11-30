@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css } from "https://esm.run/lit";
 
 // import child components
 import "./components/headerbar.js";

@@ -1,5 +1,5 @@
 // Card for a single news story
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css } from "https://esm.run/lit";
 
 export class NewsCard extends LitElement {
   static styles = css`

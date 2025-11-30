@@ -1,5 +1,5 @@
 // Simple footer with basic information
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css } from "https://esm.run/lit";
 
 export class FooterSection extends LitElement {
   static styles = css`

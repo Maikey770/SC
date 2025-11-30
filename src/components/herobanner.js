@@ -1,5 +1,5 @@
 // Hero section at the top of the page
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css } from "https://esm.run/lit";
 import "./ctabutton.js";
 
 export class HeroBanner extends LitElement {
