@@ -1,30 +1,44 @@
+// main app shell for the site
 import { LitElement, html, css } from "https://esm.run/lit";
 
-// import child components
 import "./components/headerbar.js";
 import "./components/mobilemenu.js";
-import "./components/herobanner.js";
-import "./components/ctabutton.js";
 import "./components/gamecard.js";
-import "./components/schedulerow.js";
 import "./components/newscard.js";
 import "./components/footersection.js";
 import "./components/infoband.js";
 import "./components/imagegallery.js";
 
-// Main app shell for Silver Chariot site
 export class SilverChariotApp extends LitElement {
   static properties = {
     page: { type: String },
-    mobileMenuOpen: { type: Boolean }
+    mobileMenuOpen: { type: Boolean },
+    schedule: { type: Array }
   };
+
+  constructor() {
+    super();
+    this.page = "home";
+    this.mobileMenuOpen = false;
+    this.schedule = [];
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    // load games from our JSON API
+    fetch("/api/schedule.json")
+      .then((res) => res.json())
+      .then((data) => {
+        this.schedule = data.upcoming || [];
+      });
+  }
 
   static styles = css`
     :host {
       display: block;
+      background: #05070b;
       min-height: 100vh;
-      background-color: #05070b;
-      color: #f5f7fb;
+      color: white;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
         sans-serif;
     }
@@ -32,109 +46,117 @@ export class SilverChariotApp extends LitElement {
     main {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 24px 16px 40px;
+      padding: 20px 16px;
       display: flex;
       flex-direction: column;
       gap: 24px;
     }
 
-    .band {
-      border-radius: 16px;
-      padding: 16px;
-      background-color: rgba(9, 16, 32, 0.9);
-      border: 1px solid rgba(155, 177, 212, 0.4);
+    h2 {
+      margin-top: 0;
     }
+  `;
 
-    .schedule-band {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .schedule-list,
-    .news-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 12px;
-    }
-
-    @media (max-width: 768px) {
-      main {
-        padding-top: 16px;
-      }
-    }
-  `; 
-
-  constructor() {
-    super();
-    this.page = "home";
-    this.mobileMenuOpen = false;
+  // change URL and page state
+  changePage(e) {
+    const id = e.detail;
+    this.page = id;
+    window.history.pushState({}, "", `/${id}`);
   }
 
-  // simple navigation state change
-  navigate(page) {
-    this.page = page;
-    const slug = page === "home" ? "/" : `/${page}`;
-    window.history.pushState({}, "", slug);
-  }
-
-  toggleMobileMenu() {
+  toggleMenu() {
     this.mobileMenuOpen = !this.mobileMenuOpen;
+  }
+
+  renderSchedule() {
+    return html`
+      <section>
+        <h2>Upcoming Games</h2>
+        ${this.schedule.map(
+          (g) => html`<game-card .game=${g}></game-card>`
+        )}
+      </section>
+    `;
+  }
+
+  renderParentInfo() {
+    return html`
+      <section>
+        <h2>Parent Information</h2>
+        <p>
+          Silver Chariot is a youth hockey club. We care about strong games,
+          but also about school, health, and having fun with friends.
+        </p>
+
+        <h3>Season Basics</h3>
+        <ul>
+          <li>Season is from early September to late March.</li>
+          <li>Most weeks have two practices and one game.</li>
+          <li>Home rink: State College Ice Pavilion.</li>
+        </ul>
+
+        <h3>Fees and Gear</h3>
+        <ul>
+          <li>Fees cover ice time, refs, and league costs.</li>
+          <li>Players bring skates and full protective gear.</li>
+          <li>Team jerseys are loaned and returned at the end.</li>
+        </ul>
+
+        <h3>How Parents Help</h3>
+        <ul>
+          <li>Volunteer for clock, score sheet, or locker room.</li>
+          <li>Try to arrive about 30 minutes before ice time.</li>
+          <li>Contact the team manager if you have questions.</li>
+        </ul>
+      </section>
+    `;
+  }
+
+  renderPage() {
+    if (this.page === "schedule") {
+      return this.renderSchedule();
+    }
+
+    if (this.page === "news") {
+      return html`
+        <section>
+          <h2>Silver Chariot News</h2>
+          <news-card></news-card>
+        </section>
+      `;
+    }
+
+    if (this.page === "parents") {
+      return this.renderParentInfo();
+    }
+
+    // home page
+    return html`
+      <section>
+        <info-band></info-band>
+      </section>
+      <section>
+        <image-gallery></image-gallery>
+      </section>
+    `;
   }
 
   render() {
     return html`
       <header-bar
         .page=${this.page}
-        @nav-home=${() => this.navigate("home")}
-        @nav-schedule=${() => this.navigate("schedule")}
-        @nav-news=${() => this.navigate("news")}
-        @toggle-menu=${this.toggleMobileMenu.bind(this)}
+        @nav-change=${(e) => this.changePage(e)}
+        @open-menu=${() => this.toggleMenu()}
       ></header-bar>
 
       <mobile-menu
         ?open=${this.mobileMenuOpen}
         .page=${this.page}
-        @nav-home=${() => this.navigate("home")}
-        @nav-schedule=${() => this.navigate("schedule")}
-        @nav-news=${() => this.navigate("news")}
-        @close-menu=${this.toggleMobileMenu.bind(this)}
+        @nav-change=${(e) => this.changePage(e)}
+        @close-menu=${() => this.toggleMenu()}
       ></mobile-menu>
 
-      <main>
-        <section class="band">
-          <hero-banner></hero-banner>
-        </section>
-
-        <section class="band">
-          <info-band></info-band>
-        </section>
-
-        <section class="band schedule-band">
-          <schedule-row heading="Upcoming Games"></schedule-row>
-          <div class="schedule-list">
-            <game-card></game-card>
-            <game-card></game-card>
-            <game-card></game-card>
-          </div>
-          <cta-button label="View full schedule"></cta-button>
-        </section>
-
-        <section class="band">
-          <h2 style="margin: 0 0 12px; font-size: 1.1rem;">
-            Silver Chariot News
-          </h2>
-          <div class="news-list">
-            <news-card></news-card>
-            <news-card></news-card>
-            <news-card></news-card>
-          </div>
-        </section>
-
-        <section class="band">
-          <image-gallery></image-gallery>
-        </section>
-      </main>
+      <main>${this.renderPage()}</main>
 
       <footer-section></footer-section>
     `;

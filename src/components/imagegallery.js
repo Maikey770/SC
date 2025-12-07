@@ -1,4 +1,4 @@
-// Simple static image-style gallery band
+// fake image gallery section
 import { LitElement, html, css } from "https://esm.run/lit";
 
 export class ImageGallery extends LitElement {
@@ -27,6 +27,12 @@ export class ImageGallery extends LitElement {
         radial-gradient(circle at top, rgba(80, 130, 220, 0.6), transparent 55%),
         linear-gradient(135deg, #101728, #05070b);
       border: 1px solid rgba(155, 177, 212, 0.4);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .thumb:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.45);
     }
 
     .thumb-label {

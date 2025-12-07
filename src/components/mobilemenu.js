@@ -1,116 +1,83 @@
-// Mobile slide-down menu
+// Mobile drop-down menu
 import { LitElement, html, css } from "https://esm.run/lit";
 
 export class MobileMenu extends LitElement {
   static properties = {
-    open: { type: Boolean, reflect: true },
-    page: { type: String }
+    open: { type: Boolean },
+    page: { type: String },
+    menu: { type: Array }
   };
+
+  constructor() {
+    super();
+    this.open = false;
+    this.page = "home";
+    this.menu = [];
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    fetch("/api/menu.json")
+      .then((res) => res.json())
+      .then((data) => (this.menu = data.items));
+  }
 
   static styles = css`
     :host {
       display: block;
     }
-
-    .sheet {
+    .bg {
       position: fixed;
       inset: 0;
-      background-color: rgba(0, 0, 0, 0.6);
-      z-index: 40;
+      background: rgba(0, 0, 0, 0.6);
       display: none;
     }
-
-    :host([open]) .sheet {
+    :host([open]) .bg {
       display: block;
     }
-
     .panel {
-      position: absolute;
-      inset-inline: 0;
-      top: 0;
-      background-color: #05070b;
+      background: #0b1020;
       padding: 16px;
-      border-bottom-left-radius: 24px;
-      border-bottom-right-radius: 24px;
-      border-bottom: 1px solid rgba(155, 177, 212, 0.4);
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
     }
-
-    .row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-
-    .links {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
     button {
       background: none;
+      color: white;
       border: none;
-      color: #f5f7fb;
-      font: inherit;
-      cursor: pointer;
+      padding: 10px 4px;
+      width: 100%;
       text-align: left;
-      padding: 8px 4px;
-      border-radius: 8px;
     }
-
     button[data-active="true"] {
-      background-color: rgba(55, 111, 255, 0.2);
-    }
-
-    @media (min-width: 769px) {
-      .sheet {
-        display: none !important;
-      }
+      background: rgba(55, 111, 255, 0.3);
     }
   `;
 
-  emitNav(name) {
-    this.dispatchEvent(
-      new CustomEvent(name, { bubbles: true, composed: true })
-    );
-    this.close();
+  close() {
+    this.dispatchEvent(new CustomEvent("close-menu"));
   }
 
-  close() {
-    this.dispatchEvent(
-      new CustomEvent("close-menu", { bubbles: true, composed: true })
-    );
+  go(id) {
+    this.dispatchEvent(new CustomEvent("nav-change", { detail: id }));
+    this.close();
   }
 
   render() {
     return html`
-      <div class="sheet" role="dialog" aria-modal="true">
+      <div class="bg">
         <div class="panel">
-          <div class="row">
-            <span>Silver Chariot</span>
-            <button @click=${this.close} aria-label="Close menu">X</button>
-          </div>
-          <div class="links">
-            <button
-              data-active=${this.page === "home"}
-              @click=${() => this.emitNav("nav-home")}
-            >
-              Home
-            </button>
-            <button
-              data-active=${this.page === "schedule"}
-              @click=${() => this.emitNav("nav-schedule")}
-            >
-              Schedule
-            </button>
-            <button
-              data-active=${this.page === "news"}
-              @click=${() => this.emitNav("nav-news")}
-            >
-              News
-            </button>
-          </div>
+          ${this.menu.map(
+            (item) => html`
+              <button
+                data-active=${this.page === item.id}
+                @click=${() => this.go(item.id)}
+              >
+                ${item.label}
+              </button>
+            `
+          )}
+          <button @click=${this.close}>Close</button>
         </div>
       </div>
     `;

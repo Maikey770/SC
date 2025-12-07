@@ -1,4 +1,4 @@
-// Card for a single news story
+// simple news card
 import { LitElement, html, css } from "https://esm.run/lit";
 
 export class NewsCard extends LitElement {
@@ -15,6 +15,12 @@ export class NewsCard extends LitElement {
       display: flex;
       flex-direction: column;
       gap: 8px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.45);
     }
 
     .meta {
@@ -40,8 +46,8 @@ export class NewsCard extends LitElement {
         <div class="meta">Nov 26 · Association Update</div>
         <h3>Silver Chariot Winter Skills Camp Announced</h3>
         <p>
-          Focused small-group ice sessions to build edge work, control, and game
-          awareness for U10–U16 players.
+          Small ice groups to work on edges, control, and game sense for
+          U10–U16 players.
         </p>
       </article>
     `;

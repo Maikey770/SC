@@ -1,138 +1,102 @@
-// Top navigation bar
+// Main desktop header
 import { LitElement, html, css } from "https://esm.run/lit";
 
 export class HeaderBar extends LitElement {
   static properties = {
-    page: { type: String }
+    page: { type: String },
+    menu: { type: Array }
   };
+
+  constructor() {
+    super();
+    this.page = "home";
+    this.menu = [];
+  }
+
+  // Load menu data from API
+  connectedCallback() {
+    super.connectedCallback();
+    fetch("/api/menu.json")
+      .then((res) => res.json())
+      .then((data) => (this.menu = data.items));
+  }
 
   static styles = css`
     :host {
       display: block;
-      background: linear-gradient(90deg, #05070b, #0a2148);
-      color: #f5f7fb;
-      border-bottom: 1px solid rgba(155, 177, 212, 0.4);
+      background: #0b1020;
+      color: white;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
     }
-
     header {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 12px 16px;
+      padding: 14px 16px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      align-items: center;
     }
-
     .brand {
       display: flex;
-      align-items: center;
       gap: 8px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
+      font-weight: bold;
       text-transform: uppercase;
-      font-size: 0.9rem;
     }
-
-    .logo-mark {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      border: 2px solid #cfd6e6;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.75rem;
-    }
-
     nav {
       display: flex;
-      align-items: center;
       gap: 12px;
     }
-
     button {
       background: none;
       border: none;
-      color: inherit;
-      font: inherit;
+      color: white;
       cursor: pointer;
-      padding: 4px 10px;
-      border-radius: 999px;
-      transition: background-color 0.15s ease, color 0.15s ease;
+      padding: 6px 10px;
+      border-radius: 8px;
     }
-
     button[data-active="true"] {
-      background-color: #376fff;
-      color: #ffffff;
+      background: #376fff;
     }
-
     .menu-toggle {
       display: none;
     }
-
     @media (max-width: 768px) {
       nav {
         display: none;
       }
-
       .menu-toggle {
-        display: inline-flex;
-        padding: 4px 10px;
-        border-radius: 999px;
-        border: 1px solid rgba(155, 177, 212, 0.6);
+        display: block;
       }
     }
   `;
 
-  emitNav(name) {
-    this.dispatchEvent(
-      new CustomEvent(name, { bubbles: true, composed: true })
-    );
+  go(id) {
+    this.dispatchEvent(new CustomEvent("nav-change", { detail: id }));
   }
 
-  toggleMenu() {
-    this.dispatchEvent(
-      new CustomEvent("toggle-menu", { bubbles: true, composed: true })
-    );
+  openMenu() {
+    this.dispatchEvent(new CustomEvent("open-menu"));
   }
 
   render() {
     return html`
       <header>
-        <div class="brand" aria-label="Silver Chariot Youth Hockey">
-          <div class="logo-mark">SC</div>
-          <span>Silver Chariot</span>
-        </div>
+        <div class="brand">Silver Chariot</div>
 
-        <nav aria-label="Main navigation">
-          <button
-            data-active=${this.page === "home"}
-            @click=${() => this.emitNav("nav-home")}
-          >
-            Home
-          </button>
-          <button
-            data-active=${this.page === "schedule"}
-            @click=${() => this.emitNav("nav-schedule")}
-          >
-            Schedule
-          </button>
-          <button
-            data-active=${this.page === "news"}
-            @click=${() => this.emitNav("nav-news")}
-          >
-            News
-          </button>
+        <nav>
+          ${this.menu.map(
+            (item) => html`
+              <button
+                data-active=${this.page === item.id}
+                @click=${() => this.go(item.id)}
+              >
+                ${item.label}
+              </button>
+            `
+          )}
         </nav>
 
-        <button
-          class="menu-toggle"
-          @click=${this.toggleMenu}
-          aria-label="Open navigation menu"
-        >
-          Menu
-        </button>
+        <button class="menu-toggle" @click=${this.openMenu}>Menu</button>
       </header>
     `;
   }

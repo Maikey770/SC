@@ -1,0 +1,21 @@
+{
+  "label": "root",
+  "items": [
+    {
+      "label": "Home",
+      "id": "home"
+    },
+    {
+      "label": "Schedule",
+      "id": "schedule"
+    },
+    {
+      "label": "News",
+      "id": "news"
+    },
+    {
+      "label": "Parent Info",
+      "id": "parents"
+    }
+  ]
+}
