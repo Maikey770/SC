@@ -19,7 +19,6 @@ export class HeaderBar extends LitElement {
     fetch("/api/menu.json")
       .then((res) => res.json())
       .then((data) => {
-        // just in case data is not what we expect
         this.menuItems = data && data.items ? data.items : [];
       })
       .catch((err) => {

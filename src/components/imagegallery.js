@@ -1,4 +1,4 @@
-// fake image gallery section
+//image gallery section
 import { LitElement, html, css } from "https://esm.run/lit";
 
 export class ImageGallery extends LitElement {

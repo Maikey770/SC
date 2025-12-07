@@ -60,7 +60,7 @@ export class SilverChariotApp extends LitElement {
     }
   `;
 
-  // change URL + page when nav clicked
+  // change URL and page when nav clicked
   changePage(e) {
     const id = e.detail;
     this.page = id;
@@ -139,7 +139,7 @@ export class SilverChariotApp extends LitElement {
       return this._renderParentsPage();
     }
 
-    // home page: quick overview + gallery
+    // home page and gallery
     return html`
       <section>
         <info-band></info-band>
