@@ -1,4 +1,4 @@
-// main app shell for the site
+// main app for Silver Chariot site
 import { LitElement, html, css } from "https://esm.run/lit";
 
 import "./components/headerbar.js";
@@ -25,11 +25,14 @@ export class SilverChariotApp extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    // load games from our JSON API
+    // get schedule data from JSON
     fetch("/api/schedule.json")
       .then((res) => res.json())
       .then((data) => {
-        this.schedule = data.upcoming || [];
+        this.schedule = data && data.upcoming ? data.upcoming : [];
+      })
+      .catch((err) => {
+        console.error("schedule load error", err);
       });
   }
 
@@ -46,7 +49,7 @@ export class SilverChariotApp extends LitElement {
     main {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 20px 16px;
+      padding: 20px 16px 32px;
       display: flex;
       flex-direction: column;
       gap: 24px;
@@ -57,35 +60,41 @@ export class SilverChariotApp extends LitElement {
     }
   `;
 
-  // change URL and page state
+  // change URL + page when nav clicked
   changePage(e) {
     const id = e.detail;
     this.page = id;
-    window.history.pushState({}, "", `/${id}`);
+    if (id === "home") {
+      window.history.pushState({}, "", "/");
+    } else {
+      window.history.pushState({}, "", `/${id}`);
+    }
   }
 
   toggleMenu() {
     this.mobileMenuOpen = !this.mobileMenuOpen;
   }
 
-  renderSchedule() {
+  _renderSchedulePage() {
     return html`
       <section>
         <h2>Upcoming Games</h2>
-        ${this.schedule.map(
-          (g) => html`<game-card .game=${g}></game-card>`
-        )}
+        ${this.schedule.length === 0
+          ? html`<p>No games in the list right now.</p>`
+          : this.schedule.map(
+              (g) => html`<game-card .game=${g}></game-card>`
+            )}
       </section>
     `;
   }
 
-  renderParentInfo() {
+  _renderParentsPage() {
     return html`
       <section>
         <h2>Parent Information</h2>
         <p>
-          Silver Chariot is a youth hockey club. We care about strong games,
-          but also about school, health, and having fun with friends.
+          Silver Chariot is a youth hockey club. We want kids to play serious
+          hockey, but also keep up with school, health, and friends.
         </p>
 
         <h3>Season Basics</h3>
@@ -97,14 +106,14 @@ export class SilverChariotApp extends LitElement {
 
         <h3>Fees and Gear</h3>
         <ul>
-          <li>Fees cover ice time, refs, and league costs.</li>
-          <li>Players bring skates and full protective gear.</li>
+          <li>Fees cover ice time, referees, and league costs.</li>
+          <li>Players bring their own skates and full gear.</li>
           <li>Team jerseys are loaned and returned at the end.</li>
         </ul>
 
         <h3>How Parents Help</h3>
         <ul>
-          <li>Volunteer for clock, score sheet, or locker room.</li>
+          <li>Help with clock, score sheet, or locker room when needed.</li>
           <li>Try to arrive about 30 minutes before ice time.</li>
           <li>Contact the team manager if you have questions.</li>
         </ul>
@@ -112,9 +121,9 @@ export class SilverChariotApp extends LitElement {
     `;
   }
 
-  renderPage() {
+  _renderPageBody() {
     if (this.page === "schedule") {
-      return this.renderSchedule();
+      return this._renderSchedulePage();
     }
 
     if (this.page === "news") {
@@ -127,10 +136,10 @@ export class SilverChariotApp extends LitElement {
     }
 
     if (this.page === "parents") {
-      return this.renderParentInfo();
+      return this._renderParentsPage();
     }
 
-    // home page
+    // home page: quick overview + gallery
     return html`
       <section>
         <info-band></info-band>
@@ -156,7 +165,7 @@ export class SilverChariotApp extends LitElement {
         @close-menu=${() => this.toggleMenu()}
       ></mobile-menu>
 
-      <main>${this.renderPage()}</main>
+      <main>${this._renderPageBody()}</main>
 
       <footer-section></footer-section>
     `;
