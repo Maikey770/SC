@@ -1,5 +1,5 @@
 import { LitElement, html, css } from "lit";
-import "@haxtheweb/d-d-d/d-d-d-button.js";
+import "@haxtheweb/d-d-d/lib/d-d-d-button.js";
 import { dddGlobal } from "../ddd-global.js";
 
 export class CtaButton extends LitElement {

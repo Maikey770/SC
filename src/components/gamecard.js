@@ -1,6 +1,6 @@
 // Show a single game entry with basic details and status
 import { LitElement, html, css } from "lit";
-import "@haxtheweb/d-d-d/d-d-d.js";
+import "@haxtheweb/d-d-d/lib/d-d-d-button.js";
 import { dddGlobal } from "../ddd-global.js";
 
 export class GameCard extends LitElement {

@@ -20,6 +20,4 @@ export default {
       targets: [{ src: "index.html", dest: "dist" }]
     })
   ],
-  // Force rollup to bundle these deps instead of leaving bare imports
-  external: (id) => id.startsWith("@haxtheweb/") ? false : null
 };
