@@ -10,10 +10,11 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
 
-    <!-- FIX: allow browser to resolve @haxtheweb imports -->
+    <!-- FIX: resolve @haxtheweb + d-d-d imports via CDN -->
     <script type="importmap">
     {
       "imports": {
+        "@haxtheweb/d-d-d/": "https://cdn.jsdelivr.net/npm/@haxtheweb/d-d-d/",
         "@haxtheweb/": "https://cdn.jsdelivr.net/npm/@haxtheweb/"
       }
     }
@@ -23,9 +24,7 @@
   <body style="margin: 0; background-color: #05070b;">
     <silver-chariot-app></silver-chariot-app>
 
-    <!-- IMPORTANT:
-         this file MUST be the bundled file in /dist
-         do NOT import anything from src or @haxtheweb here -->
+    <!-- IMPORTANT: dev still loads bundled file -->
     <script type="module" src="./silverchariotapp.js"></script>
   </body>
 </html>
