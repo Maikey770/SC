@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "HAX DDD Project 2",
   "type": "module",
- "scripts": {
-  "dev": "wds --open --watch --node-resolve --app-index index.html",
-  "build": "rollup -c",
-  "start": "wds --node-resolve --open"
-},
+  "scripts": {
+    "dev": "wds --open --watch --node-resolve --app-index index.html",
+    "build": "rollup -c && xcopy index.html dist\\ /Y",
+    "start": "wds --node-resolve --open"
+  },
   "dependencies": {
     "@haxtheweb/d-d-d": "^11.0.5",
     "@haxtheweb/multiple-choice": "^11.0.5",
@@ -16,8 +16,8 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-json": "^6.0.1",
     "@web/dev-server": "^0.4.6",
-    "rollup": "^4.9.5",
-    "rollup-plugin-copy": "^3.5.0"
+    "rollup": "^4.9.5"
   }
 }
