@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "wds --open --watch --node-resolve --app-index index.html",
-    "build": "rollup -c && xcopy index.html dist\\ /Y",
+   "build": "rollup -c && cp index.html dist/index.html",
     "start": "wds --node-resolve --open"
   },
   "dependencies": {
