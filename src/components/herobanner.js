@@ -1,6 +1,6 @@
 // Hero section that introduces the site and highlights the main call to action
 import { LitElement, html, css } from "lit";
-import "@haxtheweb/d-d-d/lib/d-d-d.js";
+import "@haxtheweb/d-d-d/d-d-d.js";
 import { dddGlobal } from "../ddd-global.js";
 import "./ctabutton.js";
 

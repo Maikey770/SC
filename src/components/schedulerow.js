@@ -1,6 +1,6 @@
 // Header row that introduces the schedule section
 import { LitElement, html, css } from "lit";
-import "@haxtheweb/d-d-d/lib/d-d-d.js";
+import "@haxtheweb/d-d-d/d-d-d.js";
 import { dddGlobal } from "../ddd-global.js";
 
 export class ScheduleRow extends LitElement {

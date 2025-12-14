@@ -1,4 +1,6 @@
 import { LitElement, html, css } from "lit";
+import "@haxtheweb/d-d-d/d-d-d.js";
+import "@haxtheweb/d-d-d/d-d-d-button.js";
 import "./ddd-global.js";
 
 import "./components/headerbar.js";

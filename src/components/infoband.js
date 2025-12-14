@@ -1,6 +1,6 @@
 // Info band that shows a few key highlights about the association
 import { LitElement, html, css } from "lit";
-import "@haxtheweb/d-d-d/lib/d-d-d.js";
+import "@haxtheweb/d-d-d/d-d-d.js";
 import { dddGlobal } from "../ddd-global.js";
 
 export class InfoBand extends LitElement {
