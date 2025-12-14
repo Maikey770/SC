@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "wds --open --watch --node-resolve --app-index index.html",
-   "build": "rollup -c && cp index.html dist/index.html",
+    "build": "rollup -c",
     "start": "wds --node-resolve --open"
   },
   "dependencies": {
@@ -15,9 +15,10 @@
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.7",
-    "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-json": "^6.0.1",
+    "@rollup/plugin-node-resolve": "^15.2.3",
     "@web/dev-server": "^0.4.6",
-    "rollup": "^4.9.5"
+    "rollup": "^4.9.5",
+    "rollup-plugin-copy": "^3.5.0"
   }
 }

@@ -1,15 +1,23 @@
 import resolve from "@rollup/plugin-node-resolve";
-import json from "@rollup/plugin-json";
+import commonjs from "@rollup/plugin-commonjs";
+import copy from "rollup-plugin-copy";
 
 export default {
-  input: "src/silverchariotapp.js",   
+  input: "src/silverchariotapp.js",
   output: {
-    dir: "dist",
+    file: "dist/silverchariotapp.js",
     format: "es",
-    sourcemap: true
+    sourcemap: true,
+    inlineDynamicImports: true
   },
   plugins: [
-    resolve(),
-    json()
+    resolve({
+      browser: true,
+      dedupe: ["lit"]
+    }),
+    commonjs(),
+    copy({
+      targets: [{ src: "index.html", dest: "dist" }]
+    })
   ]
 };
