@@ -8,13 +8,14 @@
     "start": "wds --node-resolve --open"
   },
   "dependencies": {
+    "@haxtheweb/d-d-d": "^11.0.5",
     "@haxtheweb/multiple-choice": "^11.0.5",
     "lit": "^3.1.0"
   },
   "devDependencies": {
-    "@web/dev-server": "^0.4.6",
-    "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@web/dev-server": "^0.4.6",
     "rollup": "^4.9.5",
     "rollup-plugin-copy": "^3.5.0"
   }

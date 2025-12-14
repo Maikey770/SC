@@ -1,5 +1,4 @@
-// top header bar with main nav
-import { LitElement, html, css } from "https://esm.run/lit";
+import { LitElement, html, css } from "lit";
 
 export class HeaderBar extends LitElement {
   static properties = {
@@ -15,8 +14,7 @@ export class HeaderBar extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    // load menu from our JSON file
-    fetch("/api/menu.json")
+    fetch("/api/menu")
       .then((res) => res.json())
       .then((data) => {
         this.menuItems = data && data.items ? data.items : [];
@@ -29,87 +27,81 @@ export class HeaderBar extends LitElement {
   static styles = css`
     :host {
       display: block;
-      background: #0b1020;
-      color: #fff;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      background: var(--ddd-theme-default-black);
+      color: var(--ddd-theme-default-white);
+      border-bottom: var(--ddd-border-sm) solid var(--ddd-theme-default-beaver70);
+      font-family: var(--ddd-font-primary);
     }
 
     header {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 12px 16px;
+      padding: var(--ddd-spacing-3) var(--ddd-spacing-4);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: var(--ddd-spacing-3);
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: var(--ddd-spacing-2);
       font-weight: 700;
       text-transform: uppercase;
-      font-size: 0.9rem;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
+      font-size: var(--ddd-font-size-s);
     }
 
     .logo {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      border: 2px solid #cfd6e6;
+      width: var(--ddd-spacing-7);
+      height: var(--ddd-spacing-7);
+      border-radius: var(--ddd-radius-circle);
+      border: var(--ddd-border-sm) solid var(--ddd-theme-default-beaver70);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.7rem;
+      font-size: var(--ddd-font-size-xs);
     }
 
     nav {
       display: flex;
-      gap: 10px;
+      gap: var(--ddd-spacing-2);
       align-items: center;
     }
 
     button {
-      background: none;
-      border: none;
+      background: transparent;
+      border: var(--ddd-border-sm) solid transparent;
       color: inherit;
       cursor: pointer;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 0.85rem;
+      padding: var(--ddd-spacing-2) var(--ddd-spacing-3);
+      border-radius: var(--ddd-radius-pill);
+      font-size: var(--ddd-font-size-s);
     }
 
     button[data-active="true"] {
-      background: #376fff;
-      color: #fff;
+      border-color: var(--ddd-theme-default-beaverBlue);
+      background: var(--ddd-theme-default-beaver80);
     }
 
     .menu-toggle {
-      display: none;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      padding: 4px 10px;
-      font-size: 0.85rem;
-      background: none;
-      color: inherit;
+      border-color: var(--ddd-theme-default-beaver70);
+    }
+
+    button:focus-visible {
+      outline: var(--ddd-border-md) solid var(--ddd-theme-default-beaverBlue);
+      outline-offset: 2px;
     }
 
     @media (max-width: 768px) {
       nav {
         display: none;
       }
-      .menu-toggle {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-      }
     }
   `;
 
   _onNavClick(id) {
-    // send page id to parent
     this.dispatchEvent(
       new CustomEvent("nav-change", {
         detail: id,
@@ -128,7 +120,19 @@ export class HeaderBar extends LitElement {
     );
   }
 
+  _getFlatMainItems() {
+    const groups = Array.isArray(this.menuItems) ? this.menuItems : [];
+    for (let i = 0; i < groups.length; i++) {
+      const g = groups[i];
+      const kids = g && Array.isArray(g.children) ? g.children : null;
+      if (kids && kids.length) return kids;
+    }
+    return [];
+  }
+
   render() {
+    const items = this._getFlatMainItems();
+
     return html`
       <header>
         <div class="brand">
@@ -136,8 +140,8 @@ export class HeaderBar extends LitElement {
           <span>Silver Chariot</span>
         </div>
 
-        <nav>
-          ${this.menuItems.map(
+        <nav aria-label="Primary navigation">
+          ${items.map(
             (item) => html`
               <button
                 data-active=${this.page === item.id}
@@ -149,7 +153,12 @@ export class HeaderBar extends LitElement {
           )}
         </nav>
 
-        <button class="menu-toggle" @click=${() => this._openMenu()}>
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-label="Open menu"
+          @click=${() => this._openMenu()}
+        >
           Menu
         </button>
       </header>

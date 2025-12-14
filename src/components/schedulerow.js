@@ -1,5 +1,5 @@
 // Header row for the schedule band
-import { LitElement, html, css } from "https://esm.run/lit";
+import { LitElement, html, css } from "lit";
 
 export class ScheduleRow extends LitElement {
   static properties = {

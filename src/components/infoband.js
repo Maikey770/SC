@@ -1,5 +1,5 @@
 // short info band with a few details
-import { LitElement, html, css } from "https://esm.run/lit";
+import { LitElement, html, css } from "lit";
 
 export class InfoBand extends LitElement {
   static styles = css`

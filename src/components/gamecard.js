@@ -1,5 +1,5 @@
 // show one game from schedule
-import { LitElement, html, css } from "https://esm.run/lit";
+import { LitElement, html, css } from "lit";
 
 export class GameCard extends LitElement {
   static properties = {

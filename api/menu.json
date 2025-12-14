@@ -2,20 +2,31 @@
   "label": "root",
   "items": [
     {
-      "label": "Home",
-      "id": "home"
+      "label": "Main",
+      "children": [
+        { "label": "Home", "id": "home" },
+        { "label": "Schedule", "id": "schedule" },
+        { "label": "News", "id": "news" },
+        { "label": "Parent Info", "id": "parents" }
+      ]
     },
     {
-      "label": "Schedule",
-      "id": "schedule"
+      "label": "Teams",
+      "children": [
+        { "label": "U8", "id": "teams-u8" },
+        { "label": "U10", "id": "teams-u10" },
+        { "label": "U12", "id": "teams-u12" },
+        { "label": "U14", "id": "teams-u14" },
+        { "label": "U16", "id": "teams-u16" }
+      ]
     },
     {
-      "label": "News",
-      "id": "news"
-    },
-    {
-      "label": "Parent Info",
-      "id": "parents"
+      "label": "Resources",
+      "children": [
+        { "label": "Volunteers", "id": "volunteers" },
+        { "label": "Policies", "id": "policies" },
+        { "label": "Contact", "id": "contact" }
+      ]
     }
   ]
 }

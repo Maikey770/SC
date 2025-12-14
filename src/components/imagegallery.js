@@ -1,5 +1,5 @@
 //image gallery section
-import { LitElement, html, css } from "https://esm.run/lit";
+import { LitElement, html, css } from "lit";
 
 export class ImageGallery extends LitElement {
   static styles = css`
