@@ -1,7 +1,6 @@
 // Mobile menu overlay for navigation on smaller screens
 import { LitElement, html, css } from "lit";
 import "@haxtheweb/d-d-d/d-d-d.js";
-import "@haxtheweb/d-d-d/d-d-d-button.js";
 import { dddGlobal } from "../ddd-global.js";
 
 export class MobileMenu extends LitElement {
