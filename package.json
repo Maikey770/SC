@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "wds --open --watch --node-resolve --app-index index.html",
-    "build": "rollup -c && node -e \"require('fs').writeFileSync('dist/d-d-d-button.js','export * from \\\"https://cdn.jsdelivr.net/npm/@haxtheweb/d-d-d/d-d-d-button.js\\\";\\n')\"",
+    "build": "rollup -c",
     "start": "wds --node-resolve --open"
   },
   "dependencies": {
