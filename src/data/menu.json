@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "name": "Chicken Rice Bowl",
+    "price": 9.99,
+    "category": "Entree"
+  },
+  {
+    "id": 2,
+    "name": "Beef Noodle Soup",
+    "price": 11.49,
+    "category": "Entree"
+  },
+  {
+    "id": 3,
+    "name": "Vegetable Dumplings",
+    "price": 6.5,
+    "category": "Side"
+  },
+  {
+    "id": 4,
+    "name": "Iced Green Tea",
+    "price": 2.99,
+    "category": "Drink"
+  }
+]
