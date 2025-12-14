@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "wds --open --watch --node-resolve --app-index index.html",
-    "build": "rollup -c",
+    "build": "rollup -c && cp d-d-d-button.js dist/d-d-d-button.js",
     "start": "wds --node-resolve --open"
   },
   "dependencies": {
