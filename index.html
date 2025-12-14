@@ -9,10 +9,23 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
+
+    <!-- FIX: allow browser to resolve @haxtheweb imports -->
+    <script type="importmap">
+    {
+      "imports": {
+        "@haxtheweb/": "https://cdn.jsdelivr.net/npm/@haxtheweb/"
+      }
+    }
+    </script>
   </head>
 
   <body style="margin: 0; background-color: #05070b;">
     <silver-chariot-app></silver-chariot-app>
+
+    <!-- IMPORTANT:
+         this file MUST be the bundled file in /dist
+         do NOT import anything from src or @haxtheweb here -->
     <script type="module" src="./silverchariotapp.js"></script>
   </body>
 </html>
