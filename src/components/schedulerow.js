@@ -1,3 +1,4 @@
+// Schedule row section
 import { LitElement, html, css } from "lit";
 import { dddGlobal } from "../ddd-global.js";
 import "./gamecard.js";
@@ -19,8 +20,10 @@ export class ScheduleRow extends LitElement {
     css`
       :host {
         display: block;
+        font-family: var(--ddd-font-primary);
       }
 
+      /* outer box */
       .wrap {
         border: 1px solid var(--ddd-theme-border);
         border-radius: var(--ddd-radius-lg);
@@ -33,9 +36,11 @@ export class ScheduleRow extends LitElement {
       h2 {
         margin: 0;
         font-size: var(--ddd-font-size-xl);
-        line-height: 1.05;
+        line-height: var(--ddd-line-height-tight);
+        color: var(--ddd-theme-text-primary);
       }
 
+      /* two cards */
       .grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(220px, 1fr));
@@ -51,11 +56,13 @@ export class ScheduleRow extends LitElement {
   ];
 
   render() {
+    // show first two games
     const list = Array.isArray(this.games) ? this.games.slice(0, 2) : [];
 
     return html`
       <section class="wrap">
         <h2>${this.heading}</h2>
+
         <div class="grid">
           ${list.length
             ? list.map((g) => html`<game-card .game=${g}></game-card>`)
