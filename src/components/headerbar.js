@@ -4,9 +4,9 @@ import { dddGlobal } from "../ddd-global.js";
 
 export class HeaderBar extends LitElement {
   static properties = {
-    page: { type: String },
-    menuItems: { type: Array },
-    scrolled: { type: Boolean },
+    page: { type: String },       // current page
+    menuItems: { type: Array },   // menu data from api
+    scrolled: { type: Boolean },  // used for header style
     theme: { type: String }
   };
 
@@ -16,19 +16,21 @@ export class HeaderBar extends LitElement {
     this.menuItems = [];
     this.scrolled = false;
     this.theme = "dark";
+
     this._onScroll = this._onScroll.bind(this);
   }
 
   connectedCallback() {
     super.connectedCallback();
 
+    // load menu items
     fetch("/api/menu", { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => {
         this.menuItems = data?.items ?? [];
-      })
-      .catch((err) => console.error("menu load error", err));
+      });
 
+    // watch scroll
     window.addEventListener("scroll", this._onScroll, { passive: true });
     this._onScroll();
   }
@@ -38,22 +40,21 @@ export class HeaderBar extends LitElement {
     super.disconnectedCallback();
   }
 
+  // shrink header
   _onScroll() {
-    const next = (window.scrollY || 0) > 16;
-    if (next !== this.scrolled) this.scrolled = next;
+    this.scrolled = (window.scrollY || 0) > 16;
   }
 
   static styles = [
     dddGlobal,
     css`
       :host {
-        display: block;
         position: sticky;
         top: 0;
         z-index: 1000;
-        font-family: var(--ddd-font-primary);
         background: var(--ddd-theme-bg);
         border-bottom: 1px solid var(--ddd-theme-primary);
+        font-family: var(--ddd-font-primary);
       }
 
       :host([data-scrolled="true"]) {
@@ -65,10 +66,8 @@ export class HeaderBar extends LitElement {
         margin: 0 auto;
         padding: 14px 16px;
         display: flex;
-        align-items: center;
         justify-content: space-between;
-        gap: 16px;
-        transition: padding 160ms ease;
+        align-items: center;
       }
 
       :host([data-scrolled="true"]) header {
@@ -80,81 +79,43 @@ export class HeaderBar extends LitElement {
         align-items: center;
         gap: 10px;
         font-weight: 700;
-        text-transform: uppercase;
         letter-spacing: 0.08em;
-        font-size: 0.95rem;
-        white-space: nowrap;
-        color: var(--ddd-theme-text-primary);
+        text-transform: uppercase;
       }
 
-      /* Logo wrapper */
       .logo {
         width: 28px;
         height: 28px;
-        border-radius: 9999px;
+        border-radius: 50%;
         border: 1px solid var(--ddd-theme-primary);
-        background: transparent;
-        display: grid;
-        place-items: center;
         overflow: hidden;
-        transition: transform 160ms ease, width 160ms ease, height 160ms ease;
       }
 
-      :host([data-scrolled="true"]) .logo {
-        width: 24px;
-        height: 24px;
-        transform: scale(0.98);
-      }
-
-      /* Logo image */
       .logo-img {
         width: 100%;
         height: 100%;
-        display: block;
         object-fit: cover;
-        object-position: center;
       }
 
       .right {
         display: flex;
         align-items: center;
         gap: 8px;
-        flex: 1;
-        justify-content: flex-end;
       }
 
       nav {
         display: flex;
         gap: 8px;
-        align-items: center;
-        justify-content: flex-end;
-        flex-wrap: wrap;
       }
 
       .nav-pill {
-        appearance: none;
         border: 1px solid var(--ddd-theme-primary);
         background: transparent;
-        color: var(--ddd-theme-text-primary);
         padding: 8px 16px;
         border-radius: 9999px;
-        font-family: var(--ddd-font-primary);
         font-size: 0.85rem;
         font-weight: 700;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
         cursor: pointer;
-        transition: transform 140ms ease;
-        white-space: nowrap;
-      }
-
-      :host([data-scrolled="true"]) .nav-pill {
-        padding: 7px 14px;
-        font-size: 0.82rem;
-      }
-
-      .nav-pill:hover {
-        transform: translateY(-1px);
       }
 
       .nav-pill[data-active="true"] {
@@ -165,29 +126,10 @@ export class HeaderBar extends LitElement {
       .icon-btn {
         width: 40px;
         height: 40px;
-        border-radius: 9999px;
+        border-radius: 50%;
         border: 1px solid var(--ddd-theme-primary);
         background: transparent;
-        color: var(--ddd-theme-text-primary);
-        display: grid;
-        place-items: center;
         cursor: pointer;
-        transition: transform 140ms ease;
-      }
-
-      :host([data-scrolled="true"]) .icon-btn {
-        width: 38px;
-        height: 38px;
-      }
-
-      .icon-btn:hover {
-        transform: translateY(-1px);
-      }
-
-      .icon {
-        width: 18px;
-        height: 18px;
-        display: block;
       }
 
       .menu-toggle {
@@ -197,21 +139,9 @@ export class HeaderBar extends LitElement {
       .theme-toggle {
         border: 1px solid var(--ddd-theme-primary);
         background: transparent;
-        color: var(--ddd-theme-text-primary);
         padding: 8px 14px;
         border-radius: 9999px;
-        font-family: var(--ddd-font-primary);
-        font-size: 0.85rem;
-        font-weight: 700;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
         cursor: pointer;
-        transition: transform 140ms ease;
-        white-space: nowrap;
-      }
-
-      .theme-toggle:hover {
-        transform: translateY(-1px);
       }
 
       @media (max-width: 768px) {
@@ -222,14 +152,8 @@ export class HeaderBar extends LitElement {
         .menu-toggle {
           display: inline-flex;
           border: 1px solid var(--ddd-theme-primary);
-          background: transparent;
-          color: var(--ddd-theme-text-primary);
           padding: 8px 16px;
           border-radius: 9999px;
-          font-weight: 700;
-          letter-spacing: 0.04em;
-          text-transform: uppercase;
-          cursor: pointer;
         }
 
         .theme-toggle {
@@ -268,8 +192,6 @@ export class HeaderBar extends LitElement {
   }
 
   render() {
-    const items = Array.isArray(this.menuItems) ? this.menuItems : [];
-
     return html`
       <d-d-d>
         <header>
@@ -278,23 +200,21 @@ export class HeaderBar extends LitElement {
               <img
                 class="logo-img"
                 src="https://i.pinimg.com/736x/68/94/52/6894529f86950e241d553776142f9176.jpg"
-                alt="Silver Chariot Club logo"
-                loading="eager"
+                alt="logo"
               />
             </div>
             <span>Silver Chariot</span>
           </div>
 
           <div class="right">
-            <nav aria-label="Primary navigation">
-              ${items.map((item) => {
-                const target = item.page || item.id;
-                const active = this.page === target;
+            <nav>
+              ${this.menuItems.map((item) => {
+                const id = item.page || item.id;
                 return html`
                   <button
                     class="nav-pill"
-                    data-active=${active}
-                    @click=${() => this._onNavClick(target)}
+                    data-active=${this.page === id}
+                    @click=${() => this._onNavClick(id)}
                   >
                     ${item.label}
                   </button>
@@ -302,24 +222,13 @@ export class HeaderBar extends LitElement {
               })}
             </nav>
 
-            <button class="theme-toggle" @click=${() => this._onThemeClick()}>
+            <button class="theme-toggle" @click=${this._onThemeClick}>
               Switch mode
             </button>
 
-            <button
-              class="icon-btn"
-              aria-label="Search"
-              @click=${() => this._onSearchClick()}
-            >
-              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  fill="currentColor"
-                  d="M10 18a8 8 0 1 1 5.293-14.293A8 8 0 0 1 10 18Zm0-2a6 6 0 1 0-4.243-1.757A6 6 0 0 0 10 16Zm9.707 4.293-4.2-4.2 1.414-1.414 4.2 4.2-1.414 1.414Z"
-                />
-              </svg>
-            </button>
+            <button class="icon-btn" @click=${this._onSearchClick}>🔍</button>
 
-            <button class="menu-toggle" @click=${() => this._openMenu()}>
+            <button class="menu-toggle" @click=${this._openMenu}>
               Menu
             </button>
           </div>
