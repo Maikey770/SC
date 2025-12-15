@@ -116,41 +116,29 @@ export class SilverChariotApp extends LitElement {
       overflow: hidden;
     }
 
-    .heroRight {
+    /* Next game card (DDD tokens only) */
+    .ngCard {
+      display: flex;
+      flex-direction: column;
+      gap: var(--ddd-spacing-3);
+      padding: var(--ddd-spacing-5);
       border-radius: var(--ddd-radius-lg);
       border: 1px solid var(--ddd-theme-border);
       background: var(--ddd-theme-surface);
-      padding: var(--ddd-spacing-5);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: var(--ddd-spacing-5);
-    }
-
-    .ngTop {
-      display: grid;
-      gap: var(--ddd-spacing-2);
     }
 
     .ngLabel {
-      font-weight: 800;
-      letter-spacing: var(--ddd-letter-spacing-wide);
-      text-transform: uppercase;
       font-size: var(--ddd-font-size-xs);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       color: var(--ddd-theme-text-secondary);
     }
 
     .ngTitle {
+      font-size: var(--ddd-font-size-m);
       font-weight: 900;
-      font-size: var(--ddd-font-size-l);
       color: var(--ddd-theme-text-primary);
-    }
-
-    .ngMeta {
-      display: grid;
-      gap: var(--ddd-spacing-1);
-      color: var(--ddd-theme-text-secondary);
-      font-size: var(--ddd-font-size-s);
     }
 
     .ngTeams {
@@ -161,11 +149,24 @@ export class SilverChariotApp extends LitElement {
       color: var(--ddd-theme-text-primary);
     }
 
-    .ngTeamPill {
-      border: 1px solid var(--ddd-theme-border);
+    .ngTeam {
+      padding: 4px 10px;
       border-radius: 999px;
-      padding: var(--ddd-spacing-1) var(--ddd-spacing-2);
+      border: 1px solid var(--ddd-theme-border);
       background: var(--ddd-theme-surface);
+    }
+
+    .ngVs {
+      font-size: var(--ddd-font-size-xs);
+      color: var(--ddd-theme-text-secondary);
+    }
+
+    .ngMeta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-size: var(--ddd-font-size-s);
+      color: var(--ddd-theme-text-secondary);
     }
 
     .railWrap {
@@ -179,8 +180,8 @@ export class SilverChariotApp extends LitElement {
 
     .railTitle {
       font-weight: 900;
-      font-size: var(--ddd-font-size-s);
-      letter-spacing: var(--ddd-letter-spacing-wide);
+      font-size: 1rem;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
       color: var(--ddd-theme-text-secondary);
     }
@@ -191,7 +192,7 @@ export class SilverChariotApp extends LitElement {
       grid-auto-columns: minmax(260px, 320px);
       gap: var(--ddd-spacing-4);
       overflow-x: auto;
-      padding-bottom: var(--ddd-spacing-1);
+      padding-bottom: 4px;
       scroll-snap-type: x mandatory;
     }
 
@@ -243,16 +244,17 @@ export class SilverChariotApp extends LitElement {
   }
 
   _renderNextGameCard() {
-    const g = Array.isArray(this.schedule) && this.schedule.length ? this.schedule[0] : null;
+    const g =
+      Array.isArray(this.schedule) && this.schedule.length
+        ? this.schedule[0]
+        : null;
 
     if (!g) {
       return html`
-        <section class="heroRight">
-          <div class="ngTop">
-            <div class="ngLabel">Next game</div>
-            <div class="ngTitle">No upcoming games</div>
-            <div class="ngMeta">Check back soon for updates.</div>
-          </div>
+        <section class="ngCard">
+          <div class="ngLabel">Next game</div>
+          <div class="ngTitle">No upcoming games</div>
+          <div class="ngMeta">Check back soon for updates.</div>
         </section>
       `;
     }
@@ -260,21 +262,19 @@ export class SilverChariotApp extends LitElement {
     const dateTime = `${g.date || ""} ${g.time || ""}`.trim();
 
     return html`
-      <section class="heroRight">
-        <div class="ngTop">
-          <div class="ngLabel">Theme night</div>
-          <div class="ngTitle">Next game</div>
+      <section class="ngCard">
+        <div class="ngLabel">Theme night</div>
+        <div class="ngTitle">Next game</div>
 
-          <div class="ngTeams" aria-label="Matchup">
-            <span class="ngTeamPill">${String(g.team || "SC").toUpperCase()}</span>
-            <span>VS</span>
-            <span class="ngTeamPill">${String(g.opponent || "TBD").toUpperCase()}</span>
-          </div>
+        <div class="ngTeams" aria-label="Matchup">
+          <span class="ngTeam">${String(g.team || "U12").toUpperCase()}</span>
+          <span class="ngVs">VS</span>
+          <span class="ngTeam">${String(g.opponent || "TBD").toUpperCase()}</span>
+        </div>
 
-          <div class="ngMeta">
-            <div>${dateTime || "TBD"}</div>
-            <div>${g.location || ""}</div>
-          </div>
+        <div class="ngMeta">
+          <div>${dateTime || "TBD"}</div>
+          <div>${g.location || ""}</div>
         </div>
       </section>
     `;
