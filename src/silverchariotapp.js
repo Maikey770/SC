@@ -28,6 +28,7 @@ export class SilverChariotApp extends LitElement {
     this.schedule = [];
     this.theme = localStorage.getItem("theme") || "dark";
 
+    // Bind once so events behave the same every time
     this._onPopState = this._onPopState.bind(this);
     this.changePage = this.changePage.bind(this);
     this.toggleMenu = this.toggleMenu.bind(this);
@@ -37,10 +38,10 @@ export class SilverChariotApp extends LitElement {
   connectedCallback() {
     super.connectedCallback();
 
-    // Apply theme to entire page
+    // Set the saved theme on first load
     document.documentElement.setAttribute("data-theme", this.theme);
 
-    // Fetch schedule data from API
+    // Pull schedule data from the Vercel API route
     fetch("/api/schedule", { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => {
@@ -48,6 +49,7 @@ export class SilverChariotApp extends LitElement {
       })
       .catch((err) => console.error("schedule load error", err));
 
+    // Support back/forward browser navigation
     window.addEventListener("popstate", this._onPopState);
   }
 
@@ -60,11 +62,8 @@ export class SilverChariotApp extends LitElement {
     :host {
       display: block;
       min-height: 100vh;
-
-      /* Use DDD theme tokens (so light/dark mode actually changes) */
-      color: var(--ddd-theme-text-primary);
-      background: var(--ddd-theme-background);
-
+      color: var(--ddd-theme-default-white);
+      background: var(--ddd-theme-default-black);
       font-family: var(--ddd-font-primary);
     }
 
@@ -121,18 +120,20 @@ export class SilverChariotApp extends LitElement {
   }
 
   _onPopState() {
+    // When user hits back/forward, update the page view
     this.page = this._getPageFromUrl();
   }
 
-  // Navigation handler
+  // Handles top nav + mobile nav clicks
   changePage(e) {
     const id = e.detail;
     this.page = id;
     this._setUrlForPage(id);
 
+    // If the mobile menu is open, close it after navigating
     if (this.mobileMenuOpen) this.mobileMenuOpen = false;
 
-    // Keep navigation feeling consistent
+    // Keeps the page change feeling clean
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -140,7 +141,7 @@ export class SilverChariotApp extends LitElement {
     this.mobileMenuOpen = !this.mobileMenuOpen;
   }
 
-  // Switch mode button handler
+  // "Switch mode" button logic (dark <-> light)
   toggleTheme() {
     this.theme = this.theme === "dark" ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", this.theme);
@@ -174,7 +175,7 @@ export class SilverChariotApp extends LitElement {
     `;
   }
 
-  // Information page
+  // Information page (parents + general guidelines)
   _renderInformationPage() {
     return html`
       <section>

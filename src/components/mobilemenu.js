@@ -23,6 +23,7 @@ export class MobileMenu extends LitElement {
   connectedCallback() {
     super.connectedCallback();
 
+    // Load menu configuration
     fetch("/api/menu")
       .then((res) => res.json())
       .then((data) => {
@@ -44,13 +45,18 @@ export class MobileMenu extends LitElement {
     css`
       :host {
         display: block;
-        font-family: var(--ddd-font-primary, system-ui);
+        font-family: var(--ddd-font-primary);
       }
 
+      /* Full-screen overlay */
       .bg {
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.55);
+        background: color-mix(
+          in srgb,
+          var(--ddd-theme-background) 55%,
+          transparent
+        );
         display: none;
         z-index: 40;
       }
@@ -59,13 +65,14 @@ export class MobileMenu extends LitElement {
         display: block;
       }
 
+      /* Menu panel */
       .panel {
-        background: var(--ddd-theme-background, #000);
-        color: var(--ddd-theme-text-primary, #fff);
-        padding: var(--ddd-spacing-4, 16px);
-        border-bottom-left-radius: var(--ddd-radius-lg, 16px);
-        border-bottom-right-radius: var(--ddd-radius-lg, 16px);
-        border-bottom: 1px solid var(--ddd-theme-border, rgba(255, 255, 255, 0.12));
+        background: var(--ddd-theme-background);
+        color: var(--ddd-theme-text-primary);
+        padding: var(--ddd-spacing-4);
+        border-bottom-left-radius: var(--ddd-radius-lg);
+        border-bottom-right-radius: var(--ddd-radius-lg);
+        border-bottom: 1px solid var(--ddd-theme-border);
         max-width: 720px;
         margin: 0 auto;
       }
@@ -74,20 +81,20 @@ export class MobileMenu extends LitElement {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: var(--ddd-spacing-3, 12px);
-        font-size: var(--ddd-font-size-s, 0.95rem);
+        margin-bottom: var(--ddd-spacing-3);
+        font-size: var(--ddd-font-size-s);
       }
 
       d-d-d-button {
-        --ddd-button-padding: var(--ddd-spacing-2, 8px) var(--ddd-spacing-3, 12px);
+        --ddd-button-padding: var(--ddd-spacing-2) var(--ddd-spacing-3);
       }
 
       .group {
-        margin-top: var(--ddd-spacing-3, 12px);
-        border: 1px solid var(--ddd-theme-border, rgba(255, 255, 255, 0.12));
-        border-radius: var(--ddd-radius-md, 12px);
+        margin-top: var(--ddd-spacing-3);
+        border: 1px solid var(--ddd-theme-border);
+        border-radius: var(--ddd-radius-md);
         overflow: hidden;
-        background: var(--ddd-theme-surface, rgba(255, 255, 255, 0.06));
+        background: var(--ddd-theme-surface);
       }
 
       .group-head {
@@ -103,8 +110,8 @@ export class MobileMenu extends LitElement {
       .links {
         display: flex;
         flex-direction: column;
-        gap: var(--ddd-spacing-2, 8px);
-        padding: var(--ddd-spacing-3, 12px);
+        gap: var(--ddd-spacing-2);
+        padding: var(--ddd-spacing-3);
       }
 
       .link[data-active="true"] {
@@ -141,20 +148,13 @@ export class MobileMenu extends LitElement {
 
   _close() {
     this.dispatchEvent(
-      new CustomEvent("close-menu", {
-        bubbles: true,
-        composed: true
-      })
+      new CustomEvent("close-menu", { bubbles: true, composed: true })
     );
   }
 
   _go(id) {
     this.dispatchEvent(
-      new CustomEvent("nav-change", {
-        detail: id,
-        bubbles: true,
-        composed: true
-      })
+      new CustomEvent("nav-change", { detail: id, bubbles: true, composed: true })
     );
     this._close();
   }
@@ -174,12 +174,16 @@ export class MobileMenu extends LitElement {
           <div class="panel" @click=${(e) => e.stopPropagation()}>
             <div class="top-row">
               <span>Silver Chariot</span>
-              <d-d-d-button .label=${"Close"} @click=${() => this._close()}></d-d-d-button>
+              <d-d-d-button
+                .label=${"Close"}
+                @click=${() => this._close()}
+              ></d-d-d-button>
             </div>
 
             ${groups.map((group) => {
               const label = group && group.label ? group.label : "Group";
-              const children = group && Array.isArray(group.children) ? group.children : [];
+              const children =
+                group && Array.isArray(group.children) ? group.children : [];
               const isOpen = !!this.openGroups[label];
 
               return html`

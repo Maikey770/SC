@@ -20,7 +20,7 @@ export class GameCard extends LitElement {
         display: block;
       }
 
-      /* Use DDD .surface as the card container */
+      /* Card container uses ONLY DDD tokens via .surface */
       .card {
         display: grid;
         grid-template-columns: auto 1fr;
@@ -28,29 +28,6 @@ export class GameCard extends LitElement {
         gap: var(--ddd-spacing-3, 12px);
       }
 
-      /* Blue-tinted DDD surface to match top info cards */
-      .surface {
-        background: linear-gradient(
-          180deg,
-          color-mix(
-            in srgb,
-            var(--ddd-theme-primary, #7aa7ff) 18%,
-            var(--ddd-theme-surface, rgba(255,255,255,0.06))
-          ),
-          var(--ddd-theme-surface, rgba(255,255,255,0.06))
-        );
-
-        border: 1px solid color-mix(
-          in srgb,
-          var(--ddd-theme-primary, #7aa7ff) 35%,
-          var(--ddd-theme-border, rgba(255,255,255,0.12))
-        );
-
-        border-radius: var(--ddd-radius-lg, 16px);
-        padding: var(--ddd-spacing-4, 16px);
-      }
-
-      /* Compact list rows */
       :host([compact]) .surface {
         padding: var(--ddd-spacing-3, 12px);
       }
@@ -68,22 +45,13 @@ export class GameCard extends LitElement {
         display: grid;
         place-items: center;
 
-        /* Keep logo chips consistent with blue surface */
-        background: color-mix(
-          in srgb,
-          var(--ddd-theme-primary, #7aa7ff) 10%,
-          var(--ddd-theme-surface, rgba(255,255,255,0.06))
-        );
-
-        border: 1px solid color-mix(
-          in srgb,
-          var(--ddd-theme-primary, #7aa7ff) 30%,
-          var(--ddd-theme-border, rgba(255,255,255,0.12))
-        );
+        /* ONLY DDD tokens */
+        background: var(--ddd-theme-surface);
+        border: 1px solid var(--ddd-theme-border);
+        color: var(--ddd-theme-text-primary);
 
         font-weight: 800;
         font-size: 14px;
-        color: var(--ddd-theme-text-primary, #fff);
       }
 
       :host([compact]) .logo {
@@ -94,8 +62,7 @@ export class GameCard extends LitElement {
       .vs {
         font-weight: 900;
         font-size: 12px;
-        opacity: 0.85;
-        color: var(--ddd-theme-text-primary, #fff);
+        color: var(--ddd-theme-text-secondary, var(--ddd-theme-text-primary));
       }
 
       .meta {
@@ -108,13 +75,12 @@ export class GameCard extends LitElement {
       .dt {
         font-weight: 900;
         font-size: 14px;
-        color: var(--ddd-theme-text-primary, #fff);
+        color: var(--ddd-theme-text-primary);
       }
 
       .sub {
         font-size: 12px;
-        opacity: 0.82;
-        color: var(--ddd-theme-text-primary, #fff);
+        color: var(--ddd-theme-text-secondary, var(--ddd-theme-text-primary));
       }
 
       @media (max-width: 520px) {
@@ -127,7 +93,7 @@ export class GameCard extends LitElement {
 
   _initials(name) {
     if (!name) return "SC";
-    if (/^u\d+/i.test(name)) return name.toUpperCase();
+    if (/^u\d+/i.test(name)) return String(name).toUpperCase();
     const parts = String(name).trim().split(/\s+/).filter(Boolean);
     return parts.length > 1
       ? (parts[0][0] + parts[1][0]).toUpperCase()

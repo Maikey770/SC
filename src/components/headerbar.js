@@ -1,6 +1,5 @@
 import { LitElement, html, css } from "lit";
 import "@haxtheweb/d-d-d/d-d-d.js";
-import "@haxtheweb/d-d-d/d-d-d-button.js";
 import { dddGlobal } from "../ddd-global.js";
 
 export class HeaderBar extends LitElement {
@@ -28,7 +27,7 @@ export class HeaderBar extends LitElement {
     fetch("/api/menu", { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => {
-        this.menuItems = Array.isArray(data?.items) ? data.items : [];
+        this.menuItems = data?.items ?? [];
       })
       .catch((err) => console.error("menu load error", err));
 
@@ -53,14 +52,12 @@ export class HeaderBar extends LitElement {
         display: block;
         position: sticky;
         top: 0;
-        z-index: 2000;
-
+        z-index: 1000;
         background: rgba(0, 0, 0, 0.55);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
-        border-bottom: 1px solid var(--ddd-theme-border);
-
-        font-family: var(--ddd-font-primary);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        font-family: var(--ddd-font-primary, system-ui);
       }
 
       :host([data-scrolled="true"]) {
@@ -71,29 +68,26 @@ export class HeaderBar extends LitElement {
       header {
         max-width: 1200px;
         margin: 0 auto;
-        padding: var(--ddd-spacing-3) var(--ddd-spacing-4);
+        padding: 14px 16px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: var(--ddd-spacing-4);
-
-        position: relative;
-        z-index: 1; /* ensure clickable */
+        gap: 16px;
+        transition: padding 160ms ease;
       }
 
       :host([data-scrolled="true"]) header {
-        padding: var(--ddd-spacing-2) var(--ddd-spacing-4);
+        padding: 10px 16px;
       }
 
       .brand {
         display: flex;
         align-items: center;
-        gap: var(--ddd-spacing-2);
+        gap: 10px;
         font-weight: 700;
-        letter-spacing: 0.08em;
         text-transform: uppercase;
-        font-size: 0.9rem;
-        color: var(--ddd-theme-text-primary);
+        letter-spacing: 0.08em;
+        font-size: 0.95rem;
         white-space: nowrap;
       }
 
@@ -101,44 +95,124 @@ export class HeaderBar extends LitElement {
         width: 28px;
         height: 28px;
         border-radius: 9999px;
-        border: 1px solid var(--ddd-theme-border);
-        background: var(--ddd-theme-surface);
+        border: 1px solid rgba(255, 255, 255, 0.18);
         display: grid;
         place-items: center;
-        font-size: 0.75rem;
-        font-weight: 700;
+        font-size: 0.8rem;
+        background: rgba(255, 255, 255, 0.06);
+        transition: transform 160ms ease, width 160ms ease, height 160ms ease;
+      }
+
+      :host([data-scrolled="true"]) .logo {
+        width: 24px;
+        height: 24px;
+        transform: scale(0.98);
       }
 
       .right {
         display: flex;
         align-items: center;
-        gap: var(--ddd-spacing-2);
+        gap: 8px;
+        flex: 1;
+        justify-content: flex-end;
       }
 
       nav {
         display: flex;
+        gap: 8px;
         align-items: center;
-        gap: var(--ddd-spacing-2);
+        justify-content: flex-end;
+        flex-wrap: wrap;
       }
 
-      .nav-btn {
-        --ddd-button-padding: var(--ddd-spacing-2) var(--ddd-spacing-3);
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
+      .nav-pill {
+        appearance: none;
+        border: 1px solid rgba(255, 255, 255, 0.55);
+        background: transparent;
+        color: #fff;
+        padding: 8px 16px;
+        border-radius: 9999px;
+        font-family: var(--ddd-font-primary, system-ui);
+        font-size: 0.85rem;
         font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: border-color 140ms ease, background 140ms ease, transform 140ms ease;
+        white-space: nowrap;
       }
 
-      .nav-btn[data-active="true"] {
-        filter: saturate(1.1);
+      :host([data-scrolled="true"]) .nav-pill {
+        padding: 7px 14px;
+        font-size: 0.82rem;
       }
 
-      .theme-btn {
-        --ddd-button-padding: var(--ddd-spacing-2) var(--ddd-spacing-3);
-        font-weight: 600;
+      .nav-pill:hover {
+        border-color: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, 0.06);
+        transform: translateY(-1px);
+      }
+
+      .nav-pill[data-active="true"] {
+        border-color: rgba(255, 255, 255, 1);
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .icon-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 9999px;
+        border: 1px solid rgba(255, 255, 255, 0.55);
+        background: transparent;
+        color: #fff;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        transition: border-color 140ms ease, background 140ms ease, transform 140ms ease;
+      }
+
+      :host([data-scrolled="true"]) .icon-btn {
+        width: 38px;
+        height: 38px;
+      }
+
+      .icon-btn:hover {
+        border-color: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, 0.06);
+        transform: translateY(-1px);
+      }
+
+      .icon {
+        width: 18px;
+        height: 18px;
+        display: block;
       }
 
       .menu-toggle {
         display: none;
+      }
+
+      /* Switch mode button */
+      .theme-toggle {
+        border: 1px solid rgba(255, 255, 255, 0.55);
+        background: transparent;
+        color: #fff;
+        padding: 8px 14px;
+        border-radius: 9999px;
+        font-family: var(--ddd-font-primary, system-ui);
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: border-color 140ms ease, background 140ms ease, transform 140ms ease;
+        white-space: nowrap;
+      }
+
+      .theme-toggle:hover {
+        border-color: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, 0.06);
+        transform: translateY(-1px);
       }
 
       @media (max-width: 768px) {
@@ -148,14 +222,25 @@ export class HeaderBar extends LitElement {
 
         .menu-toggle {
           display: inline-flex;
-          --ddd-button-padding: var(--ddd-spacing-2) var(--ddd-spacing-3);
+          border: 1px solid rgba(255, 255, 255, 0.55);
+          background: transparent;
+          color: #fff;
+          padding: 8px 16px;
+          border-radius: 9999px;
           font-weight: 700;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          cursor: pointer;
+        }
+
+        .theme-toggle {
+          display: none;
         }
       }
     `
   ];
 
-  _navTo(target) {
+  _onNavClick(target) {
     this.dispatchEvent(
       new CustomEvent("nav-change", {
         detail: target,
@@ -166,27 +251,17 @@ export class HeaderBar extends LitElement {
   }
 
   _openMenu() {
-    this.dispatchEvent(
-      new CustomEvent("open-menu", {
-        bubbles: true,
-        composed: true
-      })
-    );
+    this.dispatchEvent(new CustomEvent("open-menu", { bubbles: true, composed: true }));
   }
 
-  _toggleTheme() {
-    this.dispatchEvent(
-      new CustomEvent("toggle-theme", {
-        bubbles: true,
-        composed: true
-      })
-    );
+  _onSearchClick() {
+    this.dispatchEvent(new CustomEvent("search-open", { bubbles: true, composed: true }));
   }
 
-  updated(changed) {
-    if (changed.has("scrolled")) {
-      this.toggleAttribute("data-scrolled", this.scrolled);
-    }
+  _onThemeClick() {
+    this.dispatchEvent(
+      new CustomEvent("toggle-theme", { bubbles: true, composed: true })
+    );
   }
 
   render() {
@@ -206,33 +281,41 @@ export class HeaderBar extends LitElement {
                 const target = item.page || item.id;
                 const active = this.page === target;
                 return html`
-                  <d-d-d-button
-                    class="nav-btn"
+                  <button
+                    class="nav-pill"
                     data-active=${active}
-                    .label=${item.label}
-                    @click=${() => this._navTo(target)}
-                  ></d-d-d-button>
+                    @click=${() => this._onNavClick(target)}
+                  >
+                    ${item.label}
+                  </button>
                 `;
               })}
             </nav>
 
-            <!-- Switch mode button -->
-            <d-d-d-button
-              class="theme-btn"
-              .label=${"Switch mode"}
-              @click=${this._toggleTheme}
-            ></d-d-d-button>
+            <button class="theme-toggle" @click=${() => this._onThemeClick()}>
+              Switch mode
+            </button>
 
-            <!-- Mobile menu toggle -->
-            <d-d-d-button
-              class="menu-toggle"
-              .label=${"Menu"}
-              @click=${this._openMenu}
-            ></d-d-d-button>
+            <button class="icon-btn" aria-label="Search" @click=${() => this._onSearchClick()}>
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="M10 18a8 8 0 1 1 5.293-14.293A8 8 0 0 1 10 18Zm0-2a6 6 0 1 0-4.243-1.757A6 6 0 0 0 10 16Zm9.707 4.293-4.2-4.2 1.414-1.414 4.2 4.2-1.414 1.414Z"
+                />
+              </svg>
+            </button>
+
+            <button class="menu-toggle" @click=${() => this._openMenu()}>Menu</button>
           </div>
         </header>
       </d-d-d>
     `;
+  }
+
+  updated(changed) {
+    if (changed.has("scrolled")) {
+      this.toggleAttribute("data-scrolled", this.scrolled);
+    }
   }
 }
 
