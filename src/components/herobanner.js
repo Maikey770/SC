@@ -1,3 +1,4 @@
+// Hero banner section
 import { LitElement, html, css } from "lit";
 import "@haxtheweb/d-d-d/d-d-d.js";
 import { dddGlobal } from "../ddd-global.js";
@@ -8,18 +9,20 @@ export class HeroBanner extends LitElement {
     css`
       :host {
         display: block;
+        font-family: var(--ddd-font-primary);
       }
 
       d-d-d {
         display: block;
       }
 
+      /* hero container */
       .hero {
         position: relative;
         border-radius: var(--ddd-radius-xl);
         overflow: hidden;
-        min-height: 460px;
-        background: var(--ddd-theme-background);
+        min-height: calc(var(--ddd-spacing-6) * 10);
+        background: var(--ddd-theme-bg);
       }
 
       /* background image */
@@ -36,13 +39,11 @@ export class HeroBanner extends LitElement {
       .overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(
-          to right,
-          var(--ddd-theme-background),
-          transparent
-        );
+        background: var(--ddd-theme-bg);
+        opacity: 0.55;
       }
 
+      /* text area */
       .content {
         position: relative;
         z-index: 1;
@@ -52,7 +53,7 @@ export class HeroBanner extends LitElement {
         justify-content: center;
         padding: var(--ddd-spacing-8);
         gap: var(--ddd-spacing-3);
-        max-width: 640px;
+        max-width: calc(var(--ddd-spacing-6) * 14);
       }
 
       .eyebrow {
@@ -86,7 +87,7 @@ export class HeroBanner extends LitElement {
           <div class="content">
             <div class="eyebrow">ICEKING PRESENTS</div>
             <h1>
-              Silver Chariot<br />
+              Silver Chariot
               <span class="club">Club</span>
             </h1>
           </div>
