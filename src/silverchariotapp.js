@@ -64,13 +64,7 @@ export class SilverChariotApp extends LitElement {
       gap: var(--ddd-spacing-6);
     }
 
-    h2 {
-      margin: 0;
-      font-size: var(--ddd-font-size-l);
-      line-height: 1.2;
-    }
-
-    /* Home anchor button */
+    /* ---------- Jump buttons ---------- */
     .jump-wrap {
       display: flex;
       gap: var(--ddd-spacing-3);
@@ -109,12 +103,33 @@ export class SilverChariotApp extends LitElement {
       color: rgba(255, 255, 255, 1);
       text-decoration: underline;
     }
+
+    /* ---------- Upcoming Games spacing ---------- */
+    .upcoming-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--ddd-spacing-8); /* BIG gap between header block and list */
+    }
+
+    .upcoming-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--ddd-spacing-5); /* space between each game card */
+    }
+
+    @media (max-width: 600px) {
+      .upcoming-section {
+        gap: var(--ddd-spacing-6);
+      }
+      .upcoming-list {
+        gap: var(--ddd-spacing-4);
+      }
+    }
   `;
 
   _getPageFromUrl() {
     const params = new URLSearchParams(window.location.search);
-    const page = params.get("page");
-    return page ? page : "home";
+    return params.get("page") || "home";
   }
 
   _setUrlForPage(id) {
@@ -130,10 +145,7 @@ export class SilverChariotApp extends LitElement {
     const id = e.detail;
     this.page = id;
     this._setUrlForPage(id);
-
     if (this.mobileMenuOpen) this.mobileMenuOpen = false;
-
-    // If user goes home, allow normal scrolling
     if (id === "home") window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -141,7 +153,6 @@ export class SilverChariotApp extends LitElement {
     this.mobileMenuOpen = !this.mobileMenuOpen;
   }
 
-  // Smooth scroll to Upcoming Games on Home
   scrollToUpcoming() {
     const el = this.renderRoot?.querySelector("#upcoming");
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -149,39 +160,14 @@ export class SilverChariotApp extends LitElement {
 
   _renderSchedulePage() {
     return html`
-      <section>
+      <section class="upcoming-section">
         <schedule-row heading="Upcoming Games"></schedule-row>
-        ${this.schedule.length === 0
-          ? html`<p>No games in the list right now.</p>`
-          : this.schedule.map((g) => html`<game-card .game=${g}></game-card>`)}
-      </section>
-    `;
-  }
 
-  _renderParentsPage() {
-    return html`
-      <section>
-        <h2>Parent Information</h2>
-        <p>
-          Silver Chariot is a youth hockey club. We want kids to play serious hockey
-          but also keep up with school, health, and friends.
-        </p>
-
-        <h3>Season Basics</h3>
-        <ul>
-          <li>Season runs from early September to late March.</li>
-          <li>Most weeks have two practices and one game.</li>
-          <li>Home rink is State College Ice Pavilion.</li>
-        </ul>
-      </section>
-    `;
-  }
-
-  _renderNewsPage() {
-    return html`
-      <section>
-        <h2>Silver Chariot News</h2>
-        <news-card></news-card>
+        <div class="upcoming-list">
+          ${this.schedule.length === 0
+            ? html`<p>No games in the list right now.</p>`
+            : this.schedule.map((g) => html`<game-card .game=${g}></game-card>`)}
+        </div>
       </section>
     `;
   }
@@ -198,7 +184,14 @@ export class SilverChariotApp extends LitElement {
             View Upcoming Games
           </button>
 
-          <a class="subtle-link" href="/?page=schedule" @click=${(e) => { e.preventDefault(); this.changePage({ detail: "schedule" }); }}>
+          <a
+            class="subtle-link"
+            href="/?page=schedule"
+            @click=${(e) => {
+              e.preventDefault();
+              this.changePage({ detail: "schedule" });
+            }}
+          >
             Open full schedule
           </a>
         </div>
@@ -208,16 +201,39 @@ export class SilverChariotApp extends LitElement {
         <info-band></info-band>
       </section>
 
-      <!-- Anchor target on home -->
-      <section id="upcoming">
+      <section id="upcoming" class="upcoming-section">
         <schedule-row heading="Upcoming Games"></schedule-row>
-        ${preview.length === 0
-          ? html`<p>No games in the list right now.</p>`
-          : preview.map((g) => html`<game-card .game=${g}></game-card>`)}
+
+        <div class="upcoming-list">
+          ${preview.length === 0
+            ? html`<p>No games in the list right now.</p>`
+            : preview.map((g) => html`<game-card .game=${g}></game-card>`)}
+        </div>
       </section>
 
       <section>
         <image-gallery></image-gallery>
+      </section>
+    `;
+  }
+
+  _renderNewsPage() {
+    return html`
+      <section>
+        <h2>Silver Chariot News</h2>
+        <news-card></news-card>
+      </section>
+    `;
+  }
+
+  _renderParentsPage() {
+    return html`
+      <section>
+        <h2>Parent Information</h2>
+        <p>
+          Silver Chariot is a youth hockey club. We want kids to play serious hockey
+          but also keep up with school, health, and friends.
+        </p>
       </section>
     `;
   }
