@@ -1,6 +1,5 @@
 import { LitElement, html, css } from "lit";
 import { dddGlobal } from "../ddd-global.js";
-import "@haxtheweb/d-d-d/d-d-d-button.js";
 
 export class GameCard extends LitElement {
   static properties = {
@@ -21,7 +20,7 @@ export class GameCard extends LitElement {
         display: block;
       }
 
-      /* DDD-only: all colors + spacing come from DDD vars */
+      /* DDD-only styling: no hex colors */
       .card {
         background: var(--ddd-theme-default-white);
         color: var(--ddd-theme-default-black);
@@ -79,7 +78,7 @@ export class GameCard extends LitElement {
 
       .initials {
         font-weight: 800;
-        font-size: var(--ddd-font-size-3xs, 14px);
+        font-size: var(--ddd-font-size-3xs, 12px);
         letter-spacing: 0.02em;
         color: var(--ddd-theme-default-black);
       }
@@ -116,9 +115,25 @@ export class GameCard extends LitElement {
         color: color-mix(in srgb, var(--ddd-theme-default-black) 72%, transparent);
       }
 
-      /* Keep CTA aligned like your screenshot */
-      d-d-d-button {
+      /* CTA link styled with DDD variables */
+      .buy {
+        font-weight: 900;
+        font-size: var(--ddd-font-size-3xs, 12px);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--ddd-theme-primary, var(--ddd-theme-default-black));
+        text-decoration: none;
         white-space: nowrap;
+      }
+
+      .buy:hover {
+        text-decoration: underline;
+      }
+
+      .buy.disabled {
+        opacity: 0.5;
+        pointer-events: none;
+        cursor: default;
       }
 
       @media (max-width: 520px) {
@@ -136,7 +151,7 @@ export class GameCard extends LitElement {
     `
   ];
 
-  // Simple initials: "U12" -> "U12", "North Ridge" -> "NR"
+  // "U12" -> "U12", "North Ridge" -> "NR"
   _initials(name) {
     if (!name) return "SC";
     const s = String(name).trim();
@@ -153,7 +168,7 @@ export class GameCard extends LitElement {
     const homeName = g.team || "Silver Chariot";
     const awayName = g.opponent || "Opponent";
 
-    // Optional fields (add later in JSON)
+    // Optional fields (add later in JSON if you want real logos/links)
     const homeLogo = g.teamLogo || "";
     const awayLogo = g.opponentLogo || "";
     const ticketUrl = g.ticketUrl || "";
@@ -184,15 +199,15 @@ export class GameCard extends LitElement {
             <div class="sub">${g.location || ""}</div>
           </div>
 
-          <!-- DDD button: fully DDD UI component -->
-          <d-d-d-button
-            ?disabled=${!ticketUrl}
-            href=${ticketUrl || ""}
-            target="_blank"
-            rel="noopener noreferrer"
+          <a
+            class="buy ${ticketUrl ? "" : "disabled"}"
+            href=${ticketUrl || "#"}
+            target=${ticketUrl ? "_blank" : ""}
+            rel=${ticketUrl ? "noopener noreferrer" : ""}
+            aria-disabled=${ticketUrl ? "false" : "true"}
           >
-            Buy Tickets
-          </d-d-d-button>
+            BUY TICKETS
+          </a>
         </div>
       </div>
     `;
