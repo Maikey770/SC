@@ -17,9 +17,9 @@
       "page": "news"
     },
     {
-      "id": "parents",
-      "label": "Parents",
-      "page": "parents"
+      "id": "information",
+      "label": "Information",
+      "page": "information"
     }
   ]
 }

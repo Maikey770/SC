@@ -26,6 +26,8 @@ export class SilverChariotApp extends LitElement {
     this.mobileMenuOpen = false;
     this.schedule = [];
     this._onPopState = this._onPopState.bind(this);
+    this.changePage = this.changePage.bind(this);
+    this.toggleMenu = this.toggleMenu.bind(this);
   }
 
   connectedCallback() {
@@ -65,6 +67,31 @@ export class SilverChariotApp extends LitElement {
       gap: var(--ddd-spacing-8);
     }
 
+    h2 {
+      margin: 0 0 var(--ddd-spacing-4) 0;
+      font-size: var(--ddd-font-size-l);
+      line-height: 1.2;
+    }
+
+    h3 {
+      margin: var(--ddd-spacing-6) 0 var(--ddd-spacing-3) 0;
+      font-size: var(--ddd-font-size-m);
+      line-height: 1.2;
+    }
+
+    p {
+      margin: 0 0 var(--ddd-spacing-4) 0;
+      max-width: 75ch;
+      opacity: 0.9;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: var(--ddd-spacing-6);
+      display: grid;
+      gap: var(--ddd-spacing-2);
+    }
+
     .list {
       display: flex;
       flex-direction: column;
@@ -95,6 +122,7 @@ export class SilverChariotApp extends LitElement {
 
     if (this.mobileMenuOpen) this.mobileMenuOpen = false;
 
+    // Keep navigation feeling consistent
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -105,10 +133,7 @@ export class SilverChariotApp extends LitElement {
   _renderSchedulePage() {
     return html`
       <section>
-        <schedule-row
-          heading="Upcoming Games"
-          .games=${this.schedule}
-        ></schedule-row>
+        <schedule-row heading="Upcoming Games" .games=${this.schedule}></schedule-row>
 
         ${this.schedule.length === 0
           ? html`<p>No games in the list right now.</p>`
@@ -132,14 +157,36 @@ export class SilverChariotApp extends LitElement {
     `;
   }
 
-  _renderParentsPage() {
+  // New Information page
+  _renderInformationPage() {
     return html`
       <section>
-        <h2>Parent Information</h2>
+        <h2>Information</h2>
         <p>
-          Silver Chariot is a youth hockey club focused on player development,
-          balance, and long-term growth.
+          Important notices and guidelines for parents, players, and families in the
+          Silver Chariot Youth Hockey Association.
         </p>
+
+        <h3>General Notices</h3>
+        <ul>
+          <li>Please arrive at the rink at least 30 minutes before game time.</li>
+          <li>Players must wear full gear for practices and games.</li>
+          <li>Check the schedule regularly for updates or changes.</li>
+        </ul>
+
+        <h3>Parent Guidelines</h3>
+        <ul>
+          <li>Cheer positively and avoid coaching from the stands.</li>
+          <li>Respect referees, coaches, and rink staff.</li>
+          <li>Notify coaches early if a player cannot attend.</li>
+        </ul>
+
+        <h3>Safety & Conduct</h3>
+        <ul>
+          <li>No food or drinks on the ice surface.</li>
+          <li>Follow all rink safety rules and posted signage.</li>
+          <li>Report injuries or concerns to a coach immediately.</li>
+        </ul>
       </section>
     `;
   }
@@ -153,18 +200,13 @@ export class SilverChariotApp extends LitElement {
       <info-band></info-band>
 
       <section id="upcoming">
-        <schedule-row
-          heading="Upcoming Games"
-          .games=${rail}
-        ></schedule-row>
+        <schedule-row heading="Upcoming Games" .games=${rail}></schedule-row>
 
         ${list.length === 0
           ? html`<p>No games in the list right now.</p>`
           : html`
               <div class="list">
-                ${list.map(
-                  (g) => html`<game-card compact .game=${g}></game-card>`
-                )}
+                ${list.map((g) => html`<game-card compact .game=${g}></game-card>`)}
               </div>
             `}
       </section>
@@ -176,7 +218,7 @@ export class SilverChariotApp extends LitElement {
   _renderPageBody() {
     if (this.page === "schedule") return this._renderSchedulePage();
     if (this.page === "news") return this._renderNewsPage();
-    if (this.page === "parents") return this._renderParentsPage();
+    if (this.page === "information") return this._renderInformationPage();
     return this._renderHomePage();
   }
 
