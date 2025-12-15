@@ -100,18 +100,18 @@ export class HeaderBar extends LitElement {
         transition: transform 160ms ease, width 160ms ease, height 160ms ease;
       }
 
-      /* Logo image */
-      .logo img {
-        width: 100%;
-        height: 100%;
-        display: block;
-        object-fit: contain;
-      }
-
       :host([data-scrolled="true"]) .logo {
         width: 24px;
         height: 24px;
         transform: scale(0.98);
+      }
+
+      /* Logo image */
+      .logo-img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: contain;
       }
 
       .right {
@@ -249,15 +249,21 @@ export class HeaderBar extends LitElement {
   }
 
   _openMenu() {
-    this.dispatchEvent(new CustomEvent("open-menu", { bubbles: true, composed: true }));
+    this.dispatchEvent(
+      new CustomEvent("open-menu", { bubbles: true, composed: true })
+    );
   }
 
   _onSearchClick() {
-    this.dispatchEvent(new CustomEvent("search-open", { bubbles: true, composed: true }));
+    this.dispatchEvent(
+      new CustomEvent("search-open", { bubbles: true, composed: true })
+    );
   }
 
   _onThemeClick() {
-    this.dispatchEvent(new CustomEvent("toggle-theme", { bubbles: true, composed: true }));
+    this.dispatchEvent(
+      new CustomEvent("toggle-theme", { bubbles: true, composed: true })
+    );
   }
 
   render() {
@@ -269,10 +275,11 @@ export class HeaderBar extends LitElement {
           <div class="brand">
             <div class="logo">
               <img
-              class="logo"
-              src="https://1drv.ms/i/c/341ab6ad80733678/IQCDuPK5vYYhSKZ21IvWKYs4ATFk3VIJRONOFCoWSolvxLg?e=qvsDMG"
-              alt="Silver Chariot Club logo"
-            />
+                class="logo-img"
+                src="https://1drv.ms/i/c/341ab6ad80733678/IQCDuPK5vYYhSKZ21IvWKYs4ATFk3VIJRONOFCoWSolvxLg?e=qvsDMG"
+                alt="Silver Chariot Club logo"
+                loading="eager"
+              />
             </div>
             <span>Silver Chariot</span>
           </div>
@@ -298,7 +305,11 @@ export class HeaderBar extends LitElement {
               Switch mode
             </button>
 
-            <button class="icon-btn" aria-label="Search" @click=${() => this._onSearchClick()}>
+            <button
+              class="icon-btn"
+              aria-label="Search"
+              @click=${() => this._onSearchClick()}
+            >
               <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
                 <path
                   fill="currentColor"
@@ -307,7 +318,9 @@ export class HeaderBar extends LitElement {
               </svg>
             </button>
 
-            <button class="menu-toggle" @click=${() => this._openMenu()}>Menu</button>
+            <button class="menu-toggle" @click=${() => this._openMenu()}>
+              Menu
+            </button>
           </div>
         </header>
       </d-d-d>
