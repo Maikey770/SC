@@ -1,27 +1,36 @@
 import { readFileSync } from "node:fs";
+import path from "node:path";
 
 export default function handler(req, res) {
   try {
-    // Read JSON file from repo at runtime
-    const raw = readFileSync("src/data/schedule.json", "utf-8");
+    // Absolute path to schedule data
+    const filePath = path.join(
+      process.cwd(),
+      "api",
+      "data",
+      "schedule.json"
+    );
+
+    // Read and parse JSON
+    const raw = readFileSync(filePath, "utf-8");
     const schedule = JSON.parse(raw);
 
-    const upcoming = Array.isArray(schedule?.upcoming)
-      ? schedule.upcoming
-      : Array.isArray(schedule?.games)
-        ? schedule.games
-        : [];
-
+    // Disable caching
     res.setHeader("Cache-Control", "no-store");
+
+    // Return upcoming games
     res.status(200).json({
-      title: schedule?.title || "Upcoming Games",
-      upcoming
+      title: schedule.title || "Upcoming Games",
+      upcoming: Array.isArray(schedule.upcoming)
+        ? schedule.upcoming
+        : []
     });
   } catch (err) {
+    // Handle server error
     console.error("schedule api error:", err);
     res.status(500).json({
       error: "schedule api crashed",
-      message: err?.message || String(err)
+      message: err.message
     });
   }
 }
