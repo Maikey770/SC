@@ -5,26 +5,21 @@
     <title>Silver Chariot Youth Hockey</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- disable cache during dev -->
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-
     <!-- FIX: resolve @haxtheweb + d-d-d imports via CDN -->
     <script type="importmap">
-    {
-      "imports": {
-        "@haxtheweb/d-d-d/": "https://cdn.jsdelivr.net/npm/@haxtheweb/d-d-d/",
-        "@haxtheweb/": "https://cdn.jsdelivr.net/npm/@haxtheweb/"
+      {
+        "imports": {
+          "@haxtheweb/d-d-d/": "https://cdn.jsdelivr.net/npm/@haxtheweb/d-d-d/",
+          "@haxtheweb/": "https://cdn.jsdelivr.net/npm/@haxtheweb/"
+        }
       }
-    }
     </script>
   </head>
 
-  <body style="margin: 0; background-color: #05070b;">
+  <body style="margin: 0; background: var(--ddd-theme-bg);">
     <silver-chariot-app></silver-chariot-app>
 
-    <!-- IMPORTANT: dev still loads bundled file -->
-    <script type="module" src="./silverchariotapp.js"></script>
+    <!-- IMPORTANT: dist must load the bundled file -->
+    <script type="module" src="./dist/silverchariotapp.js"></script>
   </body>
 </html>
