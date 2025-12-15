@@ -27,7 +27,6 @@ export class HeroBanner extends LitElement {
         background: var(--ddd-theme-background);
       }
 
-      /* updated background image */
       .bg {
         position: absolute;
         inset: 0;
@@ -37,7 +36,6 @@ export class HeroBanner extends LitElement {
         background-repeat: no-repeat;
       }
 
-      /* pure DDD-only overlay */
       .overlay {
         position: absolute;
         inset: 0;
@@ -57,20 +55,21 @@ export class HeroBanner extends LitElement {
         justify-content: center;
         padding: var(--ddd-spacing-8);
         gap: var(--ddd-spacing-4);
+        max-width: 640px;
       }
 
       .eyebrow {
         font-size: var(--ddd-font-size-xs);
         letter-spacing: var(--ddd-letter-spacing-wide);
         text-transform: uppercase;
-        color: var(--ddd-theme-text-secondary);
+        color: var(--ddd-theme-default-black);
       }
 
       h1 {
         margin: 0;
         font-size: var(--ddd-font-size-xxl);
         line-height: var(--ddd-line-height-tight);
-        color: var(--ddd-theme-text-primary);
+        color: var(--ddd-theme-default-black);
       }
 
       .side {
@@ -86,6 +85,7 @@ export class HeroBanner extends LitElement {
         .hero {
           grid-template-columns: 1fr;
         }
+
         .side {
           display: none;
         }
