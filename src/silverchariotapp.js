@@ -65,15 +65,12 @@ export class SilverChariotApp extends LitElement {
       gap: var(--ddd-spacing-8);
     }
 
-    h2 {
-      margin: 0;
-      font-size: var(--ddd-font-size-l);
-      line-height: 1.2;
-    }
-
-    /* Increase vertical spacing between game rows */
-    game-card {
-      margin-bottom: var(--ddd-spacing-4);
+    /* Bigger vertical spacing for the list items */
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--ddd-spacing-4);
+      margin-top: var(--ddd-spacing-4);
     }
   `;
 
@@ -108,18 +105,22 @@ export class SilverChariotApp extends LitElement {
     this.mobileMenuOpen = !this.mobileMenuOpen;
   }
 
-  /* ---------- Pages ---------- */
-
   _renderSchedulePage() {
     return html`
       <section>
-        <schedule-row heading="Upcoming Games"></schedule-row>
+        <schedule-row heading="Upcoming Games">
+          ${this.schedule.map((g) => html`<game-card .game=${g}></game-card>`)}
+        </schedule-row>
 
         ${this.schedule.length === 0
           ? html`<p>No games in the list right now.</p>`
-          : this.schedule.map(
-              (g) => html`<game-card .game=${g}></game-card>`
-            )}
+          : html`
+              <div class="list">
+                ${this.schedule.map(
+                  (g) => html`<game-card .game=${g}></game-card>`
+                )}
+              </div>
+            `}
       </section>
     `;
   }
@@ -132,7 +133,6 @@ export class SilverChariotApp extends LitElement {
           Silver Chariot is a youth hockey club focused on development,
           responsibility, and long-term growth.
         </p>
-
         <ul>
           <li>Season runs September through March</li>
           <li>Two practices and one game per week</li>
@@ -152,9 +152,9 @@ export class SilverChariotApp extends LitElement {
   }
 
   _renderHomePage() {
-    const preview = Array.isArray(this.schedule)
-      ? this.schedule.slice(0, 2)
-      : [];
+    const preview = Array.isArray(this.schedule) ? this.schedule : [];
+    const rail = preview.slice(0, 8); // more cards for scrolling
+    const list = preview.slice(0, 2); // keep the short list under it
 
     return html`
       <section>
@@ -166,13 +166,21 @@ export class SilverChariotApp extends LitElement {
       </section>
 
       <section id="upcoming">
-        <schedule-row heading="Upcoming Games"></schedule-row>
+        <!-- Top: scrollable rail inside schedule-row -->
+        <schedule-row heading="Upcoming Games">
+          ${rail.length === 0
+            ? html``
+            : rail.map((g) => html`<game-card .game=${g}></game-card>`)}
+        </schedule-row>
 
-        ${preview.length === 0
+        <!-- Bottom: vertical list -->
+        ${list.length === 0
           ? html`<p>No games in the list right now.</p>`
-          : preview.map(
-              (g) => html`<game-card .game=${g}></game-card>`
-            )}
+          : html`
+              <div class="list">
+                ${list.map((g) => html`<game-card .game=${g}></game-card>`)}
+              </div>
+            `}
       </section>
 
       <section>
