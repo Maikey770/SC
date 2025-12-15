@@ -2,7 +2,6 @@ import { LitElement, html, css } from "lit";
 import "@haxtheweb/d-d-d/d-d-d.js";
 import "./ddd-global.js";
 
-// App components
 import "./components/headerbar.js";
 import "./components/mobilemenu.js";
 import "./components/gamecard.js";
@@ -28,7 +27,6 @@ export class SilverChariotApp extends LitElement {
     this.schedule = [];
     this.theme = localStorage.getItem("theme") || "dark";
 
-    // Bind once so events behave the same every time
     this._onPopState = this._onPopState.bind(this);
     this.changePage = this.changePage.bind(this);
     this.toggleMenu = this.toggleMenu.bind(this);
@@ -38,10 +36,8 @@ export class SilverChariotApp extends LitElement {
   connectedCallback() {
     super.connectedCallback();
 
-    // Set the saved theme on first load
     document.documentElement.setAttribute("data-theme", this.theme);
 
-    // Pull schedule data from the Vercel API route
     fetch("/api/schedule", { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => {
@@ -49,7 +45,6 @@ export class SilverChariotApp extends LitElement {
       })
       .catch((err) => console.error("schedule load error", err));
 
-    // Support back/forward browser navigation
     window.addEventListener("popstate", this._onPopState);
   }
 
@@ -62,8 +57,8 @@ export class SilverChariotApp extends LitElement {
     :host {
       display: block;
       min-height: 100vh;
-      color: var(--ddd-theme-default-white);
-      background: var(--ddd-theme-default-black);
+      color: var(--ddd-theme-text-primary);
+      background: var(--ddd-theme-bg);
       font-family: var(--ddd-font-primary);
     }
 
@@ -91,7 +86,7 @@ export class SilverChariotApp extends LitElement {
     p {
       margin: 0 0 var(--ddd-spacing-4) 0;
       max-width: 75ch;
-      opacity: 0.9;
+      color: var(--ddd-theme-text-secondary);
     }
 
     ul {
@@ -99,6 +94,7 @@ export class SilverChariotApp extends LitElement {
       padding-left: var(--ddd-spacing-6);
       display: grid;
       gap: var(--ddd-spacing-2);
+      color: var(--ddd-theme-text-secondary);
     }
 
     .list {
@@ -106,6 +102,136 @@ export class SilverChariotApp extends LitElement {
       flex-direction: column;
       gap: var(--ddd-spacing-4);
       margin-top: var(--ddd-spacing-5);
+    }
+
+    .heroShell {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: var(--ddd-spacing-6);
+      align-items: stretch;
+    }
+
+    .heroLeft {
+      border-radius: var(--ddd-radius-lg);
+      overflow: hidden;
+    }
+
+    .heroRight {
+      border-radius: var(--ddd-radius-lg);
+      border: 1px solid var(--ddd-theme-border);
+      background: var(--ddd-theme-surface);
+      padding: var(--ddd-spacing-5);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--ddd-spacing-5);
+    }
+
+    .ngTop {
+      display: grid;
+      gap: var(--ddd-spacing-2);
+    }
+
+    .ngLabel {
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      color: var(--ddd-theme-text-secondary);
+    }
+
+    .ngTitle {
+      font-weight: 900;
+      font-size: 1.2rem;
+      color: var(--ddd-theme-text-primary);
+    }
+
+    .ngMeta {
+      display: grid;
+      gap: 4px;
+      color: var(--ddd-theme-text-secondary);
+      font-size: 0.95rem;
+    }
+
+    .ngTeams {
+      display: flex;
+      align-items: center;
+      gap: var(--ddd-spacing-3);
+      font-weight: 900;
+      color: var(--ddd-theme-text-primary);
+    }
+
+    .ngTeamPill {
+      border: 1px solid var(--ddd-theme-border);
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: var(--ddd-theme-surface);
+    }
+
+    .ngActions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--ddd-spacing-3);
+    }
+
+    .btn {
+      border: 1px solid var(--ddd-theme-primary);
+      border-radius: var(--ddd-radius-md);
+      background: transparent;
+      color: var(--ddd-theme-text-primary);
+      padding: 12px 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+    }
+
+    .btnPrimary {
+      background: var(--ddd-theme-primary);
+      color: var(--ddd-theme-bg);
+    }
+
+    .railWrap {
+      border-radius: var(--ddd-radius-lg);
+      border: 1px solid var(--ddd-theme-border);
+      background: var(--ddd-theme-surface);
+      padding: var(--ddd-spacing-4);
+      display: grid;
+      gap: var(--ddd-spacing-3);
+    }
+
+    .railTitle {
+      font-weight: 900;
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ddd-theme-text-secondary);
+    }
+
+    .rail {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(260px, 320px);
+      gap: var(--ddd-spacing-4);
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scroll-snap-type: x mandatory;
+    }
+
+    .rail > * {
+      scroll-snap-align: start;
+    }
+
+    @media (max-width: 980px) {
+      .heroShell {
+        grid-template-columns: 1fr;
+      }
+      .ngActions {
+        grid-template-columns: 1fr;
+      }
+      .rail {
+        grid-auto-columns: minmax(240px, 1fr);
+      }
     }
   `;
 
@@ -120,20 +246,15 @@ export class SilverChariotApp extends LitElement {
   }
 
   _onPopState() {
-    // When user hits back/forward, update the page view
     this.page = this._getPageFromUrl();
   }
 
-  // Handles top nav + mobile nav clicks
   changePage(e) {
     const id = e.detail;
     this.page = id;
     this._setUrlForPage(id);
 
-    // If the mobile menu is open, close it after navigating
     if (this.mobileMenuOpen) this.mobileMenuOpen = false;
-
-    // Keeps the page change feeling clean
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -141,11 +262,65 @@ export class SilverChariotApp extends LitElement {
     this.mobileMenuOpen = !this.mobileMenuOpen;
   }
 
-  // "Switch mode" button logic (dark <-> light)
   toggleTheme() {
     this.theme = this.theme === "dark" ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", this.theme);
     localStorage.setItem("theme", this.theme);
+  }
+
+  _renderNextGameCard() {
+    const g = Array.isArray(this.schedule) && this.schedule.length ? this.schedule[0] : null;
+
+    if (!g) {
+      return html`
+        <section class="heroRight">
+          <div class="ngTop">
+            <div class="ngLabel">Next game</div>
+            <div class="ngTitle">No upcoming games</div>
+            <div class="ngMeta">Check back soon for updates.</div>
+          </div>
+          <div class="ngActions">
+            <button class="btn btnPrimary" @click=${() => this.changePage({ detail: "schedule" })}>
+              Watch
+            </button>
+            <button class="btn" @click=${() => this.changePage({ detail: "schedule" })}>
+              Tickets
+            </button>
+          </div>
+        </section>
+      `;
+    }
+
+    const dateTime = `${g.date || ""} ${g.time || ""}`.trim();
+
+    return html`
+      <section class="heroRight">
+        <div class="ngTop">
+          <div class="ngLabel">Theme night</div>
+          <div class="ngTitle">Next game</div>
+
+          <div class="ngTeams" aria-label="Matchup">
+            <span class="ngTeamPill">${String(g.team || "SC").toUpperCase()}</span>
+            <span>VS</span>
+            <span class="ngTeamPill">${String(g.opponent || "TBD").toUpperCase()}</span>
+          </div>
+
+          <div class="ngMeta">
+            <div>${dateTime || "TBD"}</div>
+            <div>${g.location || ""}</div>
+          </div>
+        </div>
+
+        <div class="ngActions">
+          <button class="btn" @click=${() => this.changePage({ detail: "schedule" })}>
+            Watch
+          </button>
+          <button class="btn btnPrimary" @click=${() => this.changePage({ detail: "schedule" })}>
+            Tickets
+          </button>
+        </div>
+      </section>
+    `;
   }
 
   _renderSchedulePage() {
@@ -157,9 +332,7 @@ export class SilverChariotApp extends LitElement {
           ? html`<p>No games in the list right now.</p>`
           : html`
               <div class="list">
-                ${this.schedule.map(
-                  (g) => html`<game-card compact .game=${g}></game-card>`
-                )}
+                ${this.schedule.map((g) => html`<game-card compact .game=${g}></game-card>`)}
               </div>
             `}
       </section>
@@ -175,7 +348,6 @@ export class SilverChariotApp extends LitElement {
     `;
   }
 
-  // Information page (parents + general guidelines)
   _renderInformationPage() {
     return html`
       <section>
@@ -210,23 +382,25 @@ export class SilverChariotApp extends LitElement {
   }
 
   _renderHomePage() {
-    const rail = this.schedule.slice(0, 8);
-    const list = this.schedule.slice(0, 2);
+    const rail = this.schedule.slice(0, 10);
 
     return html`
-      <hero-banner></hero-banner>
+      <section class="heroShell">
+        <div class="heroLeft">
+          <hero-banner></hero-banner>
+        </div>
+        ${this._renderNextGameCard()}
+      </section>
+
       <info-band></info-band>
 
-      <section id="upcoming">
-        <schedule-row heading="Upcoming Games" .games=${rail}></schedule-row>
-
-        ${list.length === 0
-          ? html`<p>No games in the list right now.</p>`
-          : html`
-              <div class="list">
-                ${list.map((g) => html`<game-card compact .game=${g}></game-card>`)}
-              </div>
-            `}
+      <section class="railWrap" aria-label="Upcoming games strip">
+        <div class="railTitle">Upcoming games</div>
+        <div class="rail">
+          ${rail.length
+            ? rail.map((g) => html`<game-card compact .game=${g}></game-card>`)
+            : html`<div>No games available.</div>`}
+        </div>
       </section>
 
       <image-gallery></image-gallery>

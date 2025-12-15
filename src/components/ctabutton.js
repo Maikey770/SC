@@ -19,7 +19,6 @@ export class CtaButton extends LitElement {
         display: inline-block;
       }
 
-      /*controls the appearance of the CTA button */
       d-d-d-button {
         --ddd-button-font-weight: 600;
         --ddd-button-text-transform: uppercase;

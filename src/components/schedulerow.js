@@ -22,114 +22,44 @@ export class ScheduleRow extends LitElement {
       }
 
       .wrap {
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 22px;
-        padding: 20px;
-        background: rgba(255, 255, 255, 0.04);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        border: 1px solid var(--ddd-theme-border);
+        border-radius: var(--ddd-radius-lg);
+        padding: var(--ddd-spacing-5);
+        background: var(--ddd-theme-surface);
+        display: grid;
+        gap: var(--ddd-spacing-4);
       }
 
       h2 {
-        margin: 0 0 14px 0;
-        font-size: 44px;
+        margin: 0;
+        font-size: var(--ddd-font-size-xl);
         line-height: 1.05;
-        letter-spacing: -0.02em;
       }
 
-      .layout {
+      .grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 18px;
-      }
-
-      .left {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(220px, 320px));
-        gap: 16px;
-      }
-
-      .right {
-        min-height: 140px;
-      }
-
-      .empty {
-        opacity: 0.75;
-        font-size: 0.95rem;
-      }
-
-      .card-wrap {
-        border: 1px solid var(--ddd-theme-primary);
-        border-radius: 14px;
-        padding: 10px;
-        background: color-mix(
-          in srgb,
-          var(--ddd-theme-primary) 8%,
-          transparent
-        );
-      }
-
-      .card-wrap:hover {
-        border-color: var(
-          --ddd-theme-primary-highlight,
-          var(--ddd-theme-primary)
-        );
-        box-shadow: 0 0 0 1px
-          color-mix(
-            in srgb,
-            var(--ddd-theme-primary) 40%,
-            transparent
-          );
-      }
-
-      game-card {
-        width: 100%;
-        max-width: 320px;
+        grid-template-columns: repeat(2, minmax(220px, 1fr));
+        gap: var(--ddd-spacing-4);
       }
 
       @media (max-width: 980px) {
-        .layout {
+        .grid {
           grid-template-columns: 1fr;
-        }
-        .right {
-          display: none;
-        }
-        .left {
-          grid-template-columns: 1fr;
-        }
-        game-card {
-          max-width: 100%;
-        }
-      }
-
-      @media (max-width: 520px) {
-        h2 {
-          font-size: 34px;
         }
       }
     `
   ];
 
   render() {
-    const list = Array.isArray(this.games)
-      ? this.games.slice(0, 2)
-      : [];
+    const list = Array.isArray(this.games) ? this.games.slice(0, 2) : [];
 
     return html`
       <section class="wrap">
         <h2>${this.heading}</h2>
-        <div class="layout">
-          <div class="left">
-            ${list.length
-              ? list.map(
-                  (g) => html`
-                    <div class="card-wrap">
-                      <game-card .game=${g}></game-card>
-                    </div>
-                  `
-                )
-              : html`<div class="empty">No games available.</div>`}
-          </div>
-          <div class="right" aria-hidden="true"></div>
+        <div class="grid">
+          ${list.length
+            ? list.map((g) => html`<game-card .game=${g}></game-card>`)
+            : html`<div>No games available.</div>`}
         </div>
       </section>
     `;

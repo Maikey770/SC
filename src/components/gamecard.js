@@ -20,22 +20,21 @@ export class GameCard extends LitElement {
         display: block;
       }
 
-      /* Card container uses ONLY DDD tokens via .surface */
       .card {
         display: grid;
         grid-template-columns: auto 1fr;
         align-items: center;
-        gap: var(--ddd-spacing-3, 12px);
+        gap: var(--ddd-spacing-3);
       }
 
       :host([compact]) .surface {
-        padding: var(--ddd-spacing-3, 12px);
+        padding: var(--ddd-spacing-3);
       }
 
       .logos {
         display: flex;
         align-items: center;
-        gap: var(--ddd-spacing-3, 12px);
+        gap: var(--ddd-spacing-3);
       }
 
       .logo {
@@ -44,12 +43,9 @@ export class GameCard extends LitElement {
         border-radius: 999px;
         display: grid;
         place-items: center;
-
-        /* ONLY DDD tokens */
         background: var(--ddd-theme-surface);
         border: 1px solid var(--ddd-theme-border);
         color: var(--ddd-theme-text-primary);
-
         font-weight: 800;
         font-size: 14px;
       }
@@ -62,7 +58,7 @@ export class GameCard extends LitElement {
       .vs {
         font-weight: 900;
         font-size: 12px;
-        color: var(--ddd-theme-text-secondary, var(--ddd-theme-text-primary));
+        color: var(--ddd-theme-text-secondary);
       }
 
       .meta {
@@ -80,7 +76,7 @@ export class GameCard extends LitElement {
 
       .sub {
         font-size: 12px;
-        color: var(--ddd-theme-text-secondary, var(--ddd-theme-text-primary));
+        color: var(--ddd-theme-text-secondary);
       }
 
       @media (max-width: 520px) {
