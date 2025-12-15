@@ -1,28 +1,56 @@
 import { css } from "lit";
 
+/* Global DDD theme */
+
 export const dddGlobal = css`
-  /* Global DDD theme overrides */
-  :root,
-  html {
-    /* Primary brand color */
-    --ddd-theme-primary: silver;
-    --ddd-theme-primary-highlight: white;
+  :host,
+  :root {
+    /* Base */
+    --ddd-theme-bg: var(--ddd-theme-default-black);
 
-    /* Borders use the same silver tone */
-    --ddd-theme-border: silver;
+    /* Text */
+    --ddd-theme-text-primary: var(--ddd-theme-default-white);
+    --ddd-theme-text-secondary: color-mix(
+      in srgb,
+      var(--ddd-theme-default-white) 70%,
+      transparent
+    );
+
+    /* Silver tone */
+    --ddd-theme-border: color-mix(
+      in srgb,
+      var(--ddd-theme-default-white) 18%,
+      transparent
+    );
+    --ddd-theme-primary: var(--ddd-theme-border);
+    --ddd-theme-primary-highlight: var(--ddd-theme-text-primary);
+
+    /* Surface */
+    --ddd-theme-surface: color-mix(
+      in srgb,
+      var(--ddd-theme-default-white) 6%,
+      transparent
+    );
+
+    /* Font */
+    --ddd-font-primary: var(--ddd-font-navigation);
   }
 
-  /* Dark theme tuning */
-  html[data-theme="dark"] {
-    --ddd-theme-primary: silver;
-    --ddd-theme-primary-highlight: white;
-    --ddd-theme-border: silver;
+  /* Text outline */
+  .ddd-text-outline {
+    text-shadow:
+      -1px -1px 0 var(--ddd-theme-bg),
+       1px -1px 0 var(--ddd-theme-bg),
+      -1px  1px 0 var(--ddd-theme-bg),
+       1px  1px 0 var(--ddd-theme-bg);
   }
 
-  /* Light theme tuning */
-  html[data-theme="light"] {
-    --ddd-theme-primary: dimgray;
-    --ddd-theme-primary-highlight: black;
-    --ddd-theme-border: dimgray;
+  /* Silver outline */
+  .ddd-text-outline-silver {
+    text-shadow:
+      -1px -1px 0 var(--ddd-theme-border),
+       1px -1px 0 var(--ddd-theme-border),
+      -1px  1px 0 var(--ddd-theme-border),
+       1px  1px 0 var(--ddd-theme-border);
   }
 `;
