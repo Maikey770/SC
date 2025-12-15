@@ -1,13 +1,13 @@
+// Top header with logo and navigation buttons
 import { LitElement, html, css } from "lit";
 import "@haxtheweb/d-d-d/d-d-d.js";
 import { dddGlobal } from "../ddd-global.js";
 
 export class HeaderBar extends LitElement {
   static properties = {
-    page: { type: String },       // current page
-    menuItems: { type: Array },   // menu data from api
-    scrolled: { type: Boolean },  // used for header style
-    theme: { type: String }
+    page: { type: String },
+    menuItems: { type: Array },
+    scrolled: { type: Boolean }
   };
 
   constructor() {
@@ -15,22 +15,21 @@ export class HeaderBar extends LitElement {
     this.page = "home";
     this.menuItems = [];
     this.scrolled = false;
-    this.theme = "dark";
 
+    // bind scroll function
     this._onScroll = this._onScroll.bind(this);
   }
 
   connectedCallback() {
     super.connectedCallback();
 
-    // load menu items
+    // load menu data
     fetch("/api/menu", { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => {
         this.menuItems = data?.items ?? [];
       });
 
-    // watch scroll
     window.addEventListener("scroll", this._onScroll, { passive: true });
     this._onScroll();
   }
@@ -40,7 +39,7 @@ export class HeaderBar extends LitElement {
     super.disconnectedCallback();
   }
 
-  // shrink header
+  // check if page is scrolled
   _onScroll() {
     this.scrolled = (window.scrollY || 0) > 16;
   }
@@ -49,6 +48,7 @@ export class HeaderBar extends LitElement {
     dddGlobal,
     css`
       :host {
+        display: block;
         position: sticky;
         top: 0;
         z-index: 1000;
@@ -64,31 +64,31 @@ export class HeaderBar extends LitElement {
       header {
         max-width: 1200px;
         margin: 0 auto;
-        padding: 14px 16px;
+        padding: var(--ddd-spacing-4);
         display: flex;
-        justify-content: space-between;
         align-items: center;
+        justify-content: space-between;
+        gap: var(--ddd-spacing-4);
       }
 
-      :host([data-scrolled="true"]) header {
-        padding: 10px 16px;
-      }
-
+      /* logo and title */
       .brand {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: var(--ddd-spacing-2);
         font-weight: 700;
-        letter-spacing: 0.08em;
         text-transform: uppercase;
+        color: var(--ddd-theme-text-primary);
       }
 
       .logo {
         width: 28px;
         height: 28px;
-        border-radius: 50%;
+        border-radius: 999px;
         border: 1px solid var(--ddd-theme-primary);
         overflow: hidden;
+        display: grid;
+        place-items: center;
       }
 
       .logo-img {
@@ -97,72 +97,41 @@ export class HeaderBar extends LitElement {
         object-fit: cover;
       }
 
-      .right {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
+      /* nav buttons */
       nav {
         display: flex;
-        gap: 8px;
+        gap: var(--ddd-spacing-2);
+        flex-wrap: wrap;
       }
 
       .nav-pill {
         border: 1px solid var(--ddd-theme-primary);
         background: transparent;
-        padding: 8px 16px;
-        border-radius: 9999px;
+        color: var(--ddd-theme-text-primary);
+        padding: var(--ddd-spacing-2) var(--ddd-spacing-4);
+        border-radius: 999px;
+        font-family: var(--ddd-font-primary);
         font-size: 0.85rem;
         font-weight: 700;
+        text-transform: uppercase;
         cursor: pointer;
       }
 
+      /* current page */
       .nav-pill[data-active="true"] {
         background: var(--ddd-theme-primary);
         color: var(--ddd-theme-bg);
-      }
-
-      .icon-btn {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        border: 1px solid var(--ddd-theme-primary);
-        background: transparent;
-        cursor: pointer;
-      }
-
-      .menu-toggle {
-        display: none;
-      }
-
-      .theme-toggle {
-        border: 1px solid var(--ddd-theme-primary);
-        background: transparent;
-        padding: 8px 14px;
-        border-radius: 9999px;
-        cursor: pointer;
       }
 
       @media (max-width: 768px) {
         nav {
           display: none;
         }
-
-        .menu-toggle {
-          display: inline-flex;
-          border: 1px solid var(--ddd-theme-primary);
-          padding: 8px 16px;
-          border-radius: 9999px;
-        }
-
-        .theme-toggle {
-          display: none;
-        }
       }
     `
   ];
 
+  // send page change event
   _onNavClick(target) {
     this.dispatchEvent(
       new CustomEvent("nav-change", {
@@ -173,65 +142,38 @@ export class HeaderBar extends LitElement {
     );
   }
 
-  _openMenu() {
-    this.dispatchEvent(
-      new CustomEvent("open-menu", { bubbles: true, composed: true })
-    );
-  }
-
-  _onSearchClick() {
-    this.dispatchEvent(
-      new CustomEvent("search-open", { bubbles: true, composed: true })
-    );
-  }
-
-  _onThemeClick() {
-    this.dispatchEvent(
-      new CustomEvent("toggle-theme", { bubbles: true, composed: true })
-    );
-  }
-
   render() {
+    const items = Array.isArray(this.menuItems) ? this.menuItems : [];
+
     return html`
       <d-d-d>
         <header>
+  
           <div class="brand">
             <div class="logo">
               <img
                 class="logo-img"
                 src="https://i.pinimg.com/736x/68/94/52/6894529f86950e241d553776142f9176.jpg"
-                alt="logo"
+                alt="Silver Chariot logo"
               />
             </div>
             <span>Silver Chariot</span>
           </div>
 
-          <div class="right">
-            <nav>
-              ${this.menuItems.map((item) => {
-                const id = item.page || item.id;
-                return html`
-                  <button
-                    class="nav-pill"
-                    data-active=${this.page === id}
-                    @click=${() => this._onNavClick(id)}
-                  >
-                    ${item.label}
-                  </button>
-                `;
-              })}
-            </nav>
-
-            <button class="theme-toggle" @click=${this._onThemeClick}>
-              Switch mode
-            </button>
-
-            <button class="icon-btn" @click=${this._onSearchClick}>🔍</button>
-
-            <button class="menu-toggle" @click=${this._openMenu}>
-              Menu
-            </button>
-          </div>
+          <nav>
+            ${items.map((item) => {
+              const target = item.page || item.id;
+              return html`
+                <button
+                  class="nav-pill"
+                  data-active=${this.page === target}
+                  @click=${() => this._onNavClick(target)}
+                >
+                  ${item.label}
+                </button>
+              `;
+            })}
+          </nav>
         </header>
       </d-d-d>
     `;
