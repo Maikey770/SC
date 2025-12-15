@@ -18,28 +18,26 @@ export class HeroBanner extends LitElement {
         position: relative;
         border-radius: var(--ddd-radius-xl);
         overflow: hidden;
-        min-height: 420px;
+        min-height: 460px;
 
-        /* layout */
         display: grid;
         grid-template-columns: 1.4fr 1fr;
         align-items: stretch;
 
-        /* DDD surface */
         background: var(--ddd-theme-background);
       }
 
-      /* background image */
+      /* updated higher-quality background */
       .bg {
         position: absolute;
         inset: 0;
-        background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQpSbrbgjihtQI3YNnQEXLLxKTz6C3Z3J5RQ&s");
+        background-image: url("https://m.media-amazon.com/images/I/81svokG7KhL._AC_SY300_SX300_QL70_FMwebp_.jpg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
       }
 
-      /* DDD-only overlay (no rgba, no hex) */
+      /* pure DDD overlay */
       .overlay {
         position: absolute;
         inset: 0;
@@ -53,12 +51,11 @@ export class HeroBanner extends LitElement {
       .content {
         position: relative;
         z-index: 1;
-        padding: var(--ddd-spacing-8);
-        max-width: 640px;
-
+        height: 100%;
         display: flex;
         flex-direction: column;
         justify-content: center;
+        padding: var(--ddd-spacing-8);
         gap: var(--ddd-spacing-4);
       }
 
@@ -76,7 +73,6 @@ export class HeroBanner extends LitElement {
         color: var(--ddd-theme-text-primary);
       }
 
-      /* right side placeholder (future content) */
       .side {
         position: relative;
         z-index: 1;
@@ -90,7 +86,6 @@ export class HeroBanner extends LitElement {
         .hero {
           grid-template-columns: 1fr;
         }
-
         .side {
           display: none;
         }
