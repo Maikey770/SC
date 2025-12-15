@@ -22,9 +22,16 @@ export class SilverChariotApp extends LitElement {
 
   constructor() {
     super();
+    // page from URL
     this.page = this._getPageFromUrl();
+
+    // menu state
     this.mobileMenuOpen = false;
+
+    // schedule data
     this.schedule = [];
+
+    // theme state
     this.theme = localStorage.getItem("theme") || "dark";
 
     this._onPopState = this._onPopState.bind(this);
@@ -36,8 +43,10 @@ export class SilverChariotApp extends LitElement {
   connectedCallback() {
     super.connectedCallback();
 
+    // set theme on html
     document.documentElement.setAttribute("data-theme", this.theme);
 
+    // load schedule
     fetch("/api/schedule", { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => {
@@ -74,13 +83,15 @@ export class SilverChariotApp extends LitElement {
     h2 {
       margin: 0 0 var(--ddd-spacing-4) 0;
       font-size: var(--ddd-font-size-l);
-      line-height: 1.2;
+      line-height: var(--ddd-line-height-normal);
+      color: var(--ddd-theme-text-primary);
     }
 
     h3 {
       margin: var(--ddd-spacing-6) 0 var(--ddd-spacing-3) 0;
       font-size: var(--ddd-font-size-m);
-      line-height: 1.2;
+      line-height: var(--ddd-line-height-normal);
+      color: var(--ddd-theme-text-primary);
     }
 
     p {
@@ -109,13 +120,12 @@ export class SilverChariotApp extends LitElement {
       grid-template-columns: 1fr;
     }
 
-
     .heroLeft {
       border-radius: var(--ddd-radius-lg);
       overflow: hidden;
     }
 
-    /* Next game card */
+    /* next game card */
     .ngCard {
       display: flex;
       flex-direction: column;
@@ -126,7 +136,6 @@ export class SilverChariotApp extends LitElement {
       background: var(--ddd-theme-surface);
     }
 
-    /* Inner bordered block (right panel) */
     .ngTop {
       display: grid;
       gap: var(--ddd-spacing-3);
@@ -139,7 +148,7 @@ export class SilverChariotApp extends LitElement {
     .ngLabel {
       font-size: var(--ddd-font-size-xs);
       font-weight: 800;
-      letter-spacing: 0.08em;
+      letter-spacing: var(--ddd-letter-spacing-wide);
       text-transform: uppercase;
       color: var(--ddd-theme-text-secondary);
     }
@@ -163,8 +172,8 @@ export class SilverChariotApp extends LitElement {
     }
 
     .ngTeam {
-      padding: 4px 10px;
-      border-radius: 999px;
+      padding: var(--ddd-spacing-1) var(--ddd-spacing-2);
+      border-radius: var(--ddd-radius-xl);
       border: 1px solid var(--ddd-theme-border);
       background: var(--ddd-theme-surface);
     }
@@ -196,8 +205,8 @@ export class SilverChariotApp extends LitElement {
 
     .railTitle {
       font-weight: 900;
-      font-size: 1rem;
-      letter-spacing: 0.06em;
+      font-size: var(--ddd-font-size-s);
+      letter-spacing: var(--ddd-letter-spacing-wide);
       text-transform: uppercase;
       color: var(--ddd-theme-text-secondary);
     }
@@ -208,7 +217,7 @@ export class SilverChariotApp extends LitElement {
       grid-auto-columns: minmax(260px, 320px);
       gap: var(--ddd-spacing-4);
       overflow-x: auto;
-      padding-bottom: 4px;
+      padding-bottom: var(--ddd-spacing-1);
       scroll-snap-type: x mandatory;
     }
 
@@ -220,6 +229,7 @@ export class SilverChariotApp extends LitElement {
       .heroShell {
         grid-template-columns: 1fr;
       }
+
       .rail {
         grid-auto-columns: minmax(240px, 1fr);
       }
@@ -231,6 +241,7 @@ export class SilverChariotApp extends LitElement {
     return params.get("page") || "home";
   }
 
+  // update URL when page changes
   _setUrlForPage(id) {
     const url = id === "home" ? "/" : `/?page=${id}`;
     window.history.pushState({}, "", url);
@@ -261,9 +272,7 @@ export class SilverChariotApp extends LitElement {
 
   _renderNextGameCard() {
     const g =
-      Array.isArray(this.schedule) && this.schedule.length
-        ? this.schedule[0]
-        : null;
+      Array.isArray(this.schedule) && this.schedule.length ? this.schedule[0] : null;
 
     if (!g) {
       return html`
@@ -309,9 +318,7 @@ export class SilverChariotApp extends LitElement {
           ? html`<p>No games in the list right now.</p>`
           : html`
               <div class="list">
-                ${this.schedule.map(
-                  (g) => html`<game-card compact .game=${g}></game-card>`
-                )}
+                ${this.schedule.map((g) => html`<game-card compact .game=${g}></game-card>`)}
               </div>
             `}
       </section>
@@ -360,31 +367,30 @@ export class SilverChariotApp extends LitElement {
     `;
   }
 
-_renderHomePage() {
-  const rail = this.schedule.slice(0, 10);
+  _renderHomePage() {
+    const rail = this.schedule.slice(0, 10);
 
-  return html`
-    <section class="heroShell">
-      <div class="heroLeft">
-        <hero-banner></hero-banner>
-      </div>
-    </section>
+    return html`
+      <section class="heroShell">
+        <div class="heroLeft">
+          <hero-banner></hero-banner>
+        </div>
+      </section>
 
-    <info-band></info-band>
+      <info-band></info-band>
 
-    <section class="railWrap" aria-label="Upcoming games strip">
-      <div class="railTitle">Upcoming games</div>
-      <div class="rail">
-        ${rail.length
-          ? rail.map((g) => html`<game-card compact .game=${g}></game-card>`)
-          : html`<div>No games available.</div>`}
-      </div>
-    </section>
+      <section class="railWrap" aria-label="Upcoming games strip">
+        <div class="railTitle">Upcoming games</div>
+        <div class="rail">
+          ${rail.length
+            ? rail.map((g) => html`<game-card compact .game=${g}></game-card>`)
+            : html`<div>No games available.</div>`}
+        </div>
+      </section>
 
-    <image-gallery></image-gallery>
-  `;
-}
-
+      <image-gallery></image-gallery>
+    `;
+  }
 
   _renderPageBody() {
     if (this.page === "schedule") return this._renderSchedulePage();
