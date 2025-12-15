@@ -52,7 +52,6 @@ export class HeaderBar extends LitElement {
         top: 0;
         z-index: 1000;
         font-family: var(--ddd-font-primary);
-
         background: var(--ddd-theme-bg);
         border-bottom: 1px solid var(--ddd-theme-primary);
       }
@@ -88,17 +87,16 @@ export class HeaderBar extends LitElement {
         color: var(--ddd-theme-text-primary);
       }
 
+      /* Logo image */
       .logo {
         width: 28px;
         height: 28px;
         border-radius: 9999px;
         border: 1px solid var(--ddd-theme-primary);
-        display: grid;
-        place-items: center;
-        font-size: 0.8rem;
         background: transparent;
+        display: block;
+        object-fit: cover;
         transition: transform 160ms ease, width 160ms ease, height 160ms ease;
-        color: var(--ddd-theme-text-primary);
       }
 
       :host([data-scrolled="true"]) .logo {
@@ -260,7 +258,11 @@ export class HeaderBar extends LitElement {
       <d-d-d>
         <header>
           <div class="brand">
-            <div class="logo">SC</div>
+            <img
+              class="logo"
+              src="../assets/silver-chariot-logo.png"
+              alt="Silver Chariot Club logo"
+            />
             <span>Silver Chariot</span>
           </div>
 
