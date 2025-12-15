@@ -194,9 +194,7 @@ export class MobileMenu extends LitElement {
   }
 
   _flatLinks() {
-    // Supports both:
-    // 1) [{label:"Main", children:[...]}]
-    // 2) [{id:"home", label:"Home"}, ...]
+    
     const groups = Array.isArray(this.menuItems) ? this.menuItems : [];
 
     for (let i = 0; i < groups.length; i++) {

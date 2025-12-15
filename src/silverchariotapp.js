@@ -31,6 +31,9 @@ export class SilverChariotApp extends LitElement {
     this.changePage = this.changePage.bind(this);
     this.toggleMenu = this.toggleMenu.bind(this);
     this.toggleTheme = this.toggleTheme.bind(this);
+
+    this.openMenu = this.openMenu.bind(this);
+    this.closeMenu = this.closeMenu.bind(this);
   }
 
   connectedCallback() {
@@ -108,7 +111,6 @@ export class SilverChariotApp extends LitElement {
       display: grid;
       grid-template-columns: 1fr;
     }
-
 
     .heroLeft {
       border-radius: var(--ddd-radius-lg);
@@ -253,6 +255,14 @@ export class SilverChariotApp extends LitElement {
     this.mobileMenuOpen = !this.mobileMenuOpen;
   }
 
+  openMenu() {
+    this.mobileMenuOpen = true;
+  }
+
+  closeMenu() {
+    this.mobileMenuOpen = false;
+  }
+
   toggleTheme() {
     this.theme = this.theme === "dark" ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", this.theme);
@@ -360,31 +370,30 @@ export class SilverChariotApp extends LitElement {
     `;
   }
 
-_renderHomePage() {
-  const rail = this.schedule.slice(0, 10);
+  _renderHomePage() {
+    const rail = this.schedule.slice(0, 10);
 
-  return html`
-    <section class="heroShell">
-      <div class="heroLeft">
-        <hero-banner></hero-banner>
-      </div>
-    </section>
+    return html`
+      <section class="heroShell">
+        <div class="heroLeft">
+          <hero-banner></hero-banner>
+        </div>
+      </section>
 
-    <info-band></info-band>
+      <info-band></info-band>
 
-    <section class="railWrap" aria-label="Upcoming games strip">
-      <div class="railTitle">Upcoming games</div>
-      <div class="rail">
-        ${rail.length
-          ? rail.map((g) => html`<game-card compact .game=${g}></game-card>`)
-          : html`<div>No games available.</div>`}
-      </div>
-    </section>
+      <section class="railWrap" aria-label="Upcoming games strip">
+        <div class="railTitle">Upcoming games</div>
+        <div class="rail">
+          ${rail.length
+            ? rail.map((g) => html`<game-card compact .game=${g}></game-card>`)
+            : html`<div>No games available.</div>`}
+        </div>
+      </section>
 
-    <image-gallery></image-gallery>
-  `;
-}
-
+      <image-gallery></image-gallery>
+    `;
+  }
 
   _renderPageBody() {
     if (this.page === "schedule") return this._renderSchedulePage();
@@ -400,14 +409,15 @@ _renderHomePage() {
         .theme=${this.theme}
         @toggle-theme=${this.toggleTheme}
         @nav-change=${this.changePage}
-        @open-menu=${this.toggleMenu}
+        @open-menu=${this.openMenu}
       ></header-bar>
 
       <mobile-menu
         ?open=${this.mobileMenuOpen}
         .page=${this.page}
         @nav-change=${this.changePage}
-        @close-menu=${this.toggleMenu}
+        @close-menu=${this.closeMenu}
+        @toggle-theme=${this.toggleTheme}
       ></mobile-menu>
 
       <main>${this._renderPageBody()}</main>
