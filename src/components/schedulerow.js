@@ -20,69 +20,68 @@ export class ScheduleRow extends LitElement {
 
       .wrap {
         border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 20px;
-        padding: 18px;
+        border-radius: 22px;
+        padding: 20px;
         background: rgba(255, 255, 255, 0.04);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
       }
 
-      .top {
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 12px;
-      }
-
       h2 {
-        margin: 0;
-        font-size: 40px;
+        margin: 0 0 14px 0;
+        font-size: 44px;
         line-height: 1.05;
         letter-spacing: -0.02em;
       }
 
-      .hint {
-        font-size: 0.9rem;
-        opacity: 0.75;
-        white-space: nowrap;
+      /* Layout like your screenshot: left cards + right empty space */
+      .layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+        align-items: start;
       }
 
-      /* Horizontal scroll rail */
-      .rail {
-        display: flex;
+      .left {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(220px, 320px));
         gap: 16px;
-        overflow-x: auto;
-        overflow-y: hidden;
-        padding: 10px 6px 14px;
-        scroll-snap-type: x mandatory;
-        -webkit-overflow-scrolling: touch;
+        align-content: start;
       }
 
-      /* Hide scrollbar (still scrollable) */
-      .rail::-webkit-scrollbar {
-        height: 8px;
-      }
-      .rail::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      .rail::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.18);
-        border-radius: 9999px;
+      /* Right side is intentionally empty (visual balance) */
+      .right {
+        min-height: 140px;
       }
 
-      /* Make slotted cards behave like snap items */
+      /* Slot cards sizing */
       ::slotted(game-card) {
-        flex: 0 0 auto;
-        width: 320px;
-        scroll-snap-align: start;
+        width: 100%;
+        max-width: 320px;
+      }
+
+      /* If there are more than 2 cards, hide extras to match the “2-card” look */
+      ::slotted(game-card:nth-child(n + 3)) {
+        display: none;
+      }
+
+      @media (max-width: 980px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+        .right {
+          display: none;
+        }
+        .left {
+          grid-template-columns: 1fr;
+        }
+        ::slotted(game-card) {
+          max-width: 100%;
+        }
       }
 
       @media (max-width: 520px) {
-        ::slotted(game-card) {
-          width: 280px;
-        }
         h2 {
-          font-size: 32px;
+          font-size: 34px;
         }
       }
     `
@@ -91,12 +90,12 @@ export class ScheduleRow extends LitElement {
   render() {
     return html`
       <section class="wrap">
-        <div class="top">
-          <h2>${this.heading}</h2>
-          <div class="hint">Swipe to view →</div>
-        </div>
-        <div class="rail" aria-label="Upcoming games scroller">
-          <slot></slot>
+        <h2>${this.heading}</h2>
+        <div class="layout">
+          <div class="left">
+            <slot></slot>
+          </div>
+          <div class="right" aria-hidden="true"></div>
         </div>
       </section>
     `;
