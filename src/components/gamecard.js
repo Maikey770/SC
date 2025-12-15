@@ -20,19 +20,23 @@ export class GameCard extends LitElement {
         display: block;
       }
 
-      /* DDD-only styling: no hex colors */
+      /* Use stable text tokens inside white card */
       .card {
+        /* White card surface */
         background: var(--ddd-theme-default-white);
-        color: var(--ddd-theme-default-black);
+
+        /* FIX: force a stable dark text color (avoid theme-inverted default-black) */
+        color: var(--ddd-theme-default-coal, var(--ddd-theme-default-black));
+
         border-radius: var(--ddd-radius-xl, 14px);
         padding: var(--ddd-spacing-4) var(--ddd-spacing-5);
         display: grid;
         grid-template-columns: auto 1fr;
         align-items: center;
         gap: var(--ddd-spacing-4);
-        border: 1px solid color-mix(in srgb, var(--ddd-theme-default-black) 12%, transparent);
+        border: 1px solid color-mix(in srgb, var(--ddd-theme-default-coal, var(--ddd-theme-default-black)) 12%, transparent);
         box-shadow: 0 var(--ddd-spacing-3) var(--ddd-spacing-6)
-          color-mix(in srgb, var(--ddd-theme-default-black) 22%, transparent);
+          color-mix(in srgb, var(--ddd-theme-default-coal, var(--ddd-theme-default-black)) 22%, transparent);
       }
 
       :host([compact]) .card {
@@ -60,8 +64,8 @@ export class GameCard extends LitElement {
         overflow: hidden;
         display: grid;
         place-items: center;
-        background: color-mix(in srgb, var(--ddd-theme-default-white) 88%, var(--ddd-theme-default-black));
-        border: 1px solid color-mix(in srgb, var(--ddd-theme-default-black) 12%, transparent);
+        background: color-mix(in srgb, var(--ddd-theme-default-white) 88%, var(--ddd-theme-default-coal, var(--ddd-theme-default-black)));
+        border: 1px solid color-mix(in srgb, var(--ddd-theme-default-coal, var(--ddd-theme-default-black)) 12%, transparent);
       }
 
       :host([compact]) .logo {
@@ -80,14 +84,14 @@ export class GameCard extends LitElement {
         font-weight: 800;
         font-size: var(--ddd-font-size-3xs, 12px);
         letter-spacing: 0.02em;
-        color: var(--ddd-theme-default-black);
+        color: var(--ddd-theme-default-coal, var(--ddd-theme-default-black));
       }
 
       .vs {
         font-weight: 900;
         font-size: var(--ddd-font-size-4xs, 12px);
         letter-spacing: 0.08em;
-        color: color-mix(in srgb, var(--ddd-theme-default-black) 70%, transparent);
+        color: color-mix(in srgb, var(--ddd-theme-default-coal, var(--ddd-theme-default-black)) 70%, transparent);
       }
 
       .right {
@@ -108,20 +112,20 @@ export class GameCard extends LitElement {
         font-weight: 900;
         font-size: var(--ddd-font-size-2xs, 14px);
         letter-spacing: 0.02em;
+        color: var(--ddd-theme-default-coal, var(--ddd-theme-default-black));
       }
 
       .sub {
         font-size: var(--ddd-font-size-3xs, 12px);
-        color: color-mix(in srgb, var(--ddd-theme-default-black) 72%, transparent);
+        color: var(--ddd-theme-default-slate, color-mix(in srgb, var(--ddd-theme-default-coal, var(--ddd-theme-default-black)) 72%, transparent));
       }
 
-      /* CTA link styled with DDD variables */
       .buy {
         font-weight: 900;
         font-size: var(--ddd-font-size-3xs, 12px);
         letter-spacing: 0.06em;
         text-transform: uppercase;
-        color: var(--ddd-theme-primary, var(--ddd-theme-default-black));
+        color: var(--ddd-theme-primary, var(--ddd-theme-default-coal, var(--ddd-theme-default-black)));
         text-decoration: none;
         white-space: nowrap;
       }
@@ -151,7 +155,6 @@ export class GameCard extends LitElement {
     `
   ];
 
-  // "U12" -> "U12", "North Ridge" -> "NR"
   _initials(name) {
     if (!name) return "SC";
     const s = String(name).trim();
@@ -168,7 +171,6 @@ export class GameCard extends LitElement {
     const homeName = g.team || "Silver Chariot";
     const awayName = g.opponent || "Opponent";
 
-    // Optional fields (add later in JSON if you want real logos/links)
     const homeLogo = g.teamLogo || "";
     const awayLogo = g.opponentLogo || "";
     const ticketUrl = g.ticketUrl || "";
