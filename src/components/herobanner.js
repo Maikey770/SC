@@ -27,15 +27,17 @@ export class HeroBanner extends LitElement {
         background: var(--ddd-theme-background);
       }
 
+      /* background image */
       .bg {
         position: absolute;
         inset: 0;
         background-image: url("https://i.pinimg.com/736x/9c/2d/9b/9c2d9be1ed3b4bd4f8090738273c19b8.jpg");
         background-size: cover;
-        background-position: center top;
+        background-position: center;
         background-repeat: no-repeat;
       }
 
+      /* overlay for readability */
       .overlay {
         position: absolute;
         inset: 0;
@@ -46,16 +48,16 @@ export class HeroBanner extends LitElement {
         );
       }
 
+      /* LEFT: title only */
       .content {
         position: relative;
         z-index: 1;
-        height: 100%;
         display: flex;
         flex-direction: column;
         justify-content: center;
         padding: var(--ddd-spacing-8);
         gap: var(--ddd-spacing-4);
-        max-width: 640px;
+        max-width: 520px;
       }
 
       .eyebrow {
@@ -72,7 +74,7 @@ export class HeroBanner extends LitElement {
         color: var(--ddd-theme-text-primary);
       }
 
-      /* Right side: text only, no buttons */
+      /* RIGHT: next game only */
       .side {
         position: relative;
         z-index: 1;
@@ -119,13 +121,13 @@ export class HeroBanner extends LitElement {
           <div class="bg"></div>
           <div class="overlay"></div>
 
-          <!-- Left: hero title -->
+          <!-- LEFT -->
           <div class="content">
             <div class="eyebrow">ICEKING PRESENTS</div>
-            <h1>Silver Chariot Youth Hockey Association</h1>
+            <h1>Silver Chariot</h1>
           </div>
 
-          <!-- Right: Next game info ONLY -->
+          <!-- RIGHT -->
           <div class="side">
             <div class="label">Theme night</div>
             <div class="title">Next game</div>
