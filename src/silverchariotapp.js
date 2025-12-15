@@ -33,7 +33,6 @@ export class SilverChariotApp extends LitElement {
   connectedCallback() {
     super.connectedCallback();
 
-    // Fetch schedule data from API
     fetch("/api/schedule", { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => {
@@ -70,23 +69,19 @@ export class SilverChariotApp extends LitElement {
     h2 {
       margin: 0 0 var(--ddd-spacing-4) 0;
       font-size: var(--ddd-font-size-l);
-      line-height: 1.2;
     }
 
     h3 {
       margin: var(--ddd-spacing-6) 0 var(--ddd-spacing-3) 0;
       font-size: var(--ddd-font-size-m);
-      line-height: 1.2;
     }
 
     p {
-      margin: 0 0 var(--ddd-spacing-4) 0;
       max-width: 75ch;
       opacity: 0.9;
     }
 
     ul {
-      margin: 0;
       padding-left: var(--ddd-spacing-6);
       display: grid;
       gap: var(--ddd-spacing-2);
@@ -97,6 +92,25 @@ export class SilverChariotApp extends LitElement {
       flex-direction: column;
       gap: var(--ddd-spacing-4);
       margin-top: var(--ddd-spacing-5);
+    }
+
+    .card {
+      border: 1px solid var(--ddd-theme-border);
+      border-radius: var(--ddd-radius-lg);
+      padding: var(--ddd-spacing-4);
+      background: var(--ddd-theme-surface);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      gap: var(--ddd-spacing-4);
+    }
+
+    @media (max-width: 980px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
     }
   `;
 
@@ -114,15 +128,11 @@ export class SilverChariotApp extends LitElement {
     this.page = this._getPageFromUrl();
   }
 
-  // Navigation handler
   changePage(e) {
     const id = e.detail;
     this.page = id;
     this._setUrlForPage(id);
-
     if (this.mobileMenuOpen) this.mobileMenuOpen = false;
-
-    // Keep navigation feeling consistent
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -130,85 +140,127 @@ export class SilverChariotApp extends LitElement {
     this.mobileMenuOpen = !this.mobileMenuOpen;
   }
 
+  /* ---------------- PAGES ---------------- */
+
   _renderSchedulePage() {
     return html`
       <section>
         <schedule-row heading="Upcoming Games" .games=${this.schedule}></schedule-row>
-
-        ${this.schedule.length === 0
-          ? html`<p>No games in the list right now.</p>`
-          : html`
+        ${this.schedule.length
+          ? html`
               <div class="list">
                 ${this.schedule.map(
                   (g) => html`<game-card compact .game=${g}></game-card>`
                 )}
               </div>
-            `}
+            `
+          : html`<p>No games in the list right now.</p>`}
       </section>
     `;
   }
 
   _renderNewsPage() {
+    const updates = [
+      {
+        date: "Nov 26",
+        tag: "Association Update",
+        title: "Silver Chariot Winter Skills Camp Announced",
+        desc:
+          "Small ice groups to work on edges, control, and game sense for U10–U16 players."
+      },
+      {
+        date: "Dec 02",
+        tag: "Volunteer",
+        title: "Game-Day Volunteers Needed",
+        desc:
+          "Help with check-in, timekeeping, and locker room flow. Training provided."
+      },
+      {
+        date: "Dec 06",
+        tag: "Policy",
+        title: "Updated Travel & Arrival Guidelines",
+        desc:
+          "Please arrive 30 minutes early and confirm rink rules."
+      }
+    ];
+
     return html`
       <section>
         <h2>Silver Chariot News</h2>
         <news-card></news-card>
+
+        <div class="list">
+          ${updates.map(
+            (u) => html`
+              <div class="card">
+                <div style="opacity:.8">${u.date} · ${u.tag}</div>
+                <div style="font-weight:800; margin-top:6px">${u.title}</div>
+                <div style="opacity:.9; margin-top:6px">${u.desc}</div>
+              </div>
+            `
+          )}
+        </div>
+      </section>
+
+      <section>
+        <h2>Quick Links</h2>
+        <div class="grid">
+          <a class="card" href="/?page=schedule">View Schedule</a>
+          <a class="card" href="/?page=information">Information & Notices</a>
+          <a class="card" href="/?page=home">Rink Moments</a>
+        </div>
+      </section>
+
+      <section>
+        <h2>Contact</h2>
+        <div class="card">
+          <div><strong>Email:</strong> info@silverchariot.hockey</div>
+          <div><strong>Home rink:</strong> State College Ice Pavilion</div>
+        </div>
       </section>
     `;
   }
 
-  // New Information page
   _renderInformationPage() {
     return html`
       <section>
         <h2>Information</h2>
-        <p>
-          Important notices and guidelines for parents, players, and families in the
-          Silver Chariot Youth Hockey Association.
-        </p>
+        <p>Important notices and guidelines for families.</p>
 
         <h3>General Notices</h3>
         <ul>
-          <li>Please arrive at the rink at least 30 minutes before game time.</li>
-          <li>Players must wear full gear for practices and games.</li>
-          <li>Check the schedule regularly for updates or changes.</li>
+          <li>Arrive 30 minutes early for games.</li>
+          <li>Full equipment required at all times.</li>
+          <li>Check schedule for updates.</li>
         </ul>
 
         <h3>Parent Guidelines</h3>
         <ul>
-          <li>Cheer positively and avoid coaching from the stands.</li>
-          <li>Respect referees, coaches, and rink staff.</li>
-          <li>Notify coaches early if a player cannot attend.</li>
+          <li>Positive cheering only.</li>
+          <li>No coaching from the stands.</li>
+          <li>Respect officials and staff.</li>
         </ul>
 
-        <h3>Safety & Conduct</h3>
+        <h3>Safety</h3>
         <ul>
-          <li>No food or drinks on the ice surface.</li>
-          <li>Follow all rink safety rules and posted signage.</li>
-          <li>Report injuries or concerns to a coach immediately.</li>
+          <li>No food or drink on ice.</li>
+          <li>Follow rink rules.</li>
+          <li>Report injuries immediately.</li>
         </ul>
       </section>
     `;
   }
 
   _renderHomePage() {
-    const rail = this.schedule.slice(0, 8);
-    const list = this.schedule.slice(0, 2);
-
     return html`
       <hero-banner></hero-banner>
       <info-band></info-band>
 
-      <section id="upcoming">
-        <schedule-row heading="Upcoming Games" .games=${rail}></schedule-row>
-
-        ${list.length === 0
-          ? html`<p>No games in the list right now.</p>`
-          : html`
-              <div class="list">
-                ${list.map((g) => html`<game-card compact .game=${g}></game-card>`)}
-              </div>
-            `}
+      <section>
+        <schedule-row
+          heading="Upcoming Games"
+          .games=${this.schedule.slice(0, 6)}
+        ></schedule-row>
       </section>
 
       <image-gallery></image-gallery>
