@@ -1,30 +1,37 @@
 {
-  "monday": {
-    "open": "10:00",
-    "close": "20:00"
-  },
-  "tuesday": {
-    "open": "10:00",
-    "close": "20:00"
-  },
-  "wednesday": {
-    "open": "10:00",
-    "close": "20:00"
-  },
-  "thursday": {
-    "open": "10:00",
-    "close": "22:00"
-  },
-  "friday": {
-    "open": "10:00",
-    "close": "22:00"
-  },
-  "saturday": {
-    "open": "11:00",
-    "close": "22:00"
-  },
-  "sunday": {
-    "open": "11:00",
-    "close": "18:00"
-  }
+  "title": "Upcoming Games",
+  "games": [
+    {
+      "id": "g1",
+      "date": "2025-09-06",
+      "time": "08:30 AM",
+      "team": "U12",
+      "opponent": "North Ridge",
+      "location": "State College Ice Pavilion"
+    },
+    {
+      "id": "g2",
+      "date": "2025-09-08",
+      "time": "06:10 PM",
+      "team": "U10",
+      "opponent": "Bald Eagle",
+      "location": "Pegula Ice Arena"
+    },
+    {
+      "id": "g3",
+      "date": "2025-09-13",
+      "time": "11:20 AM",
+      "team": "U14",
+      "opponent": "Altoona",
+      "location": "Greenberg Ice Pavilion"
+    },
+    {
+      "id": "g4",
+      "date": "2025-09-15",
+      "time": "07:45 PM",
+      "team": "U16",
+      "opponent": "Hershey Jr",
+      "location": "Hersheypark Arena"
+    }
+  ]
 }
