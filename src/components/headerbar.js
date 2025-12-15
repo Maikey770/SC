@@ -5,17 +5,22 @@ import { dddGlobal } from "../ddd-global.js";
 export class HeaderBar extends LitElement {
   static properties = {
     page: { type: String },
-    menuItems: { type: Array }
+    menuItems: { type: Array },
+    scrolled: { type: Boolean }
   };
 
   constructor() {
     super();
     this.page = "home";
     this.menuItems = [];
+    this.scrolled = false;
+
+    this._onScroll = this._onScroll.bind(this);
   }
 
   connectedCallback() {
     super.connectedCallback();
+
     // Load menu from API
     fetch("/api/menu", { cache: "no-store" })
       .then((res) => res.json())
@@ -23,6 +28,21 @@ export class HeaderBar extends LitElement {
         this.menuItems = data?.items ?? [];
       })
       .catch((err) => console.error("menu load error", err));
+
+    // Watch scroll state for sticky header shrink
+    window.addEventListener("scroll", this._onScroll, { passive: true });
+    this._onScroll();
+  }
+
+  disconnectedCallback() {
+    window.removeEventListener("scroll", this._onScroll);
+    super.disconnectedCallback();
+  }
+
+  _onScroll() {
+    // Toggle compact header after small scroll
+    const next = (window.scrollY || 0) > 16;
+    if (next !== this.scrolled) this.scrolled = next;
   }
 
   static styles = [
@@ -30,77 +50,102 @@ export class HeaderBar extends LitElement {
     css`
       :host {
         display: block;
-        background: var(--ddd-theme-background, #000);
-        color: var(--ddd-theme-text-primary, #fff);
-        border-bottom: 1px solid var(--ddd-theme-border, rgba(255, 255, 255, 0.12));
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
         font-family: var(--ddd-font-primary, system-ui);
+      }
+
+      /* Stronger shadow only after scroll */
+      :host([data-scrolled="true"]) {
+        background: rgba(0, 0, 0, 0.72);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
       }
 
       header {
         max-width: 1200px;
         margin: 0 auto;
-        padding: var(--ddd-spacing-3, 12px) var(--ddd-spacing-4, 16px);
+        padding: 14px 16px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: var(--ddd-spacing-4, 16px);
+        gap: 16px;
+        transition: padding 160ms ease;
+      }
+
+      :host([data-scrolled="true"]) header {
+        padding: 10px 16px;
       }
 
       .brand {
         display: flex;
         align-items: center;
-        gap: var(--ddd-spacing-2, 8px);
+        gap: 10px;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.08em;
-        font-size: var(--ddd-font-size-s, 0.95rem);
+        font-size: 0.95rem;
         white-space: nowrap;
       }
 
       .logo {
-        width: var(--ddd-spacing-7, 28px);
-        height: var(--ddd-spacing-7, 28px);
+        width: 28px;
+        height: 28px;
         border-radius: 9999px;
-        border: 1px solid var(--ddd-theme-border, rgba(255, 255, 255, 0.18));
+        border: 1px solid rgba(255, 255, 255, 0.18);
         display: grid;
         place-items: center;
-        font-size: var(--ddd-font-size-xs, 0.8rem);
-        background: var(--ddd-theme-surface, rgba(255, 255, 255, 0.06));
+        font-size: 0.8rem;
+        background: rgba(255, 255, 255, 0.06);
+        transition: transform 160ms ease, width 160ms ease, height 160ms ease;
       }
 
-      /* Right side layout */
+      :host([data-scrolled="true"]) .logo {
+        width: 24px;
+        height: 24px;
+        transform: scale(0.98);
+      }
+
       .right {
         display: flex;
         align-items: center;
-        gap: var(--ddd-spacing-2, 8px);
+        gap: 8px;
         flex: 1;
         justify-content: flex-end;
       }
 
       nav {
         display: flex;
-        gap: var(--ddd-spacing-2, 8px);
+        gap: 8px;
         align-items: center;
-        flex-wrap: wrap;
         justify-content: flex-end;
+        flex-wrap: wrap;
       }
 
-      /* CTA button style (matches your reference image) */
       .nav-pill {
         appearance: none;
         border: 1px solid rgba(255, 255, 255, 0.55);
         background: transparent;
-        color: var(--ddd-theme-text-primary, #fff);
-        padding: var(--ddd-spacing-2, 8px) var(--ddd-spacing-4, 16px);
+        color: #fff;
+        padding: 8px 16px;
         border-radius: 9999px;
         font-family: var(--ddd-font-primary, system-ui);
-        font-size: var(--ddd-font-size-xs, 0.85rem);
+        font-size: 0.85rem;
         font-weight: 700;
         letter-spacing: 0.04em;
         text-transform: uppercase;
         cursor: pointer;
         transition: border-color 140ms ease, background 140ms ease, transform 140ms ease;
         white-space: nowrap;
+      }
+
+      :host([data-scrolled="true"]) .nav-pill {
+        padding: 7px 14px;
+        font-size: 0.82rem;
       }
 
       .nav-pill:hover {
@@ -114,7 +159,6 @@ export class HeaderBar extends LitElement {
         background: rgba(255, 255, 255, 0.1);
       }
 
-      /* Icon button (search) */
       .icon-btn {
         width: 40px;
         height: 40px;
@@ -126,6 +170,11 @@ export class HeaderBar extends LitElement {
         place-items: center;
         cursor: pointer;
         transition: border-color 140ms ease, background 140ms ease, transform 140ms ease;
+      }
+
+      :host([data-scrolled="true"]) .icon-btn {
+        width: 38px;
+        height: 38px;
       }
 
       .icon-btn:hover {
@@ -140,7 +189,6 @@ export class HeaderBar extends LitElement {
         display: block;
       }
 
-      /* Mobile: hide pills, use menu button */
       .menu-toggle {
         display: none;
       }
@@ -149,12 +197,13 @@ export class HeaderBar extends LitElement {
         nav {
           display: none;
         }
+
         .menu-toggle {
           display: inline-flex;
           border: 1px solid rgba(255, 255, 255, 0.55);
           background: transparent;
           color: #fff;
-          padding: var(--ddd-spacing-2, 8px) var(--ddd-spacing-4, 16px);
+          padding: 8px 16px;
           border-radius: 9999px;
           font-weight: 700;
           letter-spacing: 0.04em;
@@ -232,6 +281,13 @@ export class HeaderBar extends LitElement {
         </header>
       </d-d-d>
     `;
+  }
+
+  updated(changed) {
+    // Reflect state to attribute for CSS
+    if (changed.has("scrolled")) {
+      this.toggleAttribute("data-scrolled", this.scrolled);
+    }
   }
 }
 

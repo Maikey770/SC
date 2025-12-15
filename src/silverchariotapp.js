@@ -30,14 +30,13 @@ export class SilverChariotApp extends LitElement {
   connectedCallback() {
     super.connectedCallback();
 
-    fetch("/api/schedule")
+    // Load schedule from API
+    fetch("/api/schedule", { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => {
         this.schedule = data && data.upcoming ? data.upcoming : [];
       })
-      .catch((err) => {
-        console.error("schedule load error", err);
-      });
+      .catch((err) => console.error("schedule load error", err));
 
     window.addEventListener("popstate", this._onPopState);
   }
@@ -71,15 +70,44 @@ export class SilverChariotApp extends LitElement {
       line-height: 1.2;
     }
 
-    h3 {
-      margin: var(--ddd-spacing-4) 0 var(--ddd-spacing-2);
-      font-size: var(--ddd-font-size-m);
+    /* Home anchor button */
+    .jump-wrap {
+      display: flex;
+      gap: var(--ddd-spacing-3);
+      flex-wrap: wrap;
+      align-items: center;
     }
 
-    p,
-    li {
+    .jump-btn {
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+      padding: var(--ddd-spacing-2) var(--ddd-spacing-4);
+      border-radius: 9999px;
+      font-family: var(--ddd-font-primary);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform 140ms ease, background 140ms ease, border-color 140ms ease;
+    }
+
+    .jump-btn:hover {
+      border-color: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .subtle-link {
+      color: rgba(255, 255, 255, 0.75);
+      text-decoration: none;
       font-size: var(--ddd-font-size-s);
-      line-height: 1.5;
+    }
+
+    .subtle-link:hover {
+      color: rgba(255, 255, 255, 1);
+      text-decoration: underline;
     }
   `;
 
@@ -103,13 +131,20 @@ export class SilverChariotApp extends LitElement {
     this.page = id;
     this._setUrlForPage(id);
 
-    if (this.mobileMenuOpen) {
-      this.mobileMenuOpen = false;
-    }
+    if (this.mobileMenuOpen) this.mobileMenuOpen = false;
+
+    // If user goes home, allow normal scrolling
+    if (id === "home") window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   toggleMenu() {
     this.mobileMenuOpen = !this.mobileMenuOpen;
+  }
+
+  // Smooth scroll to Upcoming Games on Home
+  scrollToUpcoming() {
+    const el = this.renderRoot?.querySelector("#upcoming");
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   _renderSchedulePage() {
@@ -138,20 +173,6 @@ export class SilverChariotApp extends LitElement {
           <li>Most weeks have two practices and one game.</li>
           <li>Home rink is State College Ice Pavilion.</li>
         </ul>
-
-        <h3>Fees and Gear</h3>
-        <ul>
-          <li>Fees cover ice time, referees, and league costs.</li>
-          <li>Players bring skates and full gear.</li>
-          <li>Team jerseys are loaned and returned at the end.</li>
-        </ul>
-
-        <h3>How Parents Help</h3>
-        <ul>
-          <li>Help with clock, score sheet, or logistics when needed.</li>
-          <li>Arrive about 30 minutes before ice time.</li>
-          <li>Contact the team manager if you have questions.</li>
-        </ul>
       </section>
     `;
   }
@@ -166,13 +187,35 @@ export class SilverChariotApp extends LitElement {
   }
 
   _renderHomePage() {
+    const preview = Array.isArray(this.schedule) ? this.schedule.slice(0, 2) : [];
+
     return html`
       <section>
         <hero-banner></hero-banner>
+
+        <div class="jump-wrap">
+          <button class="jump-btn" @click=${() => this.scrollToUpcoming()}>
+            View Upcoming Games
+          </button>
+
+          <a class="subtle-link" href="/?page=schedule" @click=${(e) => { e.preventDefault(); this.changePage({ detail: "schedule" }); }}>
+            Open full schedule
+          </a>
+        </div>
       </section>
+
       <section>
         <info-band></info-band>
       </section>
+
+      <!-- Anchor target on home -->
+      <section id="upcoming">
+        <schedule-row heading="Upcoming Games"></schedule-row>
+        ${preview.length === 0
+          ? html`<p>No games in the list right now.</p>`
+          : preview.map((g) => html`<game-card .game=${g}></game-card>`)}
+      </section>
+
       <section>
         <image-gallery></image-gallery>
       </section>
