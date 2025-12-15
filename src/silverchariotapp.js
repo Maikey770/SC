@@ -106,10 +106,9 @@ export class SilverChariotApp extends LitElement {
 
     .heroShell {
       display: grid;
-      grid-template-columns: 1.6fr 1fr;
-      gap: var(--ddd-spacing-6);
-      align-items: stretch;
+      grid-template-columns: 1fr;
     }
+
 
     .heroLeft {
       border-radius: var(--ddd-radius-lg);
@@ -361,31 +360,31 @@ export class SilverChariotApp extends LitElement {
     `;
   }
 
-  _renderHomePage() {
-    const rail = this.schedule.slice(0, 10);
+_renderHomePage() {
+  const rail = this.schedule.slice(0, 10);
 
-    return html`
-      <section class="heroShell">
-        <div class="heroLeft">
-          <hero-banner></hero-banner>
-        </div>
-        ${this._renderNextGameCard()}
-      </section>
+  return html`
+    <section class="heroShell">
+      <div class="heroLeft">
+        <hero-banner></hero-banner>
+      </div>
+    </section>
 
-      <info-band></info-band>
+    <info-band></info-band>
 
-      <section class="railWrap" aria-label="Upcoming games strip">
-        <div class="railTitle">Upcoming games</div>
-        <div class="rail">
-          ${rail.length
-            ? rail.map((g) => html`<game-card compact .game=${g}></game-card>`)
-            : html`<div>No games available.</div>`}
-        </div>
-      </section>
+    <section class="railWrap" aria-label="Upcoming games strip">
+      <div class="railTitle">Upcoming games</div>
+      <div class="rail">
+        ${rail.length
+          ? rail.map((g) => html`<game-card compact .game=${g}></game-card>`)
+          : html`<div>No games available.</div>`}
+      </div>
+    </section>
 
-      <image-gallery></image-gallery>
-    `;
-  }
+    <image-gallery></image-gallery>
+  `;
+}
+
 
   _renderPageBody() {
     if (this.page === "schedule") return this._renderSchedulePage();
