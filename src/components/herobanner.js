@@ -23,21 +23,20 @@ export class HeroBanner extends LitElement {
         display: grid;
         grid-template-columns: 1.4fr 1fr;
         align-items: stretch;
-
         background: var(--ddd-theme-background);
       }
 
-      /* background image */
+      /* new background image */
       .bg {
         position: absolute;
         inset: 0;
         background-image: url("https://i.pinimg.com/736x/9c/2d/9b/9c2d9be1ed3b4bd4f8090738273c19b8.jpg");
         background-size: cover;
-        background-position: center;
+        background-position: center top;
         background-repeat: no-repeat;
       }
 
-      /* overlay for readability */
+      /* overlay to keep text readable */
       .overlay {
         position: absolute;
         inset: 0;
@@ -48,16 +47,16 @@ export class HeroBanner extends LitElement {
         );
       }
 
-      /* LEFT: title only */
       .content {
         position: relative;
         z-index: 1;
+        height: 100%;
         display: flex;
         flex-direction: column;
         justify-content: center;
         padding: var(--ddd-spacing-8);
         gap: var(--ddd-spacing-4);
-        max-width: 520px;
+        max-width: 640px;
       }
 
       .eyebrow {
@@ -74,39 +73,19 @@ export class HeroBanner extends LitElement {
         color: var(--ddd-theme-text-primary);
       }
 
-      /* RIGHT: next game only */
       .side {
         position: relative;
         z-index: 1;
         padding: var(--ddd-spacing-8);
         display: flex;
-        flex-direction: column;
+        align-items: center;
         justify-content: center;
-        gap: var(--ddd-spacing-3);
-        color: var(--ddd-theme-text-primary);
-      }
-
-      .label {
-        font-size: var(--ddd-font-size-xs);
-        letter-spacing: var(--ddd-letter-spacing-wide);
-        text-transform: uppercase;
-        opacity: 0.8;
-      }
-
-      .title {
-        font-size: var(--ddd-font-size-l);
-        font-weight: 700;
-      }
-
-      .match {
-        font-weight: 700;
       }
 
       @media (max-width: 900px) {
         .hero {
           grid-template-columns: 1fr;
         }
-
         .side {
           display: none;
         }
@@ -121,20 +100,12 @@ export class HeroBanner extends LitElement {
           <div class="bg"></div>
           <div class="overlay"></div>
 
-          <!-- LEFT -->
           <div class="content">
             <div class="eyebrow">ICEKING PRESENTS</div>
-            <h1>Silver Chariot</h1>
+            <h1>Silver Chariot Youth Hockey Association</h1>
           </div>
 
-          <!-- RIGHT -->
-          <div class="side">
-            <div class="label">Theme night</div>
-            <div class="title">Next game</div>
-            <div class="match">U12 &nbsp; VS &nbsp; NORTH RIDGE</div>
-            <div>2025-09-06 08:30 AM</div>
-            <div>State College Ice Pavilion</div>
-          </div>
+          <div class="side"></div>
         </section>
       </d-d-d>
     `;

@@ -123,7 +123,7 @@ export class SilverChariotApp extends LitElement {
       padding: var(--ddd-spacing-5);
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: center;
       gap: var(--ddd-spacing-5);
     }
 
@@ -134,23 +134,23 @@ export class SilverChariotApp extends LitElement {
 
     .ngLabel {
       font-weight: 800;
-      letter-spacing: 0.08em;
+      letter-spacing: var(--ddd-letter-spacing-wide);
       text-transform: uppercase;
-      font-size: 0.8rem;
+      font-size: var(--ddd-font-size-xs);
       color: var(--ddd-theme-text-secondary);
     }
 
     .ngTitle {
       font-weight: 900;
-      font-size: 1.2rem;
+      font-size: var(--ddd-font-size-l);
       color: var(--ddd-theme-text-primary);
     }
 
     .ngMeta {
       display: grid;
-      gap: 4px;
+      gap: var(--ddd-spacing-1);
       color: var(--ddd-theme-text-secondary);
-      font-size: 0.95rem;
+      font-size: var(--ddd-font-size-s);
     }
 
     .ngTeams {
@@ -164,31 +164,8 @@ export class SilverChariotApp extends LitElement {
     .ngTeamPill {
       border: 1px solid var(--ddd-theme-border);
       border-radius: 999px;
-      padding: 6px 10px;
+      padding: var(--ddd-spacing-1) var(--ddd-spacing-2);
       background: var(--ddd-theme-surface);
-    }
-
-    .ngActions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--ddd-spacing-3);
-    }
-
-    .btn {
-      border: 1px solid var(--ddd-theme-primary);
-      border-radius: var(--ddd-radius-md);
-      background: transparent;
-      color: var(--ddd-theme-text-primary);
-      padding: 12px 14px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      cursor: pointer;
-    }
-
-    .btnPrimary {
-      background: var(--ddd-theme-primary);
-      color: var(--ddd-theme-bg);
     }
 
     .railWrap {
@@ -202,8 +179,8 @@ export class SilverChariotApp extends LitElement {
 
     .railTitle {
       font-weight: 900;
-      font-size: 1rem;
-      letter-spacing: 0.06em;
+      font-size: var(--ddd-font-size-s);
+      letter-spacing: var(--ddd-letter-spacing-wide);
       text-transform: uppercase;
       color: var(--ddd-theme-text-secondary);
     }
@@ -214,7 +191,7 @@ export class SilverChariotApp extends LitElement {
       grid-auto-columns: minmax(260px, 320px);
       gap: var(--ddd-spacing-4);
       overflow-x: auto;
-      padding-bottom: 4px;
+      padding-bottom: var(--ddd-spacing-1);
       scroll-snap-type: x mandatory;
     }
 
@@ -224,9 +201,6 @@ export class SilverChariotApp extends LitElement {
 
     @media (max-width: 980px) {
       .heroShell {
-        grid-template-columns: 1fr;
-      }
-      .ngActions {
         grid-template-columns: 1fr;
       }
       .rail {
@@ -279,14 +253,6 @@ export class SilverChariotApp extends LitElement {
             <div class="ngTitle">No upcoming games</div>
             <div class="ngMeta">Check back soon for updates.</div>
           </div>
-          <div class="ngActions">
-            <button class="btn btnPrimary" @click=${() => this.changePage({ detail: "schedule" })}>
-              Watch
-            </button>
-            <button class="btn" @click=${() => this.changePage({ detail: "schedule" })}>
-              Tickets
-            </button>
-          </div>
         </section>
       `;
     }
@@ -310,15 +276,6 @@ export class SilverChariotApp extends LitElement {
             <div>${g.location || ""}</div>
           </div>
         </div>
-
-        <div class="ngActions">
-          <button class="btn" @click=${() => this.changePage({ detail: "schedule" })}>
-            Watch
-          </button>
-          <button class="btn btnPrimary" @click=${() => this.changePage({ detail: "schedule" })}>
-            Tickets
-          </button>
-        </div>
       </section>
     `;
   }
@@ -329,7 +286,8 @@ export class SilverChariotApp extends LitElement {
         <schedule-row heading="Upcoming Games" .games=${this.schedule}></schedule-row>
 
         ${this.schedule.length === 0
-          ? html`<p>No games in the list right now.</p>` : html`
+          ? html`<p>No games in the list right now.</p>`
+          : html`
               <div class="list">
                 ${this.schedule.map((g) => html`<game-card compact .game=${g}></game-card>`)}
               </div>
