@@ -46,13 +46,11 @@ export class HeaderBar extends LitElement {
   static styles = [
     dddGlobal,
     css`
-      /* ===== CRITICAL FIX (Option A) ===== */
       :host {
         display: block;
         position: sticky;
         top: 0;
-        z-index: 999999; /* force header above all content */
-        pointer-events: auto;
+        z-index: 1000;
         font-family: var(--ddd-font-primary);
         background: var(--ddd-theme-bg);
         border-bottom: 1px solid var(--ddd-theme-primary);
@@ -63,10 +61,6 @@ export class HeaderBar extends LitElement {
       }
 
       header {
-        position: relative;
-        z-index: 999999;
-        pointer-events: auto;
-
         max-width: 1200px;
         margin: 0 auto;
         padding: 14px 16px;
@@ -93,6 +87,7 @@ export class HeaderBar extends LitElement {
         color: var(--ddd-theme-text-primary);
       }
 
+      /* Logo wrapper */
       .logo {
         width: 28px;
         height: 28px;
@@ -111,6 +106,7 @@ export class HeaderBar extends LitElement {
         transform: scale(0.98);
       }
 
+      /* Logo image */
       .logo-img {
         width: 100%;
         height: 100%;
@@ -128,7 +124,42 @@ export class HeaderBar extends LitElement {
       }
 
       nav {
-        display: none;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+      }
+
+      .nav-pill {
+        appearance: none;
+        border: 1px solid var(--ddd-theme-primary);
+        background: transparent;
+        color: var(--ddd-theme-text-primary);
+        padding: 8px 16px;
+        border-radius: 9999px;
+        font-family: var(--ddd-font-primary);
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: transform 140ms ease;
+        white-space: nowrap;
+      }
+
+      :host([data-scrolled="true"]) .nav-pill {
+        padding: 7px 14px;
+        font-size: 0.82rem;
+      }
+
+      .nav-pill:hover {
+        transform: translateY(-1px);
+      }
+
+      .nav-pill[data-active="true"] {
+        background: var(--ddd-theme-primary);
+        color: var(--ddd-theme-bg);
       }
 
       .icon-btn {
@@ -160,32 +191,63 @@ export class HeaderBar extends LitElement {
       }
 
       .menu-toggle {
-        width: 40px;
-        height: 40px;
-        border-radius: 9999px;
-        border: 1px solid var(--ddd-theme-primary);
-        background: transparent;
-        color: var(--ddd-theme-text-primary);
-        display: grid;
-        place-items: center;
-        cursor: pointer;
-        transition: transform 140ms ease;
-      }
-
-      :host([data-scrolled="true"]) .menu-toggle {
-        width: 38px;
-        height: 38px;
-      }
-
-      .menu-toggle:hover {
-        transform: translateY(-1px);
+        display: none;
       }
 
       .theme-toggle {
-        display: none;
+        border: 1px solid var(--ddd-theme-primary);
+        background: transparent;
+        color: var(--ddd-theme-text-primary);
+        padding: 8px 14px;
+        border-radius: 9999px;
+        font-family: var(--ddd-font-primary);
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: transform 140ms ease;
+        white-space: nowrap;
+      }
+
+      .theme-toggle:hover {
+        transform: translateY(-1px);
+      }
+
+      @media (max-width: 768px) {
+        nav {
+          display: none;
+        }
+
+        .menu-toggle {
+          display: inline-flex;
+          border: 1px solid var(--ddd-theme-primary);
+          background: transparent;
+          color: var(--ddd-theme-text-primary);
+          padding: 8px 16px;
+          border-radius: 9999px;
+          font-weight: 700;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          cursor: pointer;
+        }
+
+        .theme-toggle {
+          display: none;
+        }
       }
     `
   ];
+
+  _onNavClick(target) {
+    this.dispatchEvent(
+      new CustomEvent("nav-change", {
+        detail: target,
+        bubbles: true,
+        composed: true
+      })
+    );
+  }
 
   _openMenu() {
     this.dispatchEvent(
@@ -199,7 +261,15 @@ export class HeaderBar extends LitElement {
     );
   }
 
+  _onThemeClick() {
+    this.dispatchEvent(
+      new CustomEvent("toggle-theme", { bubbles: true, composed: true })
+    );
+  }
+
   render() {
+    const items = Array.isArray(this.menuItems) ? this.menuItems : [];
+
     return html`
       <d-d-d>
         <header>
@@ -216,7 +286,31 @@ export class HeaderBar extends LitElement {
           </div>
 
           <div class="right">
-            <button class="icon-btn" aria-label="Search" @click=${this._onSearchClick}>
+            <nav aria-label="Primary navigation">
+              ${items.map((item) => {
+                const target = item.page || item.id;
+                const active = this.page === target;
+                return html`
+                  <button
+                    class="nav-pill"
+                    data-active=${active}
+                    @click=${() => this._onNavClick(target)}
+                  >
+                    ${item.label}
+                  </button>
+                `;
+              })}
+            </nav>
+
+            <button class="theme-toggle" @click=${() => this._onThemeClick()}>
+              Switch mode
+            </button>
+
+            <button
+              class="icon-btn"
+              aria-label="Search"
+              @click=${() => this._onSearchClick()}
+            >
               <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
                 <path
                   fill="currentColor"
@@ -225,13 +319,8 @@ export class HeaderBar extends LitElement {
               </svg>
             </button>
 
-            <button class="menu-toggle" aria-label="Open menu" @click=${this._openMenu}>
-              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  fill="currentColor"
-                  d="M3 6h18v2H3V6Zm0 5h18v2H3v-2Zm0 5h18v2H3v-2Z"
-                />
-              </svg>
+            <button class="menu-toggle" @click=${() => this._openMenu()}>
+              Menu
             </button>
           </div>
         </header>
