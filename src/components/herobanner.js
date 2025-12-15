@@ -10,78 +10,89 @@ export class HeroBanner extends LitElement {
         display: block;
       }
 
-      .hero {
-        position: relative;
-        min-height: 460px;
-        border-radius: var(--ddd-radius-lg);
-        overflow: hidden;
-        border: 1px solid var(--ddd-theme-border);
+      d-d-d {
+        display: block;
       }
 
-      /* full-width background */
+      .hero {
+        position: relative;
+        border-radius: var(--ddd-radius-xl);
+        overflow: hidden;
+        min-height: 420px;
+
+        /* layout */
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        align-items: stretch;
+
+        /* DDD surface */
+        background: var(--ddd-theme-background);
+      }
+
+      /* background image */
       .bg {
         position: absolute;
         inset: 0;
         background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQpSbrbgjihtQI3YNnQEXLLxKTz6C3Z3J5RQ&s");
         background-size: cover;
         background-position: center;
-        filter: brightness(0.45);
+        background-repeat: no-repeat;
       }
 
-      /* gradient so right side text stays readable */
+      /* DDD-only overlay (no rgba, no hex) */
       .overlay {
         position: absolute;
         inset: 0;
         background: linear-gradient(
           to right,
-          rgba(0, 0, 0, 0.75) 0%,
-          rgba(0, 0, 0, 0.45) 40%,
-          rgba(0, 0, 0, 0.85) 100%
+          var(--ddd-theme-background),
+          transparent
         );
       }
 
       .content {
         position: relative;
         z-index: 1;
-        height: 100%;
-        display: flex;
-        align-items: center;
         padding: var(--ddd-spacing-8);
-        max-width: 1200px;
-        margin: 0 auto;
-      }
-
-      .text {
         max-width: 640px;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: var(--ddd-spacing-4);
       }
 
       .eyebrow {
+        font-size: var(--ddd-font-size-xs);
+        letter-spacing: var(--ddd-letter-spacing-wide);
         text-transform: uppercase;
-        letter-spacing: 0.12em;
-        font-size: 0.75rem;
         color: var(--ddd-theme-text-secondary);
-        margin-bottom: var(--ddd-spacing-2);
       }
 
       h1 {
         margin: 0;
-        font-size: clamp(2.4rem, 4vw, 3.4rem);
-        font-weight: 900;
-        line-height: 1.05;
+        font-size: var(--ddd-font-size-xxl);
+        line-height: var(--ddd-line-height-tight);
         color: var(--ddd-theme-text-primary);
       }
 
-      @media (max-width: 768px) {
+      /* right side placeholder (future content) */
+      .side {
+        position: relative;
+        z-index: 1;
+        padding: var(--ddd-spacing-8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      @media (max-width: 900px) {
         .hero {
-          min-height: 340px;
+          grid-template-columns: 1fr;
         }
 
-        .content {
-          padding: var(--ddd-spacing-5);
-        }
-
-        h1 {
-          font-size: clamp(1.8rem, 6vw, 2.4rem);
+        .side {
+          display: none;
         }
       }
     `
@@ -95,11 +106,11 @@ export class HeroBanner extends LitElement {
           <div class="overlay"></div>
 
           <div class="content">
-            <div class="text">
-              <div class="eyebrow">ICEking presents</div>
-              <h1>Silver Chariot Youth Hockey Association</h1>
-            </div>
+            <div class="eyebrow">ICEKING PRESENTS</div>
+            <h1>Silver Chariot Youth Hockey Association</h1>
           </div>
+
+          <div class="side"></div>
         </section>
       </d-d-d>
     `;
