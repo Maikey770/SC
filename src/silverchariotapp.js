@@ -116,15 +116,25 @@ export class SilverChariotApp extends LitElement {
       overflow: hidden;
     }
 
-    /* Next game card (DDD tokens only) */
+    /* Next game card */
     .ngCard {
       display: flex;
       flex-direction: column;
-      gap: var(--ddd-spacing-3);
+      gap: var(--ddd-spacing-4);
       padding: var(--ddd-spacing-5);
       border-radius: var(--ddd-radius-lg);
       border: 1px solid var(--ddd-theme-border);
       background: var(--ddd-theme-surface);
+    }
+
+    /* Inner bordered block (right panel) */
+    .ngTop {
+      display: grid;
+      gap: var(--ddd-spacing-3);
+      border: 1px solid var(--ddd-theme-border);
+      border-radius: var(--ddd-radius-lg);
+      background: var(--ddd-theme-surface);
+      padding: var(--ddd-spacing-5);
     }
 
     .ngLabel {
@@ -147,6 +157,10 @@ export class SilverChariotApp extends LitElement {
       gap: var(--ddd-spacing-3);
       font-weight: 900;
       color: var(--ddd-theme-text-primary);
+      border: 1px solid var(--ddd-theme-border);
+      border-radius: var(--ddd-radius-lg);
+      background: var(--ddd-theme-surface);
+      padding: var(--ddd-spacing-3) var(--ddd-spacing-4);
     }
 
     .ngTeam {
@@ -162,11 +176,14 @@ export class SilverChariotApp extends LitElement {
     }
 
     .ngMeta {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
+      display: grid;
+      gap: var(--ddd-spacing-1);
       font-size: var(--ddd-font-size-s);
       color: var(--ddd-theme-text-secondary);
+      border: 1px solid var(--ddd-theme-border);
+      border-radius: var(--ddd-radius-lg);
+      background: var(--ddd-theme-surface);
+      padding: var(--ddd-spacing-3) var(--ddd-spacing-4);
     }
 
     .railWrap {
@@ -252,9 +269,11 @@ export class SilverChariotApp extends LitElement {
     if (!g) {
       return html`
         <section class="ngCard">
-          <div class="ngLabel">Next game</div>
-          <div class="ngTitle">No upcoming games</div>
-          <div class="ngMeta">Check back soon for updates.</div>
+          <div class="ngTop">
+            <div class="ngLabel">Next game</div>
+            <div class="ngTitle">No upcoming games</div>
+            <div class="ngMeta">Check back soon for updates.</div>
+          </div>
         </section>
       `;
     }
@@ -263,18 +282,20 @@ export class SilverChariotApp extends LitElement {
 
     return html`
       <section class="ngCard">
-        <div class="ngLabel">Theme night</div>
-        <div class="ngTitle">Next game</div>
+        <div class="ngTop">
+          <div class="ngLabel">Theme night</div>
+          <div class="ngTitle">Next game</div>
 
-        <div class="ngTeams" aria-label="Matchup">
-          <span class="ngTeam">${String(g.team || "U12").toUpperCase()}</span>
-          <span class="ngVs">VS</span>
-          <span class="ngTeam">${String(g.opponent || "TBD").toUpperCase()}</span>
-        </div>
+          <div class="ngTeams" aria-label="Matchup">
+            <span class="ngTeam">${String(g.team || "U12").toUpperCase()}</span>
+            <span class="ngVs">VS</span>
+            <span class="ngTeam">${String(g.opponent || "TBD").toUpperCase()}</span>
+          </div>
 
-        <div class="ngMeta">
-          <div>${dateTime || "TBD"}</div>
-          <div>${g.location || ""}</div>
+          <div class="ngMeta">
+            <div>${dateTime || "TBD"}</div>
+            <div>${g.location || ""}</div>
+          </div>
         </div>
       </section>
     `;
@@ -289,7 +310,9 @@ export class SilverChariotApp extends LitElement {
           ? html`<p>No games in the list right now.</p>`
           : html`
               <div class="list">
-                ${this.schedule.map((g) => html`<game-card compact .game=${g}></game-card>`)}
+                ${this.schedule.map(
+                  (g) => html`<game-card compact .game=${g}></game-card>`
+                )}
               </div>
             `}
       </section>
