@@ -329,8 +329,7 @@ export class SilverChariotApp extends LitElement {
         <schedule-row heading="Upcoming Games" .games=${this.schedule}></schedule-row>
 
         ${this.schedule.length === 0
-          ? html`<p>No games in the list right now.</p>`
-          : html`
+          ? html`<p>No games in the list right now.</p>` : html`
               <div class="list">
                 ${this.schedule.map((g) => html`<game-card compact .game=${g}></game-card>`)}
               </div>
