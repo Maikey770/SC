@@ -23,10 +23,10 @@ export class HeroBanner extends LitElement {
         display: grid;
         grid-template-columns: 1.4fr 1fr;
         align-items: stretch;
+
         background: var(--ddd-theme-background);
       }
 
-      /* new background image */
       .bg {
         position: absolute;
         inset: 0;
@@ -36,7 +36,6 @@ export class HeroBanner extends LitElement {
         background-repeat: no-repeat;
       }
 
-      /* overlay to keep text readable */
       .overlay {
         position: absolute;
         inset: 0;
@@ -73,19 +72,39 @@ export class HeroBanner extends LitElement {
         color: var(--ddd-theme-text-primary);
       }
 
+      /* Right side: text only, no buttons */
       .side {
         position: relative;
         z-index: 1;
         padding: var(--ddd-spacing-8);
         display: flex;
-        align-items: center;
+        flex-direction: column;
         justify-content: center;
+        gap: var(--ddd-spacing-3);
+        color: var(--ddd-theme-text-primary);
+      }
+
+      .label {
+        font-size: var(--ddd-font-size-xs);
+        letter-spacing: var(--ddd-letter-spacing-wide);
+        text-transform: uppercase;
+        opacity: 0.8;
+      }
+
+      .title {
+        font-size: var(--ddd-font-size-l);
+        font-weight: 700;
+      }
+
+      .match {
+        font-weight: 700;
       }
 
       @media (max-width: 900px) {
         .hero {
           grid-template-columns: 1fr;
         }
+
         .side {
           display: none;
         }
@@ -100,12 +119,20 @@ export class HeroBanner extends LitElement {
           <div class="bg"></div>
           <div class="overlay"></div>
 
+          <!-- Left: hero title -->
           <div class="content">
             <div class="eyebrow">ICEKING PRESENTS</div>
             <h1>Silver Chariot Youth Hockey Association</h1>
           </div>
 
-          <div class="side"></div>
+          <!-- Right: Next game info ONLY -->
+          <div class="side">
+            <div class="label">Theme night</div>
+            <div class="title">Next game</div>
+            <div class="match">U12 &nbsp; VS &nbsp; NORTH RIDGE</div>
+            <div>2025-09-06 08:30 AM</div>
+            <div>State College Ice Pavilion</div>
+          </div>
         </section>
       </d-d-d>
     `;
