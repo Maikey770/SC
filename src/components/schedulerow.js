@@ -21,7 +21,6 @@ export class ScheduleRow extends LitElement {
         display: block;
       }
 
-      /* Main container for the schedule section */
       .wrap {
         border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: 22px;
@@ -30,7 +29,6 @@ export class ScheduleRow extends LitElement {
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
       }
 
-      /* Section heading */
       h2 {
         margin: 0 0 14px 0;
         font-size: 44px;
@@ -42,14 +40,12 @@ export class ScheduleRow extends LitElement {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 18px;
-        align-items: start;
       }
 
       .left {
         display: grid;
         grid-template-columns: repeat(2, minmax(220px, 320px));
         gap: 16px;
-        align-content: start;
       }
 
       .right {
@@ -59,19 +55,12 @@ export class ScheduleRow extends LitElement {
       .empty {
         opacity: 0.75;
         font-size: 0.95rem;
-        padding: 8px 2px;
       }
 
-      game-card {
-        width: 100%;
-        max-width: 320px;
-
+      .card-wrap {
         border: 1px solid var(--ddd-theme-primary);
-
         border-radius: 14px;
-
         padding: 10px;
-
         background: color-mix(
           in srgb,
           var(--ddd-theme-primary) 8%,
@@ -79,7 +68,7 @@ export class ScheduleRow extends LitElement {
         );
       }
 
-      game-card:hover {
+      .card-wrap:hover {
         border-color: var(
           --ddd-theme-primary-highlight,
           var(--ddd-theme-primary)
@@ -92,25 +81,26 @@ export class ScheduleRow extends LitElement {
           );
       }
 
+      game-card {
+        width: 100%;
+        max-width: 320px;
+      }
+
       @media (max-width: 980px) {
         .layout {
           grid-template-columns: 1fr;
         }
-
         .right {
           display: none;
         }
-
         .left {
           grid-template-columns: 1fr;
         }
-
         game-card {
           max-width: 100%;
         }
       }
 
-      /* Smaller heading size for mobile screens */
       @media (max-width: 520px) {
         h2 {
           font-size: 34px;
@@ -120,7 +110,6 @@ export class ScheduleRow extends LitElement {
   ];
 
   render() {
-    /* Only display the first two games */
     const list = Array.isArray(this.games)
       ? this.games.slice(0, 2)
       : [];
@@ -132,7 +121,11 @@ export class ScheduleRow extends LitElement {
           <div class="left">
             ${list.length
               ? list.map(
-                  (g) => html`<game-card .game=${g}></game-card>`
+                  (g) => html`
+                    <div class="card-wrap">
+                      <game-card .game=${g}></game-card>
+                    </div>
+                  `
                 )
               : html`<div class="empty">No games available.</div>`}
           </div>
