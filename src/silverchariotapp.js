@@ -58,78 +58,29 @@ export class SilverChariotApp extends LitElement {
     main {
       max-width: 1200px;
       margin: 0 auto;
-      padding: var(--ddd-spacing-6) var(--ddd-spacing-4) var(--ddd-spacing-10);
+      padding: var(--ddd-spacing-6) var(--ddd-spacing-4)
+        var(--ddd-spacing-10);
       display: flex;
       flex-direction: column;
-      gap: var(--ddd-spacing-6);
+      gap: var(--ddd-spacing-8);
     }
 
-    /* ---------- Jump buttons ---------- */
-    .jump-wrap {
-      display: flex;
-      gap: var(--ddd-spacing-3);
-      flex-wrap: wrap;
-      align-items: center;
+    h2 {
+      margin: 0;
+      font-size: var(--ddd-font-size-l);
+      line-height: 1.2;
     }
 
-    .jump-btn {
-      appearance: none;
-      border: 1px solid rgba(255, 255, 255, 0.55);
-      background: rgba(255, 255, 255, 0.06);
-      color: #fff;
-      padding: var(--ddd-spacing-2) var(--ddd-spacing-4);
-      border-radius: 9999px;
-      font-family: var(--ddd-font-primary);
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: transform 140ms ease, background 140ms ease, border-color 140ms ease;
-    }
-
-    .jump-btn:hover {
-      border-color: rgba(255, 255, 255, 0.9);
-      background: rgba(255, 255, 255, 0.1);
-      transform: translateY(-1px);
-    }
-
-    .subtle-link {
-      color: rgba(255, 255, 255, 0.75);
-      text-decoration: none;
-      font-size: var(--ddd-font-size-s);
-    }
-
-    .subtle-link:hover {
-      color: rgba(255, 255, 255, 1);
-      text-decoration: underline;
-    }
-
-    /* ---------- Upcoming Games spacing ---------- */
-    .upcoming-section {
-      display: flex;
-      flex-direction: column;
-      gap: var(--ddd-spacing-8); /* BIG gap between header block and list */
-    }
-
-    .upcoming-list {
-      display: flex;
-      flex-direction: column;
-      gap: var(--ddd-spacing-5); /* space between each game card */
-    }
-
-    @media (max-width: 600px) {
-      .upcoming-section {
-        gap: var(--ddd-spacing-6);
-      }
-      .upcoming-list {
-        gap: var(--ddd-spacing-4);
-      }
+    /* Increase vertical spacing between game rows */
+    game-card {
+      margin-bottom: var(--ddd-spacing-4);
     }
   `;
 
   _getPageFromUrl() {
     const params = new URLSearchParams(window.location.search);
-    return params.get("page") || "home";
+    const page = params.get("page");
+    return page ? page : "home";
   }
 
   _setUrlForPage(id) {
@@ -145,74 +96,48 @@ export class SilverChariotApp extends LitElement {
     const id = e.detail;
     this.page = id;
     this._setUrlForPage(id);
+
     if (this.mobileMenuOpen) this.mobileMenuOpen = false;
-    if (id === "home") window.scrollTo({ top: 0, behavior: "smooth" });
+
+    if (id === "home") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   }
 
   toggleMenu() {
     this.mobileMenuOpen = !this.mobileMenuOpen;
   }
 
-  scrollToUpcoming() {
-    const el = this.renderRoot?.querySelector("#upcoming");
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
+  /* ---------- Pages ---------- */
 
   _renderSchedulePage() {
     return html`
-      <section class="upcoming-section">
+      <section>
         <schedule-row heading="Upcoming Games"></schedule-row>
 
-        <div class="upcoming-list">
-          ${this.schedule.length === 0
-            ? html`<p>No games in the list right now.</p>`
-            : this.schedule.map((g) => html`<game-card .game=${g}></game-card>`)}
-        </div>
+        ${this.schedule.length === 0
+          ? html`<p>No games in the list right now.</p>`
+          : this.schedule.map(
+              (g) => html`<game-card .game=${g}></game-card>`
+            )}
       </section>
     `;
   }
 
-  _renderHomePage() {
-    const preview = Array.isArray(this.schedule) ? this.schedule.slice(0, 2) : [];
-
+  _renderParentsPage() {
     return html`
       <section>
-        <hero-banner></hero-banner>
+        <h2>Parent Information</h2>
+        <p>
+          Silver Chariot is a youth hockey club focused on development,
+          responsibility, and long-term growth.
+        </p>
 
-        <div class="jump-wrap">
-          <button class="jump-btn" @click=${() => this.scrollToUpcoming()}>
-            View Upcoming Games
-          </button>
-
-          <a
-            class="subtle-link"
-            href="/?page=schedule"
-            @click=${(e) => {
-              e.preventDefault();
-              this.changePage({ detail: "schedule" });
-            }}
-          >
-            Open full schedule
-          </a>
-        </div>
-      </section>
-
-      <section>
-        <info-band></info-band>
-      </section>
-
-      <section id="upcoming" class="upcoming-section">
-        <schedule-row heading="Upcoming Games"></schedule-row>
-
-        <div class="upcoming-list">
-          ${preview.length === 0
-            ? html`<p>No games in the list right now.</p>`
-            : preview.map((g) => html`<game-card .game=${g}></game-card>`)}
-        </div>
-      </section>
-
-      <section>
-        <image-gallery></image-gallery>
+        <ul>
+          <li>Season runs September through March</li>
+          <li>Two practices and one game per week</li>
+          <li>Home rink: State College Ice Pavilion</li>
+        </ul>
       </section>
     `;
   }
@@ -226,14 +151,32 @@ export class SilverChariotApp extends LitElement {
     `;
   }
 
-  _renderParentsPage() {
+  _renderHomePage() {
+    const preview = Array.isArray(this.schedule)
+      ? this.schedule.slice(0, 2)
+      : [];
+
     return html`
       <section>
-        <h2>Parent Information</h2>
-        <p>
-          Silver Chariot is a youth hockey club. We want kids to play serious hockey
-          but also keep up with school, health, and friends.
-        </p>
+        <hero-banner></hero-banner>
+      </section>
+
+      <section>
+        <info-band></info-band>
+      </section>
+
+      <section id="upcoming">
+        <schedule-row heading="Upcoming Games"></schedule-row>
+
+        ${preview.length === 0
+          ? html`<p>No games in the list right now.</p>`
+          : preview.map(
+              (g) => html`<game-card .game=${g}></game-card>`
+            )}
+      </section>
+
+      <section>
+        <image-gallery></image-gallery>
       </section>
     `;
   }
