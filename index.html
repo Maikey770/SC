@@ -5,21 +5,20 @@
     <title>Silver Chariot Youth Hockey</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- FIX: resolve @haxtheweb + d-d-d imports via CDN -->
+    <!-- Resolve DDD via CDN -->
     <script type="importmap">
-      {
-        "imports": {
-          "@haxtheweb/d-d-d/": "https://cdn.jsdelivr.net/npm/@haxtheweb/d-d-d/",
-          "@haxtheweb/": "https://cdn.jsdelivr.net/npm/@haxtheweb/"
-        }
+    {
+      "imports": {
+        "@haxtheweb/d-d-d/": "https://cdn.jsdelivr.net/npm/@haxtheweb/d-d-d/",
+        "@haxtheweb/": "https://cdn.jsdelivr.net/npm/@haxtheweb/"
       }
+    }
     </script>
   </head>
 
-  <body style="margin: 0; background: var(--ddd-theme-bg);">
+  <body style="margin: 0;">
     <silver-chariot-app></silver-chariot-app>
 
-    <!-- IMPORTANT: dist must load the bundled file -->
-    <script type="module" src="./dist/silverchariotapp.js"></script>
+    <script type="module" src="./silverchariotapp.js"></script>
   </body>
 </html>
