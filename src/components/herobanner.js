@@ -27,17 +27,17 @@ export class HeroBanner extends LitElement {
         background: var(--ddd-theme-background);
       }
 
-      /* updated higher-quality background */
+      /* updated background image */
       .bg {
         position: absolute;
         inset: 0;
-        background-image: url("https://m.media-amazon.com/images/I/81svokG7KhL._AC_SY300_SX300_QL70_FMwebp_.jpg");
+        background-image: url("https://i.pinimg.com/736x/c9/d1/9a/c9d19aea11bbc1ef2bcc2aa8de4ff9e2.jpg");
         background-size: cover;
-        background-position: center;
+        background-position: center top;
         background-repeat: no-repeat;
       }
 
-      /* pure DDD overlay */
+      /* pure DDD-only overlay */
       .overlay {
         position: absolute;
         inset: 0;
