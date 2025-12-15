@@ -25,6 +25,9 @@ export class HeroBanner extends LitElement {
         align-items: stretch;
 
         background: var(--ddd-theme-background);
+
+        /* Force hero text color using DDD tokens only */
+        --hero-text-color: var(--ddd-theme-bg);
       }
 
       .bg {
@@ -62,14 +65,14 @@ export class HeroBanner extends LitElement {
         font-size: var(--ddd-font-size-xs);
         letter-spacing: var(--ddd-letter-spacing-wide);
         text-transform: uppercase;
-        color: var(--ddd-theme-default-black);
+        color: var(--hero-text-color);
       }
 
       h1 {
         margin: 0;
         font-size: var(--ddd-font-size-xxl);
         line-height: var(--ddd-line-height-tight);
-        color: var(--ddd-theme-default-black);
+        color: var(--hero-text-color);
       }
 
       .side {
