@@ -260,7 +260,7 @@ export class HeaderBar extends LitElement {
           <div class="brand">
             <img
               class="logo"
-              src="../assets/silver-chariot-logo.png"
+              src="./assets/silver-chariot-logo.png"
               alt="Silver Chariot Club logo"
             />
             <span>Silver Chariot</span>
