@@ -32,14 +32,16 @@ export class HeaderBar extends LitElement {
         display: block;
         background: var(--ddd-theme-background, #000);
         color: var(--ddd-theme-text-primary, #fff);
-        border-bottom: 1px solid var(--ddd-theme-border, rgba(255, 255, 255, 0.12));
+        border-bottom: 1px solid
+          var(--ddd-theme-border, rgba(255, 255, 255, 0.12));
         font-family: var(--ddd-font-primary, system-ui);
       }
 
       header {
         max-width: 1200px;
         margin: 0 auto;
-        padding: var(--ddd-spacing-3, 12px) var(--ddd-spacing-4, 16px);
+        padding: var(--ddd-spacing-3, 12px)
+          var(--ddd-spacing-4, 16px);
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -54,13 +56,15 @@ export class HeaderBar extends LitElement {
         text-transform: uppercase;
         letter-spacing: 0.06em;
         font-size: var(--ddd-font-size-s, 0.95rem);
+        white-space: nowrap;
       }
 
       .logo {
         width: var(--ddd-spacing-7, 28px);
         height: var(--ddd-spacing-7, 28px);
         border-radius: 9999px;
-        border: 1px solid var(--ddd-theme-border, rgba(255, 255, 255, 0.12));
+        border: 1px solid
+          var(--ddd-theme-border, rgba(255, 255, 255, 0.12));
         display: flex;
         align-items: center;
         justify-content: center;
@@ -68,30 +72,42 @@ export class HeaderBar extends LitElement {
         background: var(--ddd-theme-surface, rgba(255, 255, 255, 0.06));
       }
 
+      /* Desktop nav */
       nav {
         display: flex;
         gap: var(--ddd-spacing-2, 8px);
         align-items: center;
+        justify-content: flex-end;
+        flex-wrap: wrap;
       }
 
       d-d-d-button.nav-btn {
-        --ddd-button-padding: var(--ddd-spacing-2, 8px) var(--ddd-spacing-3, 12px);
+        --ddd-button-padding: var(--ddd-spacing-2, 8px)
+          var(--ddd-spacing-3, 12px);
       }
 
+      /* Hide mobile menu button on desktop */
       .menu-toggle {
-        --ddd-button-padding: var(--ddd-spacing-2, 8px) var(--ddd-spacing-3, 12px);
+        display: none;
+        --ddd-button-padding: var(--ddd-spacing-2, 8px)
+          var(--ddd-spacing-3, 12px);
       }
 
+      /* Mobile behavior */
       @media (max-width: 768px) {
         nav {
           display: none;
+        }
+
+        .menu-toggle {
+          display: inline-flex;
         }
       }
     `
   ];
 
   _onNavClick(target) {
-    // Notify parent app to change page
+    // Notify app to change page
     this.dispatchEvent(
       new CustomEvent("nav-change", {
         detail: target,
@@ -114,7 +130,7 @@ export class HeaderBar extends LitElement {
   _getFlatMainItems() {
     const items = Array.isArray(this.menuItems) ? this.menuItems : [];
 
-    // Group-style menu (items with children)
+    // Group-style menu
     for (let i = 0; i < items.length; i++) {
       const g = items[i];
       if (g && Array.isArray(g.children) && g.children.length) {
@@ -122,7 +138,7 @@ export class HeaderBar extends LitElement {
       }
     }
 
-    // Flat menu list
+    // Flat menu
     return items;
   }
 
@@ -150,7 +166,9 @@ export class HeaderBar extends LitElement {
             <span>Silver Chariot</span>
           </div>
 
-          <nav aria-label="Primary navigation">${navButtons}</nav>
+          <nav aria-label="Primary navigation">
+            ${navButtons}
+          </nav>
 
           <d-d-d-button
             class="menu-toggle"
