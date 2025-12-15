@@ -1,5 +1,6 @@
 import { LitElement, html, css } from "lit";
 import "@haxtheweb/d-d-d/d-d-d.js";
+import "@haxtheweb/d-d-d/d-d-d-button.js";
 import { dddGlobal } from "../ddd-global.js";
 
 export class HeaderBar extends LitElement {
@@ -16,11 +17,11 @@ export class HeaderBar extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    // Load menu from API
-    fetch("/api/menu", { cache: "no-store" })
+    // Load menu items from API
+    fetch("/api/menu")
       .then((res) => res.json())
       .then((data) => {
-        this.menuItems = data && Array.isArray(data.items) ? data.items : [];
+        this.menuItems = data?.items ?? [];
       })
       .catch((err) => console.error("menu load error", err));
   }
@@ -30,150 +31,78 @@ export class HeaderBar extends LitElement {
     css`
       :host {
         display: block;
-        background: var(--ddd-theme-background, #000);
-        color: var(--ddd-theme-text-primary, #fff);
-        border-bottom: 1px solid var(--ddd-theme-border, rgba(255, 255, 255, 0.12));
-        font-family: var(--ddd-font-primary, system-ui);
+        background: #000;
+        color: #fff;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
       }
 
       header {
-        max-width: 1200px;
+        max-width: 1400px;
         margin: 0 auto;
-        padding: var(--ddd-spacing-3, 12px) var(--ddd-spacing-4, 16px);
+        padding: 12px 24px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: var(--ddd-spacing-3, 12px);
-        flex-wrap: wrap;
+        gap: 16px;
       }
 
       .brand {
-        display: flex;
-        align-items: center;
-        gap: var(--ddd-spacing-2, 8px);
         font-weight: 700;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
-        letter-spacing: 0.06em;
-        font-size: var(--ddd-font-size-s, 0.95rem);
         white-space: nowrap;
-        flex: 0 0 auto;
       }
 
-      .logo {
-        width: var(--ddd-spacing-7, 28px);
-        height: var(--ddd-spacing-7, 28px);
-        border-radius: 9999px;
-        border: 1px solid var(--ddd-theme-border, rgba(255, 255, 255, 0.12));
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: var(--ddd-font-size-xs, 0.8rem);
-        background: var(--ddd-theme-surface, rgba(255, 255, 255, 0.06));
-      }
-
-      /* Desktop nav */
       nav {
         display: flex;
-        gap: var(--ddd-spacing-2, 8px);
+        gap: 12px;
         align-items: center;
         justify-content: flex-end;
-        flex-wrap: wrap;
-        flex: 1 1 420px;
-        min-width: 420px;
+        flex: 1;
+        min-width: 480px;
       }
 
-      d-d-d-button.nav-btn {
-        --ddd-button-padding: var(--ddd-spacing-2, 8px) var(--ddd-spacing-3, 12px);
+      d-d-d-button {
+        --ddd-button-background: transparent;
+        --ddd-button-color: white;
+        --ddd-button-border: 1px solid rgba(255, 255, 255, 0.25);
       }
 
-      /* Hide menu button on desktop */
-      .menu-toggle {
-        display: none;
-        --ddd-button-padding: var(--ddd-spacing-2, 8px) var(--ddd-spacing-3, 12px);
-        flex: 0 0 auto;
-      }
-
-      /* Mobile behavior */
       @media (max-width: 768px) {
         nav {
           display: none;
-        }
-
-        .menu-toggle {
-          display: inline-flex;
         }
       }
     `
   ];
 
-  _onNavClick(target) {
-    // Notify app to change page
+  _onNavClick(id) {
     this.dispatchEvent(
       new CustomEvent("nav-change", {
-        detail: target,
+        detail: id,
         bubbles: true,
         composed: true
       })
     );
-  }
-
-  _openMenu() {
-    // Open mobile menu
-    this.dispatchEvent(
-      new CustomEvent("open-menu", {
-        bubbles: true,
-        composed: true
-      })
-    );
-  }
-
-  _getFlatMainItems() {
-    const items = Array.isArray(this.menuItems) ? this.menuItems : [];
-
-    // Group-style menu
-    for (let i = 0; i < items.length; i++) {
-      const g = items[i];
-      if (g && Array.isArray(g.children) && g.children.length) {
-        return g.children;
-      }
-    }
-
-    // Flat menu
-    return items;
   }
 
   render() {
-    const items = this._getFlatMainItems();
-
-    const navButtons = items.map((item) => {
-      const target = item.page || item.id;
-      const active = this.page === target;
-      return html`
-        <d-d-d-button
-          class="nav-btn"
-          data-active=${active}
-          .label=${item.label}
-          @click=${() => this._onNavClick(target)}
-        ></d-d-d-button>
-      `;
-    });
-
     return html`
       <d-d-d>
         <header>
-          <div class="brand">
-            <div class="logo">SC</div>
-            <span>Silver Chariot</span>
-          </div>
+          <div class="brand">SC SILVER CHARIOT</div>
 
-          <nav aria-label="Primary navigation">${navButtons}</nav>
-
-          <d-d-d-button
-            class="menu-toggle"
-            .label=${"Menu"}
-            aria-label="Open menu"
-            @click=${() => this._openMenu()}
-          ></d-d-d-button>
+          <nav>
+            ${this.menuItems.map(
+              (item) => html`
+                <d-d-d-button
+                  @click=${() => this._onNavClick(item.page)}
+                >
+                  ${item.label}
+                </d-d-d-button>
+              `
+            )}
+          </nav>
         </header>
       </d-d-d>
     `;
