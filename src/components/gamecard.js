@@ -1,5 +1,6 @@
 import { LitElement, html, css } from "lit";
 import { dddGlobal } from "../ddd-global.js";
+import "@haxtheweb/d-d-d/d-d-d-button.js";
 
 export class GameCard extends LitElement {
   static properties = {
@@ -20,108 +21,53 @@ export class GameCard extends LitElement {
         display: block;
       }
 
+      /* DDD-only: all colors + spacing come from DDD vars */
       .card {
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 18px;
-        background: rgba(255, 255, 255, 0.04);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-        overflow: hidden;
-      }
-
-      /* ---------- Compact (list) ---------- */
-      .compact {
-        padding: 14px 16px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-      }
-
-      .compact-left {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        min-width: 0;
-      }
-
-      .meta {
-        opacity: 0.85;
-        font-size: 0.95rem;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      .loc {
-        opacity: 0.8;
-        font-size: 0.95rem;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      .chip {
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        background: rgba(255, 255, 255, 0.06);
-        color: rgba(255, 255, 255, 0.9);
-        padding: 4px 10px;
-        border-radius: 9999px;
-        font-size: 0.8rem;
-        font-weight: 700;
-        letter-spacing: 0.02em;
-        white-space: nowrap;
-      }
-
-      /* ---------- Featured (slider) ---------- */
-      .featured {
-        padding: 18px;
-      }
-
-      .featured-top {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 14px;
-      }
-
-      .featured-meta {
-        opacity: 0.85;
-        font-size: 0.95rem;
-        font-weight: 600;
-      }
-
-      .teams {
+        background: var(--ddd-theme-default-white);
+        color: var(--ddd-theme-default-black);
+        border-radius: var(--ddd-radius-xl, 14px);
+        padding: var(--ddd-spacing-4) var(--ddd-spacing-5);
         display: grid;
-        grid-template-columns: 1fr auto 1fr;
-        gap: 14px;
+        grid-template-columns: auto 1fr;
         align-items: center;
-        margin-bottom: 14px;
+        gap: var(--ddd-spacing-4);
+        border: 1px solid color-mix(in srgb, var(--ddd-theme-default-black) 12%, transparent);
+        box-shadow: 0 var(--ddd-spacing-3) var(--ddd-spacing-6)
+          color-mix(in srgb, var(--ddd-theme-default-black) 22%, transparent);
       }
 
-      .side {
+      :host([compact]) .card {
+        padding: var(--ddd-spacing-3) var(--ddd-spacing-4);
+        border-radius: var(--ddd-radius-lg, 12px);
+      }
+
+      .left {
         display: flex;
         align-items: center;
-        gap: 12px;
-        min-width: 0;
+        gap: var(--ddd-spacing-3);
+        min-width: 160px;
       }
 
-      .side.right {
-        justify-content: flex-end;
-        text-align: right;
-        flex-direction: row-reverse;
+      .logos {
+        display: flex;
+        align-items: center;
+        gap: var(--ddd-spacing-2);
       }
 
       .logo {
-        width: 46px;
-        height: 46px;
-        border-radius: 9999px;
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        background: rgba(255, 255, 255, 0.06);
+        width: 44px;
+        height: 44px;
+        border-radius: var(--ddd-radius-round, 999px);
+        overflow: hidden;
         display: grid;
         place-items: center;
-        overflow: hidden;
-        flex: 0 0 auto;
+        background: color-mix(in srgb, var(--ddd-theme-default-white) 88%, var(--ddd-theme-default-black));
+        border: 1px solid color-mix(in srgb, var(--ddd-theme-default-black) 12%, transparent);
+      }
+
+      :host([compact]) .logo {
+        width: 40px;
+        height: 40px;
       }
 
       .logo img {
@@ -131,148 +77,122 @@ export class GameCard extends LitElement {
         display: block;
       }
 
-      .logo-text {
-        font-weight: 900;
-        letter-spacing: 0.06em;
-        font-size: 0.9rem;
-      }
-
-      .names {
-        min-width: 0;
-      }
-
-      .name {
+      .initials {
         font-weight: 800;
-        font-size: 1.05rem;
-        line-height: 1.1;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      .sub {
-        opacity: 0.75;
-        font-size: 0.9rem;
-        margin-top: 4px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        font-size: var(--ddd-font-size-3xs, 14px);
+        letter-spacing: 0.02em;
+        color: var(--ddd-theme-default-black);
       }
 
       .vs {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .vs-text {
         font-weight: 900;
-        letter-spacing: 0.12em;
-        opacity: 0.9;
+        font-size: var(--ddd-font-size-4xs, 12px);
+        letter-spacing: 0.08em;
+        color: color-mix(in srgb, var(--ddd-theme-default-black) 70%, transparent);
       }
 
-      .featured-bottom {
+      .right {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 12px;
-        padding-top: 12px;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        gap: var(--ddd-spacing-4);
+        width: 100%;
       }
 
-      .location {
-        opacity: 0.85;
-        font-size: 0.95rem;
-        min-width: 0;
+      .meta {
+        display: flex;
+        flex-direction: column;
+        gap: var(--ddd-spacing-1);
+      }
+
+      .dt {
+        font-weight: 900;
+        font-size: var(--ddd-font-size-2xs, 14px);
+        letter-spacing: 0.02em;
+      }
+
+      .sub {
+        font-size: var(--ddd-font-size-3xs, 12px);
+        color: color-mix(in srgb, var(--ddd-theme-default-black) 72%, transparent);
+      }
+
+      /* Keep CTA aligned like your screenshot */
+      d-d-d-button {
         white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+      }
+
+      @media (max-width: 520px) {
+        .card {
+          grid-template-columns: 1fr;
+          gap: var(--ddd-spacing-3);
+        }
+        .left {
+          min-width: 0;
+        }
+        .right {
+          justify-content: space-between;
+        }
       }
     `
   ];
 
-  // Build initials for placeholder logos
-  _initials(text) {
-    const t = (text || "").trim();
-    if (!t) return "SC";
-    const parts = t.split(/\s+/).slice(0, 2);
-    return parts.map((p) => p[0]?.toUpperCase() || "").join("");
+  // Simple initials: "U12" -> "U12", "North Ridge" -> "NR"
+  _initials(name) {
+    if (!name) return "SC";
+    const s = String(name).trim();
+    if (/^u\d+/i.test(s)) return s.toUpperCase();
+    const parts = s.split(/\s+/).filter(Boolean);
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[1][0]).toUpperCase();
   }
 
   render() {
     const g = this.game || {};
-    const date = g.date || "";
-    const time = g.time || "";
-    const location = g.location || "";
-    const status = g.status || "Scheduled";
+    const dt = `${g.date || ""}${g.date && g.time ? " | " : ""}${g.time || ""}`.trim();
 
-    // Data mapping
-    // Left = Silver Chariot side (team), Right = opponent side
-    const leftName = "Silver Chariot";
-    const leftSub = g.team ? `Team ${g.team}` : "Team";
-    const rightName = g.opponent || "Opponent";
-    const rightSub = g.location ? "Away" : "";
+    const homeName = g.team || "Silver Chariot";
+    const awayName = g.opponent || "Opponent";
 
-    // Optional logo urls (if you add them later)
-    const leftLogo = g.homeLogo || g.leftLogo || "";
-    const rightLogo = g.awayLogo || g.rightLogo || "";
+    // Optional fields (add later in JSON)
+    const homeLogo = g.teamLogo || "";
+    const awayLogo = g.opponentLogo || "";
+    const ticketUrl = g.ticketUrl || "";
 
-    // Compact list view
-    if (this.compact) {
-      return html`
-        <div class="card compact" role="listitem" aria-label="Game">
-          <div class="compact-left">
-            <div class="meta">${date} · ${time}</div>
-            <div class="loc">${location}</div>
-          </div>
-          <div class="chip">${rightSub || "Away"}</div>
-        </div>
-      `;
-    }
-
-    // Featured card view (for the big panel / slider)
     return html`
-      <div class="card featured" role="group" aria-label="Featured game">
-        <div class="featured-top">
-          <div class="featured-meta">${date} · ${time}</div>
-          <div class="chip">${status}</div>
-        </div>
-
-        <div class="teams">
-          <div class="side left">
-            <div class="logo" aria-label="Home logo">
-              ${leftLogo
-                ? html`<img src="${leftLogo}" alt="Silver Chariot logo" />`
-                : html`<div class="logo-text">${this._initials(leftName)}</div>`}
+      <div class="card">
+        <div class="left">
+          <div class="logos" aria-label="Matchup">
+            <div class="logo" title=${homeName}>
+              ${homeLogo
+                ? html`<img src=${homeLogo} alt=${homeName} />`
+                : html`<div class="initials">${this._initials(homeName)}</div>`}
             </div>
-            <div class="names">
-              <div class="name">${leftName}</div>
-              <div class="sub">${leftSub}</div>
-            </div>
-          </div>
 
-          <div class="vs" aria-hidden="true">
-            <div class="vs-text">VS</div>
-            <div class="chip">Away</div>
-          </div>
+            <div class="vs" aria-hidden="true">VS</div>
 
-          <div class="side right">
-            <div class="logo" aria-label="Away logo">
-              ${rightLogo
-                ? html`<img src="${rightLogo}" alt="${rightName} logo" />`
-                : html`<div class="logo-text">${this._initials(rightName)}</div>`}
-            </div>
-            <div class="names">
-              <div class="name">${rightName}</div>
-              <div class="sub">${rightSub || "Away game"}</div>
+            <div class="logo" title=${awayName}>
+              ${awayLogo
+                ? html`<img src=${awayLogo} alt=${awayName} />`
+                : html`<div class="initials">${this._initials(awayName)}</div>`}
             </div>
           </div>
         </div>
 
-        <div class="featured-bottom">
-          <div class="location">${location}</div>
-          <div class="chip">${g.team || "U"}</div>
+        <div class="right">
+          <div class="meta">
+            <div class="dt">${dt || "TBD"}</div>
+            <div class="sub">${g.location || ""}</div>
+          </div>
+
+          <!-- DDD button: fully DDD UI component -->
+          <d-d-d-button
+            ?disabled=${!ticketUrl}
+            href=${ticketUrl || ""}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Buy Tickets
+          </d-d-d-button>
         </div>
       </div>
     `;

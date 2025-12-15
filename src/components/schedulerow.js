@@ -1,5 +1,6 @@
 import { LitElement, html, css } from "lit";
 import { dddGlobal } from "../ddd-global.js";
+import "./gamecard.js";
 
 export class ScheduleRow extends LitElement {
   static properties = {
@@ -88,6 +89,7 @@ export class ScheduleRow extends LitElement {
   ];
 
   render() {
+    // Only show first 2 games in this row
     const list = Array.isArray(this.games) ? this.games.slice(0, 2) : [];
 
     return html`
