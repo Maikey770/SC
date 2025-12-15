@@ -1,0 +1,25 @@
+{
+  "title": "Main Menu",
+  "items": [
+    {
+      "id": "home",
+      "label": "Home",
+      "page": "home"
+    },
+    {
+      "id": "schedule",
+      "label": "Schedule",
+      "page": "schedule"
+    },
+    {
+      "id": "news",
+      "label": "News",
+      "page": "news"
+    },
+    {
+      "id": "parents",
+      "label": "Parents",
+      "page": "parents"
+    }
+  ]
+}

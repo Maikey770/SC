@@ -16,11 +16,11 @@ export class HeaderBar extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    // Load menu items from the API
-    fetch("/api/menu")
+    // Load menu from API
+    fetch("/api/menu", { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => {
-        this.menuItems = data && data.items ? data.items : [];
+        this.menuItems = data && Array.isArray(data.items) ? data.items : [];
       })
       .catch((err) => console.error("menu load error", err));
   }
@@ -90,11 +90,11 @@ export class HeaderBar extends LitElement {
     `
   ];
 
-  _onNavClick(id) {
-    // Bubble up page change so the app can switch views
+  _onNavClick(target) {
+    // Notify parent app to change page
     this.dispatchEvent(
       new CustomEvent("nav-change", {
-        detail: id,
+        detail: target,
         bubbles: true,
         composed: true
       })
@@ -102,6 +102,7 @@ export class HeaderBar extends LitElement {
   }
 
   _openMenu() {
+    // Open mobile menu
     this.dispatchEvent(
       new CustomEvent("open-menu", {
         bubbles: true,
@@ -111,30 +112,52 @@ export class HeaderBar extends LitElement {
   }
 
   _getFlatMainItems() {
-    const groups = Array.isArray(this.menuItems) ? this.menuItems : [];
-    for (let i = 0; i < groups.length; i++) {
-      const g = groups[i];
-      const kids = g && Array.isArray(g.children) ? g.children : null;
-      if (kids && kids.length) return kids;
+    const items = Array.isArray(this.menuItems) ? this.menuItems : [];
+
+    // Group-style menu (items with children)
+    for (let i = 0; i < items.length; i++) {
+      const g = items[i];
+      if (g && Array.isArray(g.children) && g.children.length) {
+        return g.children;
+      }
     }
-    return [];
+
+    // Flat menu list
+    return items;
   }
 
   render() {
     const items = this._getFlatMainItems();
 
-    // Build nav buttons separately to keep render readable
     const navButtons = items.map((item) => {
-      const active = this.page === item.id;
-      return html`<d-d-d-button class="nav-btn" data-active=${active} .label=${item.label} @click=${() => this._onNavClick(item.id)}></d-d-d-button>`;
+      const target = item.page || item.id;
+      const active = this.page === target;
+      return html`
+        <d-d-d-button
+          class="nav-btn"
+          data-active=${active}
+          .label=${item.label}
+          @click=${() => this._onNavClick(target)}
+        ></d-d-d-button>
+      `;
     });
 
     return html`
       <d-d-d>
         <header>
-          <div class="brand"><div class="logo">SC</div><span>Silver Chariot</span></div>
+          <div class="brand">
+            <div class="logo">SC</div>
+            <span>Silver Chariot</span>
+          </div>
+
           <nav aria-label="Primary navigation">${navButtons}</nav>
-          <d-d-d-button class="menu-toggle" .label=${"Menu"} aria-label="Open menu" @click=${() => this._openMenu()}></d-d-d-button>
+
+          <d-d-d-button
+            class="menu-toggle"
+            .label=${"Menu"}
+            aria-label="Open menu"
+            @click=${() => this._openMenu()}
+          ></d-d-d-button>
         </header>
       </d-d-d>
     `;
