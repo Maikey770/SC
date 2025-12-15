@@ -23,22 +23,20 @@ export class HeroBanner extends LitElement {
         display: grid;
         grid-template-columns: 1.4fr 1fr;
         align-items: stretch;
-
         background: var(--ddd-theme-background);
-
-        /* Force hero text color using DDD tokens only */
-        --hero-text-color: var(--ddd-theme-bg);
       }
 
+      /* new background image */
       .bg {
         position: absolute;
         inset: 0;
-        background-image: url("https://i.pinimg.com/736x/c9/d1/9a/c9d19aea11bbc1ef2bcc2aa8de4ff9e2.jpg");
+        background-image: url("https://i.pinimg.com/736x/9c/2d/9b/9c2d9be1ed3b4bd4f8090738273c19b8.jpg");
         background-size: cover;
         background-position: center top;
         background-repeat: no-repeat;
       }
 
+      /* overlay to keep text readable */
       .overlay {
         position: absolute;
         inset: 0;
@@ -65,14 +63,14 @@ export class HeroBanner extends LitElement {
         font-size: var(--ddd-font-size-xs);
         letter-spacing: var(--ddd-letter-spacing-wide);
         text-transform: uppercase;
-        color: var(--hero-text-color);
+        color: var(--ddd-theme-text-primary);
       }
 
       h1 {
         margin: 0;
         font-size: var(--ddd-font-size-xxl);
         line-height: var(--ddd-line-height-tight);
-        color: var(--hero-text-color);
+        color: var(--ddd-theme-text-primary);
       }
 
       .side {
@@ -88,7 +86,6 @@ export class HeroBanner extends LitElement {
         .hero {
           grid-template-columns: 1fr;
         }
-
         .side {
           display: none;
         }
