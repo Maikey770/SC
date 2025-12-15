@@ -32,20 +32,19 @@ export class HeaderBar extends LitElement {
         display: block;
         background: var(--ddd-theme-background, #000);
         color: var(--ddd-theme-text-primary, #fff);
-        border-bottom: 1px solid
-          var(--ddd-theme-border, rgba(255, 255, 255, 0.12));
+        border-bottom: 1px solid var(--ddd-theme-border, rgba(255, 255, 255, 0.12));
         font-family: var(--ddd-font-primary, system-ui);
       }
 
       header {
         max-width: 1200px;
         margin: 0 auto;
-        padding: var(--ddd-spacing-3, 12px)
-          var(--ddd-spacing-4, 16px);
+        padding: var(--ddd-spacing-3, 12px) var(--ddd-spacing-4, 16px);
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: var(--ddd-spacing-3, 12px);
+        flex-wrap: wrap;
       }
 
       .brand {
@@ -57,14 +56,14 @@ export class HeaderBar extends LitElement {
         letter-spacing: 0.06em;
         font-size: var(--ddd-font-size-s, 0.95rem);
         white-space: nowrap;
+        flex: 0 0 auto;
       }
 
       .logo {
         width: var(--ddd-spacing-7, 28px);
         height: var(--ddd-spacing-7, 28px);
         border-radius: 9999px;
-        border: 1px solid
-          var(--ddd-theme-border, rgba(255, 255, 255, 0.12));
+        border: 1px solid var(--ddd-theme-border, rgba(255, 255, 255, 0.12));
         display: flex;
         align-items: center;
         justify-content: center;
@@ -79,18 +78,19 @@ export class HeaderBar extends LitElement {
         align-items: center;
         justify-content: flex-end;
         flex-wrap: wrap;
+        flex: 1 1 420px;
+        min-width: 420px;
       }
 
       d-d-d-button.nav-btn {
-        --ddd-button-padding: var(--ddd-spacing-2, 8px)
-          var(--ddd-spacing-3, 12px);
+        --ddd-button-padding: var(--ddd-spacing-2, 8px) var(--ddd-spacing-3, 12px);
       }
 
-      /* Hide mobile menu button on desktop */
+      /* Hide menu button on desktop */
       .menu-toggle {
         display: none;
-        --ddd-button-padding: var(--ddd-spacing-2, 8px)
-          var(--ddd-spacing-3, 12px);
+        --ddd-button-padding: var(--ddd-spacing-2, 8px) var(--ddd-spacing-3, 12px);
+        flex: 0 0 auto;
       }
 
       /* Mobile behavior */
@@ -166,9 +166,7 @@ export class HeaderBar extends LitElement {
             <span>Silver Chariot</span>
           </div>
 
-          <nav aria-label="Primary navigation">
-            ${navButtons}
-          </nav>
+          <nav aria-label="Primary navigation">${navButtons}</nav>
 
           <d-d-d-button
             class="menu-toggle"
