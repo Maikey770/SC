@@ -19,24 +19,20 @@ export class HeroBanner extends LitElement {
         border-radius: var(--ddd-radius-xl);
         overflow: hidden;
         min-height: 460px;
-
-        display: grid;
-        grid-template-columns: 1.4fr 1fr;
-        align-items: stretch;
         background: var(--ddd-theme-background);
       }
 
-      /* new background image */
+      /* background image */
       .bg {
         position: absolute;
         inset: 0;
         background-image: url("https://i.pinimg.com/736x/9c/2d/9b/9c2d9be1ed3b4bd4f8090738273c19b8.jpg");
         background-size: cover;
-        background-position: center top;
+        background-position: center;
         background-repeat: no-repeat;
       }
 
-      /* overlay to keep text readable */
+      /* dark overlay */
       .overlay {
         position: absolute;
         inset: 0;
@@ -55,7 +51,7 @@ export class HeroBanner extends LitElement {
         flex-direction: column;
         justify-content: center;
         padding: var(--ddd-spacing-8);
-        gap: var(--ddd-spacing-4);
+        gap: var(--ddd-spacing-3);
         max-width: 640px;
       }
 
@@ -63,7 +59,7 @@ export class HeroBanner extends LitElement {
         font-size: var(--ddd-font-size-xs);
         letter-spacing: var(--ddd-letter-spacing-wide);
         text-transform: uppercase;
-        color: var(--ddd-theme-text-primary);
+        color: var(--ddd-theme-text-secondary);
       }
 
       h1 {
@@ -71,24 +67,11 @@ export class HeroBanner extends LitElement {
         font-size: var(--ddd-font-size-xxl);
         line-height: var(--ddd-line-height-tight);
         color: var(--ddd-theme-text-primary);
+        font-weight: 900;
       }
 
-      .side {
-        position: relative;
-        z-index: 1;
-        padding: var(--ddd-spacing-8);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      @media (max-width: 900px) {
-        .hero {
-          grid-template-columns: 1fr;
-        }
-        .side {
-          display: none;
-        }
+      .club {
+        display: block;
       }
     `
   ];
@@ -102,10 +85,11 @@ export class HeroBanner extends LitElement {
 
           <div class="content">
             <div class="eyebrow">ICEKING PRESENTS</div>
-            <h1>Silver Chariot Youth Hockey Association</h1>
+            <h1>
+              Silver Chariot<br />
+              <span class="club">Club</span>
+            </h1>
           </div>
-
-          <div class="side"></div>
         </section>
       </d-d-d>
     `;
