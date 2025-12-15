@@ -20,28 +20,23 @@ export class GameCard extends LitElement {
         display: block;
       }
 
-      /* Use the same tokens as .surface in ddd-global.js */
+      /* Use .surface from ddd-global.js as the card container */
       .card {
-        background: var(--ddd-theme-surface);
-        border: 1px solid var(--ddd-theme-border);
-        border-radius: var(--ddd-radius-lg);
-        padding: var(--ddd-spacing-4);
-        color: var(--ddd-theme-text-primary);
         display: grid;
         grid-template-columns: auto 1fr;
         align-items: center;
-        gap: var(--ddd-spacing-3);
+        gap: var(--ddd-spacing-3, 12px);
       }
 
-      :host([compact]) .card {
-        border-radius: var(--ddd-radius-lg);
-        padding: var(--ddd-spacing-3);
+      /* Compact list rows */
+      :host([compact]) .surface {
+        padding: var(--ddd-spacing-3, 12px);
       }
 
       .logos {
         display: flex;
         align-items: center;
-        gap: var(--ddd-spacing-3);
+        gap: var(--ddd-spacing-3, 12px);
       }
 
       .logo {
@@ -50,11 +45,14 @@ export class GameCard extends LitElement {
         border-radius: 999px;
         display: grid;
         place-items: center;
-        background: var(--ddd-theme-surface);
-        border: 1px solid var(--ddd-theme-border);
+
+        /* Still DDD: use surface + border tokens */
+        background: var(--ddd-theme-surface, rgba(255,255,255,0.06));
+        border: 1px solid var(--ddd-theme-border, rgba(255,255,255,0.12));
+
         font-weight: 800;
         font-size: 14px;
-        color: var(--ddd-theme-text-primary);
+        color: var(--ddd-theme-text-primary, #fff);
       }
 
       :host([compact]) .logo {
@@ -65,7 +63,6 @@ export class GameCard extends LitElement {
       .vs {
         font-weight: 900;
         font-size: 12px;
-        color: var(--ddd-theme-text-primary);
         opacity: 0.8;
       }
 
@@ -73,6 +70,7 @@ export class GameCard extends LitElement {
         display: flex;
         flex-direction: column;
         gap: 2px;
+        min-width: 0;
       }
 
       .dt {
@@ -107,16 +105,18 @@ export class GameCard extends LitElement {
     const dateTime = `${g.date || ""} ${g.time || ""}`.trim();
 
     return html`
-      <div class="card">
-        <div class="logos" aria-label="Matchup">
-          <div class="logo">${this._initials(g.team)}</div>
-          <div class="vs">VS</div>
-          <div class="logo">${this._initials(g.opponent)}</div>
-        </div>
+      <div class="surface">
+        <div class="card">
+          <div class="logos" aria-label="Matchup">
+            <div class="logo">${this._initials(g.team)}</div>
+            <div class="vs">VS</div>
+            <div class="logo">${this._initials(g.opponent)}</div>
+          </div>
 
-        <div class="meta">
-          <div class="dt">${dateTime || "TBD"}</div>
-          <div class="sub">${g.location || ""}</div>
+          <div class="meta">
+            <div class="dt">${dateTime || "TBD"}</div>
+            <div class="sub">${g.location || ""}</div>
+          </div>
         </div>
       </div>
     `;
