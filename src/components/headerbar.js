@@ -111,7 +111,8 @@ export class HeaderBar extends LitElement {
         width: 100%;
         height: 100%;
         display: block;
-        object-fit: contain;
+        object-fit: cover;
+        object-position: center;
       }
 
       .right {
@@ -276,7 +277,7 @@ export class HeaderBar extends LitElement {
             <div class="logo">
               <img
                 class="logo-img"
-                src="https://1drv.ms/i/c/341ab6ad80733678/IQCDuPK5vYYhSKZ21IvWKYs4ATFk3VIJRONOFCoWSolvxLg?e=qvsDMG"
+                src="https://i.pinimg.com/736x/68/94/52/6894529f86950e241d553776142f9176.jpg"
                 alt="Silver Chariot Club logo"
                 loading="eager"
               />
