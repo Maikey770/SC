@@ -1,35 +1,38 @@
 import { css } from "lit";
 
 export const dddGlobal = css`
+  /* Let browser widgets follow theme */
   :root[data-theme="dark"] {
     color-scheme: dark;
-    --ddd-theme-background: var(--ddd-theme-default-black);
-    --ddd-theme-text-primary: var(--ddd-theme-default-white);
   }
 
   :root[data-theme="light"] {
     color-scheme: light;
-    --ddd-theme-background: var(--ddd-theme-default-white);
-    --ddd-theme-text-primary: var(--ddd-theme-default-black);
   }
 
   :host {
+    /* Typography */
     font-family: var(--ddd-font-primary);
     color: var(--ddd-theme-text-primary);
     background: var(--ddd-theme-background);
 
+    /* ===== DDD DERIVED TOKENS (NO RAW COLORS) ===== */
+
+    /* Surface color derived from DDD tokens */
     --ddd-theme-surface: color-mix(
       in srgb,
       var(--ddd-theme-primary) 18%,
       var(--ddd-theme-background)
     );
 
+    /* Border color derived from DDD tokens */
     --ddd-theme-border: color-mix(
       in srgb,
       var(--ddd-theme-primary) 40%,
       transparent
     );
 
+    /* Text hierarchy derived from DDD tokens */
     --ddd-theme-text-secondary: color-mix(
       in srgb,
       var(--ddd-theme-text-primary) 80%,
