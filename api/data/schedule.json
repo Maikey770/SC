@@ -18,6 +18,60 @@
       "opponent": "Bald Eagle",
       "location": "Pegula Ice Arena",
       "status": "Scheduled"
+    },
+    {
+      "id": "g3",
+      "date": "2025-09-10",
+      "time": "07:20 PM",
+      "team": "U14",
+      "opponent": "Altoona Wolves",
+      "location": "Greenberg Ice Pavilion",
+      "status": "Scheduled"
+    },
+    {
+      "id": "g4",
+      "date": "2025-09-13",
+      "time": "09:00 AM",
+      "team": "U8",
+      "opponent": "Centre County Bears",
+      "location": "State College Ice Pavilion",
+      "status": "Scheduled"
+    },
+    {
+      "id": "g5",
+      "date": "2025-09-15",
+      "time": "05:45 PM",
+      "team": "U16",
+      "opponent": "Harrisburg Huskies",
+      "location": "Pegula Ice Arena",
+      "status": "Scheduled"
+    },
+    {
+      "id": "g6",
+      "date": "2025-09-18",
+      "time": "06:30 PM",
+      "team": "U12",
+      "opponent": "Lebanon Lynx",
+      "location": "Galbraith Ice Center",
+      "status": "Scheduled"
+    },
+    {
+      "id": "g7",
+      "date": "2025-09-21",
+      "time": "10:15 AM",
+      "team": "U10",
+      "opponent": "Williamsport Wild",
+      "location": "State College Ice Pavilion",
+      "status": "Scheduled"
+    },
+    {
+      "id": "g8",
+      "date": "2025-09-24",
+      "time": "07:05 PM",
+      "team": "U14",
+      "opponent": "Scranton Storm",
+      "location": "Pegula Ice Arena",
+      "status": "Scheduled"
     }
   ]
 }

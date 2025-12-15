@@ -1,134 +1,103 @@
 import { LitElement, html, css } from "lit";
+import { dddGlobal } from "../ddd-global.js";
 
 export class ScheduleRow extends LitElement {
   static properties = {
-    heading: { type: String },
-    items: { type: Array },
-    loading: { type: Boolean },
-    error: { type: String }
+    heading: { type: String }
   };
 
   constructor() {
     super();
     this.heading = "Upcoming Games";
-    this.items = [];
-    this.loading = true;
-    this.error = "";
   }
 
-  connectedCallback() {
-    super.connectedCallback();
-    this.load();
-  }
-
-  async load() {
-    try {
-      this.loading = true;
-      this.error = "";
-      const res = await fetch("/api/schedule", { cache: "no-store" });
-      if (!res.ok) throw new Error(`Request failed: ${res.status}`);
-      const data = await res.json();
-      this.items = Array.isArray(data?.upcoming) ? data.upcoming : [];
-    } catch (e) {
-      this.error = e?.message || "Failed to load schedule";
-      this.items = [];
-    } finally {
-      this.loading = false;
-    }
-  }
-
-  static styles = css`
-    :host {
-      display: block;
-      width: 100%;
-    }
-
-    .band {
-      border-radius: 16px;
-      padding: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      background: rgba(255, 255, 255, 0.04);
-    }
-
-    .title {
-      margin: 0 0 12px 0;
-      font-size: var(--ddd-font-size-m);
-      font-weight: 700;
-    }
-
-    .row {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .card {
-      border-radius: 14px;
-      padding: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      background: rgba(0, 0, 0, 0.2);
-      min-height: 92px;
-    }
-
-    .meta {
-      font-size: 12px;
-      opacity: 0.9;
-      margin-bottom: 6px;
-    }
-
-    .main {
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-
-    .sub {
-      font-size: 12px;
-      opacity: 0.9;
-      line-height: 1.3;
-    }
-
-    .status {
-      margin-top: 8px;
-      font-size: 12px;
-      opacity: 0.85;
-    }
-
-    @media (max-width: 900px) {
-      .row {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+  static styles = [
+    dddGlobal,
+    css`
+      :host {
+        display: block;
       }
-    }
 
-    @media (max-width: 520px) {
-      .row {
-        grid-template-columns: 1fr;
+      .wrap {
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 20px;
+        padding: 18px;
+        background: rgba(255, 255, 255, 0.04);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
       }
-    }
-  `;
+
+      .top {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: 40px;
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+      }
+
+      .hint {
+        font-size: 0.9rem;
+        opacity: 0.75;
+        white-space: nowrap;
+      }
+
+      /* Horizontal scroll rail */
+      .rail {
+        display: flex;
+        gap: 16px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 10px 6px 14px;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      /* Hide scrollbar (still scrollable) */
+      .rail::-webkit-scrollbar {
+        height: 8px;
+      }
+      .rail::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .rail::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.18);
+        border-radius: 9999px;
+      }
+
+      /* Make slotted cards behave like snap items */
+      ::slotted(game-card) {
+        flex: 0 0 auto;
+        width: 320px;
+        scroll-snap-align: start;
+      }
+
+      @media (max-width: 520px) {
+        ::slotted(game-card) {
+          width: 280px;
+        }
+        h2 {
+          font-size: 32px;
+        }
+      }
+    `
+  ];
 
   render() {
     return html`
-      <section class="band">
-        <h3 class="title">${this.heading}</h3>
-
-        ${this.loading
-          ? html`<div>Loading schedule...</div>`
-          : this.error
-            ? html`<div>Error: ${this.error}</div>`
-            : html`
-                <div class="row">
-                  ${this.items.map(
-                    (g) => html`
-                      <div class="card">
-                        <div class="meta">${g.date} · ${g.time} · ${g.team}</div>
-                        <div class="main">vs ${g.opponent}</div>
-                        <div class="sub">${g.location}</div>
-                        ${g.status ? html`<div class="status">${g.status}</div>` : html``}
-                      </div>
-                    `
-                  )}
-                </div>
-              `}
+      <section class="wrap">
+        <div class="top">
+          <h2>${this.heading}</h2>
+          <div class="hint">Swipe to view →</div>
+        </div>
+        <div class="rail" aria-label="Upcoming games scroller">
+          <slot></slot>
+        </div>
       </section>
     `;
   }
