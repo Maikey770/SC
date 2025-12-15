@@ -23,7 +23,6 @@ export class HeaderBar extends LitElement {
   connectedCallback() {
     super.connectedCallback();
 
-    // Load menu from API
     fetch("/api/menu", { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => {
@@ -53,16 +52,14 @@ export class HeaderBar extends LitElement {
         position: sticky;
         top: 0;
         z-index: 1000;
-        background: rgba(0, 0, 0, 0.55);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-        font-family: var(--ddd-font-primary, system-ui);
+        font-family: var(--ddd-font-primary);
+
+        background: var(--ddd-theme-bg);
+        border-bottom: 1px solid var(--ddd-theme-primary);
       }
 
       :host([data-scrolled="true"]) {
-        background: rgba(0, 0, 0, 0.72);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        box-shadow: var(--ddd-boxShadow-sm);
       }
 
       header {
@@ -89,18 +86,20 @@ export class HeaderBar extends LitElement {
         letter-spacing: 0.08em;
         font-size: 0.95rem;
         white-space: nowrap;
+        color: var(--ddd-theme-text);
       }
 
       .logo {
         width: 28px;
         height: 28px;
         border-radius: 9999px;
-        border: 1px solid rgba(255, 255, 255, 0.18);
+        border: 1px solid var(--ddd-theme-primary);
         display: grid;
         place-items: center;
         font-size: 0.8rem;
-        background: rgba(255, 255, 255, 0.06);
+        background: transparent;
         transition: transform 160ms ease, width 160ms ease, height 160ms ease;
+        color: var(--ddd-theme-text);
       }
 
       :host([data-scrolled="true"]) .logo {
@@ -127,18 +126,18 @@ export class HeaderBar extends LitElement {
 
       .nav-pill {
         appearance: none;
-        border: 1px solid rgba(255, 255, 255, 0.55);
+        border: 1px solid var(--ddd-theme-primary);
         background: transparent;
-        color: #fff;
+        color: var(--ddd-theme-text);
         padding: 8px 16px;
         border-radius: 9999px;
-        font-family: var(--ddd-font-primary, system-ui);
+        font-family: var(--ddd-font-primary);
         font-size: 0.85rem;
         font-weight: 700;
         letter-spacing: 0.04em;
         text-transform: uppercase;
         cursor: pointer;
-        transition: border-color 140ms ease, background 140ms ease, transform 140ms ease;
+        transition: transform 140ms ease;
         white-space: nowrap;
       }
 
@@ -148,27 +147,25 @@ export class HeaderBar extends LitElement {
       }
 
       .nav-pill:hover {
-        border-color: rgba(255, 255, 255, 0.9);
-        background: rgba(255, 255, 255, 0.06);
         transform: translateY(-1px);
       }
 
       .nav-pill[data-active="true"] {
-        border-color: rgba(255, 255, 255, 1);
-        background: rgba(255, 255, 255, 0.1);
+        background: var(--ddd-theme-primary);
+        color: var(--ddd-theme-bg);
       }
 
       .icon-btn {
         width: 40px;
         height: 40px;
         border-radius: 9999px;
-        border: 1px solid rgba(255, 255, 255, 0.55);
+        border: 1px solid var(--ddd-theme-primary);
         background: transparent;
-        color: #fff;
+        color: var(--ddd-theme-text);
         display: grid;
         place-items: center;
         cursor: pointer;
-        transition: border-color 140ms ease, background 140ms ease, transform 140ms ease;
+        transition: transform 140ms ease;
       }
 
       :host([data-scrolled="true"]) .icon-btn {
@@ -177,8 +174,6 @@ export class HeaderBar extends LitElement {
       }
 
       .icon-btn:hover {
-        border-color: rgba(255, 255, 255, 0.9);
-        background: rgba(255, 255, 255, 0.06);
         transform: translateY(-1px);
       }
 
@@ -192,26 +187,23 @@ export class HeaderBar extends LitElement {
         display: none;
       }
 
-      /* Switch mode button */
       .theme-toggle {
-        border: 1px solid rgba(255, 255, 255, 0.55);
+        border: 1px solid var(--ddd-theme-primary);
         background: transparent;
-        color: #fff;
+        color: var(--ddd-theme-text);
         padding: 8px 14px;
         border-radius: 9999px;
-        font-family: var(--ddd-font-primary, system-ui);
+        font-family: var(--ddd-font-primary);
         font-size: 0.85rem;
         font-weight: 700;
         letter-spacing: 0.04em;
         text-transform: uppercase;
         cursor: pointer;
-        transition: border-color 140ms ease, background 140ms ease, transform 140ms ease;
+        transition: transform 140ms ease;
         white-space: nowrap;
       }
 
       .theme-toggle:hover {
-        border-color: rgba(255, 255, 255, 0.9);
-        background: rgba(255, 255, 255, 0.06);
         transform: translateY(-1px);
       }
 
@@ -222,9 +214,9 @@ export class HeaderBar extends LitElement {
 
         .menu-toggle {
           display: inline-flex;
-          border: 1px solid rgba(255, 255, 255, 0.55);
+          border: 1px solid var(--ddd-theme-primary);
           background: transparent;
-          color: #fff;
+          color: var(--ddd-theme-text);
           padding: 8px 16px;
           border-radius: 9999px;
           font-weight: 700;
@@ -251,11 +243,15 @@ export class HeaderBar extends LitElement {
   }
 
   _openMenu() {
-    this.dispatchEvent(new CustomEvent("open-menu", { bubbles: true, composed: true }));
+    this.dispatchEvent(
+      new CustomEvent("open-menu", { bubbles: true, composed: true })
+    );
   }
 
   _onSearchClick() {
-    this.dispatchEvent(new CustomEvent("search-open", { bubbles: true, composed: true }));
+    this.dispatchEvent(
+      new CustomEvent("search-open", { bubbles: true, composed: true })
+    );
   }
 
   _onThemeClick() {
@@ -296,7 +292,11 @@ export class HeaderBar extends LitElement {
               Switch mode
             </button>
 
-            <button class="icon-btn" aria-label="Search" @click=${() => this._onSearchClick()}>
+            <button
+              class="icon-btn"
+              aria-label="Search"
+              @click=${() => this._onSearchClick()}
+            >
               <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
                 <path
                   fill="currentColor"
@@ -305,7 +305,9 @@ export class HeaderBar extends LitElement {
               </svg>
             </button>
 
-            <button class="menu-toggle" @click=${() => this._openMenu()}>Menu</button>
+            <button class="menu-toggle" @click=${() => this._openMenu()}>
+              Menu
+            </button>
           </div>
         </header>
       </d-d-d>
