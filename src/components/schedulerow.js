@@ -3,12 +3,14 @@ import { dddGlobal } from "../ddd-global.js";
 
 export class ScheduleRow extends LitElement {
   static properties = {
-    heading: { type: String }
+    heading: { type: String },
+    games: { type: Array }
   };
 
   constructor() {
     super();
     this.heading = "Upcoming Games";
+    this.games = [];
   }
 
   static styles = [
@@ -33,7 +35,6 @@ export class ScheduleRow extends LitElement {
         letter-spacing: -0.02em;
       }
 
-      /* Layout like your screenshot: left cards + right empty space */
       .layout {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -48,20 +49,19 @@ export class ScheduleRow extends LitElement {
         align-content: start;
       }
 
-      /* Right side is intentionally empty (visual balance) */
       .right {
         min-height: 140px;
       }
 
-      /* Slot cards sizing */
-      ::slotted(game-card) {
-        width: 100%;
-        max-width: 320px;
+      .empty {
+        opacity: 0.75;
+        font-size: 0.95rem;
+        padding: 8px 2px;
       }
 
-      /* If there are more than 2 cards, hide extras to match the “2-card” look */
-      ::slotted(game-card:nth-child(n + 3)) {
-        display: none;
+      game-card {
+        width: 100%;
+        max-width: 320px;
       }
 
       @media (max-width: 980px) {
@@ -74,7 +74,7 @@ export class ScheduleRow extends LitElement {
         .left {
           grid-template-columns: 1fr;
         }
-        ::slotted(game-card) {
+        game-card {
           max-width: 100%;
         }
       }
@@ -88,12 +88,16 @@ export class ScheduleRow extends LitElement {
   ];
 
   render() {
+    const list = Array.isArray(this.games) ? this.games.slice(0, 2) : [];
+
     return html`
       <section class="wrap">
         <h2>${this.heading}</h2>
         <div class="layout">
           <div class="left">
-            <slot></slot>
+            ${list.length
+              ? list.map((g) => html`<game-card .game=${g}></game-card>`)
+              : html`<div class="empty">No games available.</div>`}
           </div>
           <div class="right" aria-hidden="true"></div>
         </div>

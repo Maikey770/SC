@@ -58,19 +58,24 @@ export class SilverChariotApp extends LitElement {
     main {
       max-width: 1200px;
       margin: 0 auto;
-      padding: var(--ddd-spacing-6) var(--ddd-spacing-4)
-        var(--ddd-spacing-10);
+      padding: var(--ddd-spacing-6) var(--ddd-spacing-4) var(--ddd-spacing-10);
       display: flex;
       flex-direction: column;
       gap: var(--ddd-spacing-8);
     }
 
-    /* Bigger vertical spacing for the list items */
+    h2 {
+      margin: 0;
+      font-size: var(--ddd-font-size-l);
+      line-height: 1.2;
+    }
+
+    /* List spacing under the big featured rail */
     .list {
       display: flex;
       flex-direction: column;
       gap: var(--ddd-spacing-4);
-      margin-top: var(--ddd-spacing-4);
+      margin-top: var(--ddd-spacing-5);
     }
   `;
 
@@ -96,9 +101,8 @@ export class SilverChariotApp extends LitElement {
 
     if (this.mobileMenuOpen) this.mobileMenuOpen = false;
 
-    if (id === "home") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+    // Keep navigation feeling consistent
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   toggleMenu() {
@@ -116,9 +120,7 @@ export class SilverChariotApp extends LitElement {
           ? html`<p>No games in the list right now.</p>`
           : html`
               <div class="list">
-                ${this.schedule.map(
-                  (g) => html`<game-card .game=${g}></game-card>`
-                )}
+                ${this.schedule.map((g) => html`<game-card compact .game=${g}></game-card>`)}
               </div>
             `}
       </section>
@@ -130,13 +132,15 @@ export class SilverChariotApp extends LitElement {
       <section>
         <h2>Parent Information</h2>
         <p>
-          Silver Chariot is a youth hockey club focused on development,
-          responsibility, and long-term growth.
+          Silver Chariot is a youth hockey club. We want kids to play serious hockey
+          but also keep up with school, health, and friends.
         </p>
+
+        <h3>Season Basics</h3>
         <ul>
-          <li>Season runs September through March</li>
-          <li>Two practices and one game per week</li>
-          <li>Home rink: State College Ice Pavilion</li>
+          <li>Season runs from early September to late March.</li>
+          <li>Most weeks have two practices and one game.</li>
+          <li>Home rink is State College Ice Pavilion.</li>
         </ul>
       </section>
     `;
@@ -152,9 +156,9 @@ export class SilverChariotApp extends LitElement {
   }
 
   _renderHomePage() {
-    const preview = Array.isArray(this.schedule) ? this.schedule : [];
-    const rail = preview.slice(0, 8); // more cards for scrolling
-    const list = preview.slice(0, 2); // keep the short list under it
+    const all = Array.isArray(this.schedule) ? this.schedule : [];
+    const rail = all.slice(0, 8); // Featured scroller content
+    const list = all.slice(0, 2); // Compact list content
 
     return html`
       <section>
@@ -166,19 +170,15 @@ export class SilverChariotApp extends LitElement {
       </section>
 
       <section id="upcoming">
-        <!-- Top: scrollable rail inside schedule-row -->
         <schedule-row heading="Upcoming Games">
-          ${rail.length === 0
-            ? html``
-            : rail.map((g) => html`<game-card .game=${g}></game-card>`)}
+          ${rail.map((g) => html`<game-card .game=${g}></game-card>`)}
         </schedule-row>
 
-        <!-- Bottom: vertical list -->
         ${list.length === 0
           ? html`<p>No games in the list right now.</p>`
           : html`
               <div class="list">
-                ${list.map((g) => html`<game-card .game=${g}></game-card>`)}
+                ${list.map((g) => html`<game-card compact .game=${g}></game-card>`)}
               </div>
             `}
       </section>
