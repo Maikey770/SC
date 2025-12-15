@@ -1,3 +1,4 @@
+// Game card for schedule items
 import { LitElement, html, css } from "lit";
 import { dddGlobal } from "../ddd-global.js";
 
@@ -18,8 +19,10 @@ export class GameCard extends LitElement {
     css`
       :host {
         display: block;
+        font-family: var(--ddd-font-primary);
       }
 
+      /* layout */
       .card {
         display: grid;
         grid-template-columns: auto 1fr;
@@ -31,6 +34,7 @@ export class GameCard extends LitElement {
         padding: var(--ddd-spacing-3);
       }
 
+      /* team icons */
       .logos {
         display: flex;
         align-items: center;
@@ -38,44 +42,45 @@ export class GameCard extends LitElement {
       }
 
       .logo {
-        width: 44px;
-        height: 44px;
-        border-radius: 999px;
+        width: calc(var(--ddd-spacing-6) * 2);
+        height: calc(var(--ddd-spacing-6) * 2);
+        border-radius: var(--ddd-radius-xl);
         display: grid;
         place-items: center;
         background: var(--ddd-theme-surface);
         border: 1px solid var(--ddd-theme-border);
         color: var(--ddd-theme-text-primary);
         font-weight: 800;
-        font-size: 14px;
+        font-size: var(--ddd-font-size-xs);
       }
 
       :host([compact]) .logo {
-        width: 40px;
-        height: 40px;
+        width: calc(var(--ddd-spacing-6) * 2 - var(--ddd-spacing-1));
+        height: calc(var(--ddd-spacing-6) * 2 - var(--ddd-spacing-1));
       }
 
       .vs {
         font-weight: 900;
-        font-size: 12px;
+        font-size: var(--ddd-font-size-xs);
         color: var(--ddd-theme-text-secondary);
       }
 
+      /* date and location */
       .meta {
         display: flex;
         flex-direction: column;
-        gap: 2px;
+        gap: var(--ddd-spacing-1);
         min-width: 0;
       }
 
       .dt {
         font-weight: 900;
-        font-size: 14px;
+        font-size: var(--ddd-font-size-s);
         color: var(--ddd-theme-text-primary);
       }
 
       .sub {
-        font-size: 12px;
+        font-size: var(--ddd-font-size-xs);
         color: var(--ddd-theme-text-secondary);
       }
 
@@ -87,6 +92,7 @@ export class GameCard extends LitElement {
     `
   ];
 
+  // make initials for a team name
   _initials(name) {
     if (!name) return "SC";
     if (/^u\d+/i.test(name)) return String(name).toUpperCase();
