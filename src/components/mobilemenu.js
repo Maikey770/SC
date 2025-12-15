@@ -1,4 +1,4 @@
-// Mobile menu overlay for navigation on smaller screens
+// Mobile menu overlay
 import { LitElement, html, css } from "lit";
 import "@haxtheweb/d-d-d/d-d-d.js";
 import { dddGlobal } from "../ddd-global.js";
@@ -23,11 +23,11 @@ export class MobileMenu extends LitElement {
   connectedCallback() {
     super.connectedCallback();
 
-    // Load menu configuration
-    fetch("/api/menu")
+    // load menu
+    fetch("/api/menu", { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => {
-        this.menuItems = data && data.items ? data.items : [];
+        this.menuItems = data?.items ?? [];
         this._initGroups();
       })
       .catch((err) => console.error("mobile menu load error", err));
@@ -48,15 +48,12 @@ export class MobileMenu extends LitElement {
         font-family: var(--ddd-font-primary);
       }
 
-      /* Full-screen overlay */
+      /* overlay */
       .bg {
         position: fixed;
         inset: 0;
-        background: color-mix(
-          in srgb,
-          var(--ddd-theme-background) 55%,
-          transparent
-        );
+        background: var(--ddd-theme-bg);
+        opacity: 0.88;
         display: none;
         z-index: 40;
       }
@@ -65,16 +62,17 @@ export class MobileMenu extends LitElement {
         display: block;
       }
 
-      /* Menu panel */
+      /* menu panel */
       .panel {
-        background: var(--ddd-theme-background);
+        background: var(--ddd-theme-surface);
         color: var(--ddd-theme-text-primary);
         padding: var(--ddd-spacing-4);
         border-bottom-left-radius: var(--ddd-radius-lg);
         border-bottom-right-radius: var(--ddd-radius-lg);
         border-bottom: 1px solid var(--ddd-theme-border);
-        max-width: 720px;
+        max-width: calc(var(--ddd-spacing-6) * 30);
         margin: 0 auto;
+        opacity: 1;
       }
 
       .top-row {
@@ -83,8 +81,12 @@ export class MobileMenu extends LitElement {
         align-items: center;
         margin-bottom: var(--ddd-spacing-3);
         font-size: var(--ddd-font-size-s);
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
       }
 
+      /* DDD button padding */
       d-d-d-button {
         --ddd-button-padding: var(--ddd-spacing-2) var(--ddd-spacing-3);
       }
@@ -114,8 +116,9 @@ export class MobileMenu extends LitElement {
         padding: var(--ddd-spacing-3);
       }
 
+      /* active link */
       .link[data-active="true"] {
-        filter: saturate(1.05);
+        outline: 1px solid var(--ddd-theme-primary);
       }
 
       @media (min-width: 769px) {
@@ -131,27 +134,29 @@ export class MobileMenu extends LitElement {
     if (e.key === "Escape") this._close();
   }
 
+  // set default groups
   _initGroups() {
     const next = {};
     for (let i = 0; i < this.menuItems.length; i++) {
       const g = this.menuItems[i];
-      if (g && g.label) next[g.label] = g.label === "Main";
+      if (g?.label) next[g.label] = g.label === "Main";
     }
     this.openGroups = next;
   }
 
+  // open/close group
   _toggleGroup(label) {
-    const next = { ...this.openGroups };
-    next[label] = !next[label];
-    this.openGroups = next;
+    this.openGroups = { ...this.openGroups, [label]: !this.openGroups[label] };
   }
 
+  // close menu
   _close() {
     this.dispatchEvent(
       new CustomEvent("close-menu", { bubbles: true, composed: true })
     );
   }
 
+  // go to page
   _go(id) {
     this.dispatchEvent(
       new CustomEvent("nav-change", { detail: id, bubbles: true, composed: true })
@@ -169,21 +174,17 @@ export class MobileMenu extends LitElement {
           role="dialog"
           aria-modal="true"
           aria-label="Site menu"
-          @click=${() => this._close()}
+          @click=${this._close}
         >
           <div class="panel" @click=${(e) => e.stopPropagation()}>
             <div class="top-row">
               <span>Silver Chariot</span>
-              <d-d-d-button
-                .label=${"Close"}
-                @click=${() => this._close()}
-              ></d-d-d-button>
+              <d-d-d-button .label=${"Close"} @click=${this._close}></d-d-d-button>
             </div>
 
             ${groups.map((group) => {
-              const label = group && group.label ? group.label : "Group";
-              const children =
-                group && Array.isArray(group.children) ? group.children : [];
+              const label = group?.label ?? "Group";
+              const children = Array.isArray(group?.children) ? group.children : [];
               const isOpen = !!this.openGroups[label];
 
               return html`
@@ -195,17 +196,17 @@ export class MobileMenu extends LitElement {
                     @click=${() => this._toggleGroup(label)}
                   ></d-d-d-button>
 
-                  ${isOpen
-                    ? html`
-                        <div class="links">
-                          ${children.map((item) => {
-                            const active = this.page === item.id;
-                            return html`
-                              <d-d-d-button
-                                class="link"
-                                data-active=${active}
-                                .label=${item.label}
-                                @click=${() => this._go(item.id)}
+      ${isOpen
+        ? html`
+          <div class="links">
+              ${children.map((item) => {
+                const active = this.page === item.id;
+                  return html`
+                    <d-d-d-button
+                       class="link"
+                        data-active=${active}
+                          .label=${item.label}
+                         @click=${() => this._go(item.id)}
                               ></d-d-d-button>
                             `;
                           })}
