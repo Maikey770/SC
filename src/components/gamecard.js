@@ -32,8 +32,8 @@ export class GameCard extends LitElement {
       .card {
         display: grid;
         grid-template-columns: auto 1fr;
-        align-items: flex-start; /* top align so rows look straight */
-        gap: var(--ddd-spacing-4); /* more breathing room */
+        align-items: flex-start; 
+        gap: var(--ddd-spacing-4); 
       }
 
       /* Team bubbles */
