@@ -123,43 +123,9 @@ export class HeaderBar extends LitElement {
         justify-content: flex-end;
       }
 
+      /* Hide top nav on all screen sizes (menu lives in drawer) */
       nav {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        justify-content: flex-end;
-        flex-wrap: wrap;
-      }
-
-      .nav-pill {
-        appearance: none;
-        border: 1px solid var(--ddd-theme-primary);
-        background: transparent;
-        color: var(--ddd-theme-text-primary);
-        padding: 8px 16px;
-        border-radius: 9999px;
-        font-family: var(--ddd-font-primary);
-        font-size: 0.85rem;
-        font-weight: 700;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-        cursor: pointer;
-        transition: transform 140ms ease;
-        white-space: nowrap;
-      }
-
-      :host([data-scrolled="true"]) .nav-pill {
-        padding: 7px 14px;
-        font-size: 0.82rem;
-      }
-
-      .nav-pill:hover {
-        transform: translateY(-1px);
-      }
-
-      .nav-pill[data-active="true"] {
-        background: var(--ddd-theme-primary);
-        color: var(--ddd-theme-bg);
+        display: none;
       }
 
       .icon-btn {
@@ -190,51 +156,32 @@ export class HeaderBar extends LitElement {
         display: block;
       }
 
+      /* Hamburger button shown on all sizes */
       .menu-toggle {
-        display: none;
-      }
-
-      .theme-toggle {
+        width: 40px;
+        height: 40px;
+        border-radius: 9999px;
         border: 1px solid var(--ddd-theme-primary);
         background: transparent;
         color: var(--ddd-theme-text-primary);
-        padding: 8px 14px;
-        border-radius: 9999px;
-        font-family: var(--ddd-font-primary);
-        font-size: 0.85rem;
-        font-weight: 700;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
+        display: grid;
+        place-items: center;
         cursor: pointer;
         transition: transform 140ms ease;
-        white-space: nowrap;
       }
 
-      .theme-toggle:hover {
+      :host([data-scrolled="true"]) .menu-toggle {
+        width: 38px;
+        height: 38px;
+      }
+
+      .menu-toggle:hover {
         transform: translateY(-1px);
       }
 
-      @media (max-width: 768px) {
-        nav {
-          display: none;
-        }
-
-        .menu-toggle {
-          display: inline-flex;
-          border: 1px solid var(--ddd-theme-primary);
-          background: transparent;
-          color: var(--ddd-theme-text-primary);
-          padding: 8px 16px;
-          border-radius: 9999px;
-          font-weight: 700;
-          letter-spacing: 0.04em;
-          text-transform: uppercase;
-          cursor: pointer;
-        }
-
-        .theme-toggle {
-          display: none;
-        }
+      /* Hide theme toggle in header (it lives in drawer menu now) */
+      .theme-toggle {
+        display: none;
       }
     `
   ];
@@ -268,8 +215,6 @@ export class HeaderBar extends LitElement {
   }
 
   render() {
-    const items = Array.isArray(this.menuItems) ? this.menuItems : [];
-
     return html`
       <d-d-d>
         <header>
@@ -286,31 +231,7 @@ export class HeaderBar extends LitElement {
           </div>
 
           <div class="right">
-            <nav aria-label="Primary navigation">
-              ${items.map((item) => {
-                const target = item.page || item.id;
-                const active = this.page === target;
-                return html`
-                  <button
-                    class="nav-pill"
-                    data-active=${active}
-                    @click=${() => this._onNavClick(target)}
-                  >
-                    ${item.label}
-                  </button>
-                `;
-              })}
-            </nav>
-
-            <button class="theme-toggle" @click=${() => this._onThemeClick()}>
-              Switch mode
-            </button>
-
-            <button
-              class="icon-btn"
-              aria-label="Search"
-              @click=${() => this._onSearchClick()}
-            >
+            <button class="icon-btn" aria-label="Search" @click=${() => this._onSearchClick()}>
               <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
                 <path
                   fill="currentColor"
@@ -319,8 +240,13 @@ export class HeaderBar extends LitElement {
               </svg>
             </button>
 
-            <button class="menu-toggle" @click=${() => this._openMenu()}>
-              Menu
+            <button class="menu-toggle" aria-label="Open menu" @click=${() => this._openMenu()}>
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="M3 6h18v2H3V6Zm0 5h18v2H3v-2Zm0 5h18v2H3v-2Z"
+                />
+              </svg>
             </button>
           </div>
         </header>
