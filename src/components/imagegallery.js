@@ -1,4 +1,6 @@
+// Image gallery section
 import { LitElement, html, css } from "lit";
+import "@haxtheweb/d-d-d/d-d-d.js";
 import { dddGlobal } from "../ddd-global.js";
 
 export class ImageGallery extends LitElement {
@@ -8,7 +10,8 @@ export class ImageGallery extends LitElement {
 
   constructor() {
     super();
-    // Rink Moments data (your URLs)
+
+    // sample images
     this.items = [
       {
         title: "U12 team huddle before faceoff",
@@ -33,26 +36,30 @@ export class ImageGallery extends LitElement {
     css`
       :host {
         display: block;
+        font-family: var(--ddd-font-primary);
       }
 
       h2 {
         margin: 0 0 var(--ddd-spacing-4) 0;
-        font-size: var(--ddd-font-size-l, 28px);
+        font-size: var(--ddd-font-size-l);
+        color: var(--ddd-theme-text-primary);
       }
 
+      /* image grid */
       .grid {
         display: grid;
         grid-template-columns: repeat(3, minmax(220px, 1fr));
-        gap: var(--ddd-spacing-4, 16px);
+        gap: var(--ddd-spacing-4);
       }
 
+      /* image card */
       .card {
         position: relative;
         overflow: hidden;
-        border-radius: var(--ddd-radius-lg, 16px);
+        border-radius: var(--ddd-radius-lg);
         border: 1px solid var(--ddd-theme-border);
         background: var(--ddd-theme-surface);
-        min-height: 220px;
+        min-height: calc(var(--ddd-spacing-6) * 6);
       }
 
       img {
@@ -60,39 +67,36 @@ export class ImageGallery extends LitElement {
         height: 100%;
         object-fit: cover;
         display: block;
-        transform: scale(1.02);
       }
 
-      /* DDD-only overlay (derived from tokens) */
+      /* dark overlay */
       .overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(
-          180deg,
-          color-mix(in srgb, var(--ddd-theme-primary) 22%, transparent),
-          color-mix(in srgb, var(--ddd-theme-background) 55%, transparent)
-        );
+        background: var(--ddd-theme-bg);
+        opacity: 0.45;
         pointer-events: none;
       }
 
+      /* image label */
       .label {
         position: absolute;
-        left: var(--ddd-spacing-4, 16px);
-        bottom: var(--ddd-spacing-4, 16px);
-        right: var(--ddd-spacing-4, 16px);
+        left: var(--ddd-spacing-4);
+        bottom: var(--ddd-spacing-4);
+        right: var(--ddd-spacing-4);
         color: var(--ddd-theme-text-primary);
         font-weight: 800;
-        font-size: var(--ddd-font-size-s, 16px);
+        font-size: var(--ddd-font-size-s);
         line-height: 1.2;
-        text-shadow: 0 2px 10px color-mix(in srgb, var(--ddd-theme-background) 70%, transparent);
       }
 
       @media (max-width: 980px) {
         .grid {
           grid-template-columns: 1fr;
         }
+
         .card {
-          min-height: 200px;
+          min-height: calc(var(--ddd-spacing-6) * 5);
         }
       }
     `
@@ -102,6 +106,7 @@ export class ImageGallery extends LitElement {
     return html`
       <section>
         <h2>Rink Moments</h2>
+
         <div class="grid">
           ${this.items.map(
             (it) => html`
