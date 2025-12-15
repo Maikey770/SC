@@ -20,12 +20,34 @@ export class GameCard extends LitElement {
         display: block;
       }
 
-      /* Use .surface from ddd-global.js as the card container */
+      /* Use DDD .surface as the card container */
       .card {
         display: grid;
         grid-template-columns: auto 1fr;
         align-items: center;
         gap: var(--ddd-spacing-3, 12px);
+      }
+
+      /* Blue-tinted DDD surface to match top info cards */
+      .surface {
+        background: linear-gradient(
+          180deg,
+          color-mix(
+            in srgb,
+            var(--ddd-theme-primary, #7aa7ff) 18%,
+            var(--ddd-theme-surface, rgba(255,255,255,0.06))
+          ),
+          var(--ddd-theme-surface, rgba(255,255,255,0.06))
+        );
+
+        border: 1px solid color-mix(
+          in srgb,
+          var(--ddd-theme-primary, #7aa7ff) 35%,
+          var(--ddd-theme-border, rgba(255,255,255,0.12))
+        );
+
+        border-radius: var(--ddd-radius-lg, 16px);
+        padding: var(--ddd-spacing-4, 16px);
       }
 
       /* Compact list rows */
@@ -46,9 +68,18 @@ export class GameCard extends LitElement {
         display: grid;
         place-items: center;
 
-        /* Still DDD: use surface + border tokens */
-        background: var(--ddd-theme-surface, rgba(255,255,255,0.06));
-        border: 1px solid var(--ddd-theme-border, rgba(255,255,255,0.12));
+        /* Keep logo chips consistent with blue surface */
+        background: color-mix(
+          in srgb,
+          var(--ddd-theme-primary, #7aa7ff) 10%,
+          var(--ddd-theme-surface, rgba(255,255,255,0.06))
+        );
+
+        border: 1px solid color-mix(
+          in srgb,
+          var(--ddd-theme-primary, #7aa7ff) 30%,
+          var(--ddd-theme-border, rgba(255,255,255,0.12))
+        );
 
         font-weight: 800;
         font-size: 14px;
@@ -63,7 +94,8 @@ export class GameCard extends LitElement {
       .vs {
         font-weight: 900;
         font-size: 12px;
-        opacity: 0.8;
+        opacity: 0.85;
+        color: var(--ddd-theme-text-primary, #fff);
       }
 
       .meta {
@@ -76,11 +108,13 @@ export class GameCard extends LitElement {
       .dt {
         font-weight: 900;
         font-size: 14px;
+        color: var(--ddd-theme-text-primary, #fff);
       }
 
       .sub {
         font-size: 12px;
-        opacity: 0.8;
+        opacity: 0.82;
+        color: var(--ddd-theme-text-primary, #fff);
       }
 
       @media (max-width: 520px) {
