@@ -1,4 +1,5 @@
 import { LitElement, html, css } from "lit";
+import { dddGlobal } from "../ddd-global.js";
 
 export class GameCard extends LitElement {
   static properties = {
@@ -12,112 +13,93 @@ export class GameCard extends LitElement {
     this.compact = false;
   }
 
-  static styles = css`
-    :host {
-      display: block;
-    }
-
-    .card {
-      background: #ffffff;
-      color: #0b1220;
-      border-radius: 14px;
-      padding: 14px 16px;
-      display: grid;
-      grid-template-columns: auto 1fr;
-      align-items: center;
-      gap: 14px;
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
-    }
-
-    :host([compact]) .card {
-      padding: 12px 14px;
-      border-radius: 12px;
-    }
-
-    .left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 160px;
-    }
-
-    .logos {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .logo {
-      width: 44px;
-      height: 44px;
-      border-radius: 999px;
-      display: grid;
-      place-items: center;
-      background: #f3f5f7;
-      border: 1px solid rgba(0, 0, 0, 0.12);
-      font-weight: 800;
-      font-size: 14px;
-    }
-
-    .vs {
-      font-weight: 900;
-      font-size: 12px;
-      opacity: 0.7;
-    }
-
-    .right {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      width: 100%;
-    }
-
-    .meta {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .dt {
-      font-weight: 900;
-      font-size: 14px;
-    }
-
-    .sub {
-      font-size: 12px;
-      opacity: 0.75;
-    }
-
-    .buy {
-      font-weight: 900;
-      font-size: 12px;
-      text-transform: uppercase;
-      color: #1b6fd6;
-      text-decoration: none;
-      white-space: nowrap;
-    }
-
-    .buy.disabled {
-      opacity: 0.4;
-      pointer-events: none;
-    }
-
-    @media (max-width: 520px) {
-      .card {
-        grid-template-columns: 1fr;
-        gap: 10px;
+  static styles = [
+    dddGlobal,
+    css`
+      :host {
+        display: block;
       }
-    }
-  `;
+
+      /* Use the same tokens as .surface in ddd-global.js */
+      .card {
+        background: var(--ddd-theme-surface);
+        border: 1px solid var(--ddd-theme-border);
+        border-radius: var(--ddd-radius-lg);
+        padding: var(--ddd-spacing-4);
+        color: var(--ddd-theme-text-primary);
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: center;
+        gap: var(--ddd-spacing-3);
+      }
+
+      :host([compact]) .card {
+        border-radius: var(--ddd-radius-lg);
+        padding: var(--ddd-spacing-3);
+      }
+
+      .logos {
+        display: flex;
+        align-items: center;
+        gap: var(--ddd-spacing-3);
+      }
+
+      .logo {
+        width: 44px;
+        height: 44px;
+        border-radius: 999px;
+        display: grid;
+        place-items: center;
+        background: var(--ddd-theme-surface);
+        border: 1px solid var(--ddd-theme-border);
+        font-weight: 800;
+        font-size: 14px;
+        color: var(--ddd-theme-text-primary);
+      }
+
+      :host([compact]) .logo {
+        width: 40px;
+        height: 40px;
+      }
+
+      .vs {
+        font-weight: 900;
+        font-size: 12px;
+        color: var(--ddd-theme-text-primary);
+        opacity: 0.8;
+      }
+
+      .meta {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .dt {
+        font-weight: 900;
+        font-size: 14px;
+      }
+
+      .sub {
+        font-size: 12px;
+        opacity: 0.8;
+      }
+
+      @media (max-width: 520px) {
+        .card {
+          grid-template-columns: 1fr;
+        }
+      }
+    `
+  ];
 
   _initials(name) {
     if (!name) return "SC";
     if (/^u\d+/i.test(name)) return name.toUpperCase();
-    const parts = name.split(" ");
+    const parts = String(name).trim().split(/\s+/).filter(Boolean);
     return parts.length > 1
       ? (parts[0][0] + parts[1][0]).toUpperCase()
-      : name.slice(0, 2).toUpperCase();
+      : parts[0].slice(0, 2).toUpperCase();
   }
 
   render() {
@@ -126,28 +108,15 @@ export class GameCard extends LitElement {
 
     return html`
       <div class="card">
-        <div class="left">
-          <div class="logos">
-            <div class="logo">${this._initials(g.team)}</div>
-            <div class="vs">VS</div>
-            <div class="logo">${this._initials(g.opponent)}</div>
-          </div>
+        <div class="logos" aria-label="Matchup">
+          <div class="logo">${this._initials(g.team)}</div>
+          <div class="vs">VS</div>
+          <div class="logo">${this._initials(g.opponent)}</div>
         </div>
 
-        <div class="right">
-          <div class="meta">
-            <div class="dt">${dateTime || "TBD"}</div>
-            <div class="sub">${g.location || ""}</div>
-          </div>
-
-          <a
-            class="buy ${g.ticketUrl ? "" : "disabled"}"
-            href=${g.ticketUrl || "#"}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            BUY TICKETS
-          </a>
+        <div class="meta">
+          <div class="dt">${dateTime || "TBD"}</div>
+          <div class="sub">${g.location || ""}</div>
         </div>
       </div>
     `;
