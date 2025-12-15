@@ -60,8 +60,11 @@ export class SilverChariotApp extends LitElement {
     :host {
       display: block;
       min-height: 100vh;
-      color: var(--ddd-theme-default-white);
-      background: var(--ddd-theme-default-black);
+
+      /* Use DDD theme tokens (so light/dark mode actually changes) */
+      color: var(--ddd-theme-text-primary);
+      background: var(--ddd-theme-background);
+
       font-family: var(--ddd-font-primary);
     }
 
