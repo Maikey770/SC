@@ -46,11 +46,13 @@ export class HeaderBar extends LitElement {
   static styles = [
     dddGlobal,
     css`
+      /* ===== CRITICAL FIX (Option A) ===== */
       :host {
         display: block;
         position: sticky;
         top: 0;
-        z-index: 1000;
+        z-index: 999999; /* force header above all content */
+        pointer-events: auto;
         font-family: var(--ddd-font-primary);
         background: var(--ddd-theme-bg);
         border-bottom: 1px solid var(--ddd-theme-primary);
@@ -61,6 +63,10 @@ export class HeaderBar extends LitElement {
       }
 
       header {
+        position: relative;
+        z-index: 999999;
+        pointer-events: auto;
+
         max-width: 1200px;
         margin: 0 auto;
         padding: 14px 16px;
@@ -87,7 +93,6 @@ export class HeaderBar extends LitElement {
         color: var(--ddd-theme-text-primary);
       }
 
-      /* Logo wrapper */
       .logo {
         width: 28px;
         height: 28px;
@@ -106,7 +111,6 @@ export class HeaderBar extends LitElement {
         transform: scale(0.98);
       }
 
-      /* Logo image */
       .logo-img {
         width: 100%;
         height: 100%;
@@ -123,7 +127,6 @@ export class HeaderBar extends LitElement {
         justify-content: flex-end;
       }
 
-      /* Hide top nav on all screen sizes (menu lives in drawer) */
       nav {
         display: none;
       }
@@ -156,7 +159,6 @@ export class HeaderBar extends LitElement {
         display: block;
       }
 
-      /* Hamburger button shown on all sizes */
       .menu-toggle {
         width: 40px;
         height: 40px;
@@ -179,22 +181,11 @@ export class HeaderBar extends LitElement {
         transform: translateY(-1px);
       }
 
-      /* Hide theme toggle in header (it lives in drawer menu now) */
       .theme-toggle {
         display: none;
       }
     `
   ];
-
-  _onNavClick(target) {
-    this.dispatchEvent(
-      new CustomEvent("nav-change", {
-        detail: target,
-        bubbles: true,
-        composed: true
-      })
-    );
-  }
 
   _openMenu() {
     this.dispatchEvent(
@@ -205,12 +196,6 @@ export class HeaderBar extends LitElement {
   _onSearchClick() {
     this.dispatchEvent(
       new CustomEvent("search-open", { bubbles: true, composed: true })
-    );
-  }
-
-  _onThemeClick() {
-    this.dispatchEvent(
-      new CustomEvent("toggle-theme", { bubbles: true, composed: true })
     );
   }
 
@@ -231,7 +216,7 @@ export class HeaderBar extends LitElement {
           </div>
 
           <div class="right">
-            <button class="icon-btn" aria-label="Search" @click=${() => this._onSearchClick()}>
+            <button class="icon-btn" aria-label="Search" @click=${this._onSearchClick}>
               <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
                 <path
                   fill="currentColor"
@@ -240,7 +225,7 @@ export class HeaderBar extends LitElement {
               </svg>
             </button>
 
-            <button class="menu-toggle" aria-label="Open menu" @click=${() => this._openMenu()}>
+            <button class="menu-toggle" aria-label="Open menu" @click=${this._openMenu}>
               <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
                 <path
                   fill="currentColor"
