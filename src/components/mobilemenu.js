@@ -1,4 +1,4 @@
-// Mobile menu overlay for navigation on smaller screens
+// Mobile drawer menu for navigation on smaller screens
 import { LitElement, html, css } from "lit";
 import "@haxtheweb/d-d-d/d-d-d.js";
 import { dddGlobal } from "../ddd-global.js";
@@ -7,8 +7,7 @@ export class MobileMenu extends LitElement {
   static properties = {
     open: { type: Boolean, reflect: true },
     page: { type: String },
-    menuItems: { type: Array },
-    openGroups: { type: Object }
+    menuItems: { type: Array }
   };
 
   constructor() {
@@ -16,19 +15,16 @@ export class MobileMenu extends LitElement {
     this.open = false;
     this.page = "home";
     this.menuItems = [];
-    this.openGroups = {};
     this._onKeyDown = this._onKeyDown.bind(this);
   }
 
   connectedCallback() {
     super.connectedCallback();
 
-    // Load menu configuration
-    fetch("/api/menu")
+    fetch("/api/menu", { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => {
-        this.menuItems = data && data.items ? data.items : [];
-        this._initGroups();
+        this.menuItems = data?.items ?? [];
       })
       .catch((err) => console.error("mobile menu load error", err));
 
@@ -48,74 +44,120 @@ export class MobileMenu extends LitElement {
         font-family: var(--ddd-font-primary);
       }
 
-      /* Full-screen overlay */
+      /* Overlay */
       .bg {
         position: fixed;
         inset: 0;
-        background: color-mix(
-          in srgb,
-          var(--ddd-theme-background) 55%,
-          transparent
-        );
+        background: color-mix(in srgb, black 55%, transparent);
         display: none;
-        z-index: 40;
+        z-index: 1000;
       }
 
       :host([open]) .bg {
         display: block;
       }
 
-      /* Menu panel */
+      /* Left drawer */
       .panel {
-        background: var(--ddd-theme-background);
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: min(86vw, 360px);
+        background: var(--ddd-theme-bg);
         color: var(--ddd-theme-text-primary);
-        padding: var(--ddd-spacing-4);
-        border-bottom-left-radius: var(--ddd-radius-lg);
-        border-bottom-right-radius: var(--ddd-radius-lg);
-        border-bottom: 1px solid var(--ddd-theme-border);
-        max-width: 720px;
-        margin: 0 auto;
+        border-right: 1px solid var(--ddd-theme-primary);
+        padding: 18px 16px;
+        transform: translateX(-110%);
+        transition: transform 180ms ease;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      :host([open]) .panel {
+        transform: translateX(0);
       }
 
       .top-row {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        margin-bottom: var(--ddd-spacing-3);
-        font-size: var(--ddd-font-size-s);
+        justify-content: space-between;
+        gap: 12px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--ddd-theme-primary);
       }
 
-      d-d-d-button {
-        --ddd-button-padding: var(--ddd-spacing-2) var(--ddd-spacing-3);
-      }
-
-      .group {
-        margin-top: var(--ddd-spacing-3);
-        border: 1px solid var(--ddd-theme-border);
-        border-radius: var(--ddd-radius-md);
-        overflow: hidden;
-        background: var(--ddd-theme-surface);
-      }
-
-      .group-head {
+      .brand {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        font-weight: 700;
-        text-transform: uppercase;
+        gap: 10px;
+        font-weight: 800;
         letter-spacing: 0.06em;
-        width: 100%;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      .close-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 9999px;
+        border: 1px solid var(--ddd-theme-primary);
+        background: transparent;
+        color: var(--ddd-theme-text-primary);
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+      }
+
+      .close-btn:hover {
+        transform: translateY(-1px);
+      }
+
+      .icon {
+        width: 18px;
+        height: 18px;
+        display: block;
       }
 
       .links {
         display: flex;
         flex-direction: column;
-        gap: var(--ddd-spacing-2);
-        padding: var(--ddd-spacing-3);
+        gap: 10px;
+        padding-top: 6px;
+      }
+
+      .link {
+        appearance: none;
+        text-align: left;
+        width: 100%;
+        border: 1px solid var(--ddd-theme-primary);
+        background: transparent;
+        color: var(--ddd-theme-text-primary);
+        padding: 12px 14px;
+        border-radius: 12px;
+        font-family: var(--ddd-font-primary);
+        font-size: 0.95rem;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        text-transform: none;
+        cursor: pointer;
       }
 
       .link[data-active="true"] {
-        filter: saturate(1.05);
+        background: var(--ddd-theme-primary);
+        color: var(--ddd-theme-bg);
+      }
+
+      .spacer {
+        flex: 1;
+      }
+
+      .secondary {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding-top: 8px;
       }
 
       @media (min-width: 769px) {
@@ -131,21 +173,6 @@ export class MobileMenu extends LitElement {
     if (e.key === "Escape") this._close();
   }
 
-  _initGroups() {
-    const next = {};
-    for (let i = 0; i < this.menuItems.length; i++) {
-      const g = this.menuItems[i];
-      if (g && g.label) next[g.label] = g.label === "Main";
-    }
-    this.openGroups = next;
-  }
-
-  _toggleGroup(label) {
-    const next = { ...this.openGroups };
-    next[label] = !next[label];
-    this.openGroups = next;
-  }
-
   _close() {
     this.dispatchEvent(
       new CustomEvent("close-menu", { bubbles: true, composed: true })
@@ -159,8 +186,30 @@ export class MobileMenu extends LitElement {
     this._close();
   }
 
+  _toggleTheme() {
+    this.dispatchEvent(
+      new CustomEvent("toggle-theme", { bubbles: true, composed: true })
+    );
+    this._close();
+  }
+
+  _flatLinks() {
+    // Supports both:
+    // 1) [{label:"Main", children:[...]}]
+    // 2) [{id:"home", label:"Home"}, ...]
+    const groups = Array.isArray(this.menuItems) ? this.menuItems : [];
+
+    for (let i = 0; i < groups.length; i++) {
+      const g = groups[i];
+      if (g && Array.isArray(g.children) && g.children.length) {
+        return g.children;
+      }
+    }
+    return groups.filter((x) => x && x.id && x.label);
+  }
+
   render() {
-    const groups = this.menuItems || [];
+    const links = this._flatLinks();
 
     return html`
       <d-d-d>
@@ -173,48 +222,38 @@ export class MobileMenu extends LitElement {
         >
           <div class="panel" @click=${(e) => e.stopPropagation()}>
             <div class="top-row">
-              <span>Silver Chariot</span>
-              <d-d-d-button
-                .label=${"Close"}
-                @click=${() => this._close()}
-              ></d-d-d-button>
+              <div class="brand">
+                <span>Silver Chariot</span>
+              </div>
+
+              <button class="close-btn" aria-label="Close menu" @click=${() => this._close()}>
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    fill="currentColor"
+                    d="M18.3 5.71 12 12l6.3 6.29-1.41 1.42L10.59 13.4 4.29 19.71 2.88 18.3 9.17 12 2.88 5.71 4.29 4.29l6.3 6.3 6.3-6.3 1.41 1.42Z"
+                  ></path>
+                </svg>
+              </button>
             </div>
 
-            ${groups.map((group) => {
-              const label = group && group.label ? group.label : "Group";
-              const children =
-                group && Array.isArray(group.children) ? group.children : [];
-              const isOpen = !!this.openGroups[label];
+            <div class="links">
+              ${links.map((item) => {
+                const active = this.page === item.id;
+                return html`
+                  <button class="link" data-active=${active} @click=${() => this._go(item.id)}>
+                    ${item.label}
+                  </button>
+                `;
+              })}
+            </div>
 
-              return html`
-                <div class="group">
-                  <d-d-d-button
-                    class="group-head"
-                    .label=${`${label} ${isOpen ? "Hide" : "Show"}`}
-                    aria-expanded=${isOpen ? "true" : "false"}
-                    @click=${() => this._toggleGroup(label)}
-                  ></d-d-d-button>
+            <div class="spacer"></div>
 
-                  ${isOpen
-                    ? html`
-                        <div class="links">
-                          ${children.map((item) => {
-                            const active = this.page === item.id;
-                            return html`
-                              <d-d-d-button
-                                class="link"
-                                data-active=${active}
-                                .label=${item.label}
-                                @click=${() => this._go(item.id)}
-                              ></d-d-d-button>
-                            `;
-                          })}
-                        </div>
-                      `
-                    : ""}
-                </div>
-              `;
-            })}
+            <div class="secondary">
+              <button class="link" @click=${() => this._toggleTheme()}>
+                Switch mode
+              </button>
+            </div>
           </div>
         </div>
       </d-d-d>
