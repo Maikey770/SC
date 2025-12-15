@@ -2,6 +2,7 @@ import { LitElement, html, css } from "lit";
 import "@haxtheweb/d-d-d/d-d-d.js";
 import "./ddd-global.js";
 
+// App components
 import "./components/headerbar.js";
 import "./components/mobilemenu.js";
 import "./components/gamecard.js";
@@ -30,11 +31,11 @@ export class SilverChariotApp extends LitElement {
   connectedCallback() {
     super.connectedCallback();
 
-    // Load schedule from API
+    // Fetch schedule data from API
     fetch("/api/schedule", { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => {
-        this.schedule = data && data.upcoming ? data.upcoming : [];
+        this.schedule = Array.isArray(data?.upcoming) ? data.upcoming : [];
       })
       .catch((err) => console.error("schedule load error", err));
 
@@ -64,13 +65,6 @@ export class SilverChariotApp extends LitElement {
       gap: var(--ddd-spacing-8);
     }
 
-    h2 {
-      margin: 0;
-      font-size: var(--ddd-font-size-l);
-      line-height: 1.2;
-    }
-
-    /* List spacing under the big featured rail */
     .list {
       display: flex;
       flex-direction: column;
@@ -81,8 +75,7 @@ export class SilverChariotApp extends LitElement {
 
   _getPageFromUrl() {
     const params = new URLSearchParams(window.location.search);
-    const page = params.get("page");
-    return page ? page : "home";
+    return params.get("page") || "home";
   }
 
   _setUrlForPage(id) {
@@ -94,6 +87,7 @@ export class SilverChariotApp extends LitElement {
     this.page = this._getPageFromUrl();
   }
 
+  // Navigation handler
   changePage(e) {
     const id = e.detail;
     this.page = id;
@@ -101,7 +95,6 @@ export class SilverChariotApp extends LitElement {
 
     if (this.mobileMenuOpen) this.mobileMenuOpen = false;
 
-    // Keep navigation feeling consistent
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -112,36 +105,20 @@ export class SilverChariotApp extends LitElement {
   _renderSchedulePage() {
     return html`
       <section>
-        <schedule-row heading="Upcoming Games">
-          ${this.schedule.map((g) => html`<game-card .game=${g}></game-card>`)}
-        </schedule-row>
+        <schedule-row
+          heading="Upcoming Games"
+          .games=${this.schedule}
+        ></schedule-row>
 
         ${this.schedule.length === 0
           ? html`<p>No games in the list right now.</p>`
           : html`
               <div class="list">
-                ${this.schedule.map((g) => html`<game-card compact .game=${g}></game-card>`)}
+                ${this.schedule.map(
+                  (g) => html`<game-card compact .game=${g}></game-card>`
+                )}
               </div>
             `}
-      </section>
-    `;
-  }
-
-  _renderParentsPage() {
-    return html`
-      <section>
-        <h2>Parent Information</h2>
-        <p>
-          Silver Chariot is a youth hockey club. We want kids to play serious hockey
-          but also keep up with school, health, and friends.
-        </p>
-
-        <h3>Season Basics</h3>
-        <ul>
-          <li>Season runs from early September to late March.</li>
-          <li>Most weeks have two practices and one game.</li>
-          <li>Home rink is State College Ice Pavilion.</li>
-        </ul>
       </section>
     `;
   }
@@ -155,37 +132,44 @@ export class SilverChariotApp extends LitElement {
     `;
   }
 
-  _renderHomePage() {
-    const all = Array.isArray(this.schedule) ? this.schedule : [];
-    const rail = all.slice(0, 8); // Featured scroller content
-    const list = all.slice(0, 2); // Compact list content
-
+  _renderParentsPage() {
     return html`
       <section>
-        <hero-banner></hero-banner>
+        <h2>Parent Information</h2>
+        <p>
+          Silver Chariot is a youth hockey club focused on player development,
+          balance, and long-term growth.
+        </p>
       </section>
+    `;
+  }
 
-      <section>
-        <info-band></info-band>
-      </section>
+  _renderHomePage() {
+    const rail = this.schedule.slice(0, 8);
+    const list = this.schedule.slice(0, 2);
+
+    return html`
+      <hero-banner></hero-banner>
+      <info-band></info-band>
 
       <section id="upcoming">
-        <schedule-row heading="Upcoming Games">
-          ${rail.map((g) => html`<game-card .game=${g}></game-card>`)}
-        </schedule-row>
+        <schedule-row
+          heading="Upcoming Games"
+          .games=${rail}
+        ></schedule-row>
 
         ${list.length === 0
           ? html`<p>No games in the list right now.</p>`
           : html`
               <div class="list">
-                ${list.map((g) => html`<game-card compact .game=${g}></game-card>`)}
+                ${list.map(
+                  (g) => html`<game-card compact .game=${g}></game-card>`
+                )}
               </div>
             `}
       </section>
 
-      <section>
-        <image-gallery></image-gallery>
-      </section>
+      <image-gallery></image-gallery>
     `;
   }
 
@@ -200,15 +184,15 @@ export class SilverChariotApp extends LitElement {
     return html`
       <header-bar
         .page=${this.page}
-        @nav-change=${(e) => this.changePage(e)}
-        @open-menu=${() => this.toggleMenu()}
+        @nav-change=${this.changePage}
+        @open-menu=${this.toggleMenu}
       ></header-bar>
 
       <mobile-menu
         ?open=${this.mobileMenuOpen}
         .page=${this.page}
-        @nav-change=${(e) => this.changePage(e)}
-        @close-menu=${() => this.toggleMenu()}
+        @nav-change=${this.changePage}
+        @close-menu=${this.toggleMenu}
       ></mobile-menu>
 
       <main>${this._renderPageBody()}</main>
