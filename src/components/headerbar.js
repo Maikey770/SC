@@ -6,7 +6,8 @@ export class HeaderBar extends LitElement {
   static properties = {
     page: { type: String },
     menuItems: { type: Array },
-    scrolled: { type: Boolean }
+    scrolled: { type: Boolean },
+    theme: { type: String }
   };
 
   constructor() {
@@ -14,6 +15,7 @@ export class HeaderBar extends LitElement {
     this.page = "home";
     this.menuItems = [];
     this.scrolled = false;
+    this.theme = "dark";
 
     this._onScroll = this._onScroll.bind(this);
   }
@@ -29,7 +31,6 @@ export class HeaderBar extends LitElement {
       })
       .catch((err) => console.error("menu load error", err));
 
-    // Watch scroll state for sticky header shrink
     window.addEventListener("scroll", this._onScroll, { passive: true });
     this._onScroll();
   }
@@ -40,7 +41,6 @@ export class HeaderBar extends LitElement {
   }
 
   _onScroll() {
-    // Toggle compact header after small scroll
     const next = (window.scrollY || 0) > 16;
     if (next !== this.scrolled) this.scrolled = next;
   }
@@ -60,7 +60,6 @@ export class HeaderBar extends LitElement {
         font-family: var(--ddd-font-primary, system-ui);
       }
 
-      /* Stronger shadow only after scroll */
       :host([data-scrolled="true"]) {
         background: rgba(0, 0, 0, 0.72);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
@@ -193,6 +192,29 @@ export class HeaderBar extends LitElement {
         display: none;
       }
 
+      /* Switch mode button */
+      .theme-toggle {
+        border: 1px solid rgba(255, 255, 255, 0.55);
+        background: transparent;
+        color: #fff;
+        padding: 8px 14px;
+        border-radius: 9999px;
+        font-family: var(--ddd-font-primary, system-ui);
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: border-color 140ms ease, background 140ms ease, transform 140ms ease;
+        white-space: nowrap;
+      }
+
+      .theme-toggle:hover {
+        border-color: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, 0.06);
+        transform: translateY(-1px);
+      }
+
       @media (max-width: 768px) {
         nav {
           display: none;
@@ -210,12 +232,15 @@ export class HeaderBar extends LitElement {
           text-transform: uppercase;
           cursor: pointer;
         }
+
+        .theme-toggle {
+          display: none;
+        }
       }
     `
   ];
 
   _onNavClick(target) {
-    // Notify app to change page
     this.dispatchEvent(
       new CustomEvent("nav-change", {
         detail: target,
@@ -226,16 +251,16 @@ export class HeaderBar extends LitElement {
   }
 
   _openMenu() {
-    // Open mobile menu
-    this.dispatchEvent(
-      new CustomEvent("open-menu", { bubbles: true, composed: true })
-    );
+    this.dispatchEvent(new CustomEvent("open-menu", { bubbles: true, composed: true }));
   }
 
   _onSearchClick() {
-    // Placeholder action
+    this.dispatchEvent(new CustomEvent("search-open", { bubbles: true, composed: true }));
+  }
+
+  _onThemeClick() {
     this.dispatchEvent(
-      new CustomEvent("search-open", { bubbles: true, composed: true })
+      new CustomEvent("toggle-theme", { bubbles: true, composed: true })
     );
   }
 
@@ -267,6 +292,10 @@ export class HeaderBar extends LitElement {
               })}
             </nav>
 
+            <button class="theme-toggle" @click=${() => this._onThemeClick()}>
+              Switch mode
+            </button>
+
             <button class="icon-btn" aria-label="Search" @click=${() => this._onSearchClick()}>
               <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
                 <path
@@ -284,7 +313,6 @@ export class HeaderBar extends LitElement {
   }
 
   updated(changed) {
-    // Reflect state to attribute for CSS
     if (changed.has("scrolled")) {
       this.toggleAttribute("data-scrolled", this.scrolled);
     }

@@ -17,7 +17,8 @@ export class SilverChariotApp extends LitElement {
   static properties = {
     page: { type: String },
     mobileMenuOpen: { type: Boolean },
-    schedule: { type: Array }
+    schedule: { type: Array },
+    theme: { type: String }
   };
 
   constructor() {
@@ -25,13 +26,19 @@ export class SilverChariotApp extends LitElement {
     this.page = this._getPageFromUrl();
     this.mobileMenuOpen = false;
     this.schedule = [];
+    this.theme = localStorage.getItem("theme") || "dark";
+
     this._onPopState = this._onPopState.bind(this);
     this.changePage = this.changePage.bind(this);
     this.toggleMenu = this.toggleMenu.bind(this);
+    this.toggleTheme = this.toggleTheme.bind(this);
   }
 
   connectedCallback() {
     super.connectedCallback();
+
+    // Apply theme to entire page
+    document.documentElement.setAttribute("data-theme", this.theme);
 
     // Fetch schedule data from API
     fetch("/api/schedule", { cache: "no-store" })
@@ -130,6 +137,13 @@ export class SilverChariotApp extends LitElement {
     this.mobileMenuOpen = !this.mobileMenuOpen;
   }
 
+  // Switch mode button handler
+  toggleTheme() {
+    this.theme = this.theme === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", this.theme);
+    localStorage.setItem("theme", this.theme);
+  }
+
   _renderSchedulePage() {
     return html`
       <section>
@@ -157,7 +171,7 @@ export class SilverChariotApp extends LitElement {
     `;
   }
 
-  // New Information page
+  // Information page
   _renderInformationPage() {
     return html`
       <section>
@@ -226,6 +240,8 @@ export class SilverChariotApp extends LitElement {
     return html`
       <header-bar
         .page=${this.page}
+        .theme=${this.theme}
+        @toggle-theme=${this.toggleTheme}
         @nav-change=${this.changePage}
         @open-menu=${this.toggleMenu}
       ></header-bar>
